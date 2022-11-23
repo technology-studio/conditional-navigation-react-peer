@@ -43,7 +43,6 @@ export * from './Model/Types'
 //   RootStateFragment,
 //   State as NavigationState,
 // } from './Redux/Types'
-export { onNavigateAction } from './Navigation/Navigate'
 export { onActionFactory } from './Navigation/OnActionFactory'
 export { backHandlerManager } from './Api/BackHandlerManager'
 export {
