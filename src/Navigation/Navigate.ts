@@ -56,8 +56,8 @@ export const onNavigateAction = ({
       }
       log.debug('N: RESOLVE CONDITIONS RESULT', { resolveConditionsResult, action, _conditionToResolveCondition: conditionalNavigationManager._conditionToResolveCondition })
       if (resolveConditionsResult) {
-        const activeLeafNavigationNode = getActiveLeafRoute(state)
-        activeLeafNavigationNode.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
+        const activeLeafRoute = getActiveLeafRoute(state)
+        activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
         return nextOnAction(resolveConditionsResult.navigationAction, ...restArgs)
       }
     }

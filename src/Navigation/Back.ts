@@ -14,7 +14,7 @@ import type {
   OnActionAttributes,
 } from '../Model/Types'
 import {
-  getActiveLeafNavigationNode,
+  getActiveLeafRoute,
   getStateNearestRouteKeyByRouteName,
 } from '../Api/NavigationUtils'
 
@@ -92,7 +92,7 @@ export const onBackAction = ({
     return originalOnAction(action, ...restArgs)
   }
   const backedState = getBackedState(stateDeepCopy, count)
-  const activeLeafNavigationNode = getActiveLeafNavigationNode(backedState)
+  const activeLeafNavigationNode = getActiveLeafRoute(backedState)
   activeLeafNavigationNode.conditionalNavigation = undefined
   log.debug(`B: count: ${String(count)}`, { backedState })
   setState(backedState)
