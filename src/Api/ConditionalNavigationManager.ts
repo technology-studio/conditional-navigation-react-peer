@@ -52,7 +52,7 @@ class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE exten
               conditionalNavigationState: {
                 condition,
                 postponedAction: navigationAction,
-                logicalTimestamp: this.getAndIncrementLogicalClock(),
+                logicalTimestamp: this.tickLogicalClock(),
                 previousState: JSON.parse(JSON.stringify(rootState)),
               },
             }
@@ -68,7 +68,7 @@ class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE exten
     return () => { delete this._conditionToResolveCondition[conditionKey] }
   }
 
-  getAndIncrementLogicalClock (): number {
+  tickLogicalClock (): number {
     return ++this._logicalClock
   }
 }

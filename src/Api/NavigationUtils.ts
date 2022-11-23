@@ -12,16 +12,16 @@ import type {
   Route,
 } from '@react-navigation/native'
 
-export const getActiveLeafNavigationNode = (state: NavigationState): Route<string> => {
+export const getActiveLeafRoute = (state: NavigationState): Route<string> => {
   const { routes, index } = state
   const currentRoute = routes[index] as NavigationState | Route<string>
   if ('routes' in currentRoute) {
-    return getActiveLeafNavigationNode(currentRoute)
+    return getActiveLeafRoute(currentRoute)
   }
   return currentRoute
 }
 
-export const getExistingNavigationNodeByRouteName = (state: NavigationState | PartialState<NavigationState> | undefined, routeName: string): PartialRoute<Route<string>> | Route<string> | undefined => {
+export const getExistingRouteByRouteName = (state: NavigationState | PartialState<NavigationState> | undefined, routeName: string): PartialRoute<Route<string>> | Route<string> | undefined => {
   if (!state) {
     return undefined
   }
@@ -33,14 +33,14 @@ export const getExistingNavigationNodeByRouteName = (state: NavigationState | Pa
   if ('name' in currentRoute && currentRoute.name === routeName) {
     return currentRoute
   } else if ('routes' in currentRoute && currentRoute.routes) {
-    return getExistingNavigationNodeByRouteName(currentRoute, routeName)
+    return getExistingRouteByRouteName(currentRoute, routeName)
   }
   return undefined
 }
 
 type Params = { screen?: string, params?: Params }
 
-export const getNextNestedScreenList = (params: Params | undefined): string[] | undefined => {
+export const getNestedRoutePath = (params: Params | undefined): string[] | undefined => {
   if (!params) {
     return undefined
   }
@@ -49,23 +49,23 @@ export const getNextNestedScreenList = (params: Params | undefined): string[] | 
     return undefined
   }
   if (innerParams) {
-    const nextScreen = getNextNestedScreenList(innerParams)
+    const nextScreen = getNestedRoutePath(innerParams)
     return nextScreen ? [screen, ...nextScreen] : [screen]
   }
   return [screen]
 }
 
-export const getNavigationPathFromAction = (action: NavigationAction): string[] | undefined => {
+export const getRoutePathFromAction = (action: NavigationAction): string[] | undefined => {
   const { payload } = action
   if (!payload) {
     return undefined
   }
   const { params, name } = payload as { params?: Params, name: string }
-  const nextScreen = getNextNestedScreenList(params)
-  return nextScreen ? [name, ...nextScreen] : [name]
+  const routePath = getNestedRoutePath(params)
+  return routePath ? [name, ...routePath] : [name]
 }
 
-export const getActiveScreenPath = (
+export const getActiveRoutePath = (
   state: NavigationState | Route<string> | undefined,
   tempIndex = 0,
 ): string[] | undefined => {
@@ -74,10 +74,10 @@ export const getActiveScreenPath = (
   }
   const { routes, index, type } = state
   if (type === 'stack' && tempIndex < index) {
-    const nextPath = getActiveScreenPath(state, tempIndex + 1)
+    const nextPath = getActiveRoutePath(state, tempIndex + 1)
     return nextPath ? [routes[tempIndex].name, ...nextPath] : [routes[tempIndex].name]
   } else if (type === 'tab' || type === 'stack') {
-    const nextPath = getActiveScreenPath(routes[index])
+    const nextPath = getActiveRoutePath(routes[index])
     return nextPath ? [routes[index].name, ...nextPath] : [routes[index].name]
   }
   return undefined
