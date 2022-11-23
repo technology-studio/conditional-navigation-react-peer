@@ -14,20 +14,20 @@ import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useO
 import type { NavigationState } from '@react-navigation/routers'
 
 export type NavigationAction = RNNavigationAction & {
-  conditionList?: Condition[],
   payload?: Record<string, unknown> & {
-    params?: {
-      // navigate
-      flow?: boolean,
-      reset?: boolean,
-      skipConditionalNavigation?: boolean,
-      // back
-      backToRouteName?: boolean,
-      count?: number,
-      key?: string,
-      routeName?: string,
-    },
+    params?: Record<string, unknown>,
   },
+  // requireConditions
+  conditionList?: Condition[],
+  // navigate
+  flow?: boolean,
+  reset?: boolean,
+  skipConditionalNavigation?: boolean,
+  // back
+  backToRouteName?: boolean,
+  count?: number,
+  key?: string,
+  routeName?: string,
 }
 
 export type ConditionalNavigationState = {
@@ -82,4 +82,14 @@ export type OnActionFactoryAttributes = {
   routerConfigOptions: RouterConfigOptions,
   screenConditionsMap: Record<string, Condition[]>,
   setState: UseOnActionOptions['setState'],
+}
+
+export type NavigatePayload = {
+  routeName: string,
+  params?: Record<string, unknown>,
+  options?: {
+    flow?: boolean,
+    reset?: boolean,
+    skipConditionalNavigation?: boolean,
+  },
 }

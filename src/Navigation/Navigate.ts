@@ -34,12 +34,10 @@ export const onNavigateAction = ({
 }: OnActionAttributes): boolean => {
   const {
     payload,
-  } = action
-  const {
     flow,
     reset,
     skipConditionalNavigation,
-  } = payload?.params ?? {}
+  } = action
   const state = getState()
 
   const nextRoutePath = getRoutePathFromAction(action) ?? []
@@ -65,11 +63,10 @@ export const onNavigateAction = ({
 
   if (reset) {
     log.debug('NAVIGATE WITH RESET')
-    const { reset, ...paramsWithoutReset } = payload?.params ?? {}
     const newState = {
       index: 0,
       routes: [
-        { name: leafRouteName, params: paramsWithoutReset },
+        { name: leafRouteName, params: payload?.params },
       ],
     }
     setState(newState)
