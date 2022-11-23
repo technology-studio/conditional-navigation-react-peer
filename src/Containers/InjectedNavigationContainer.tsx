@@ -13,6 +13,7 @@ import {
 } from '@react-navigation/native'
 import { useFlipper } from '@react-navigation/devtools'
 
+import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 import {
   onActionFactory,
 } from '../Navigation/OnActionFactory'
@@ -26,6 +27,7 @@ type Props = {
 export const InjectedNavigationContainer = ({ children }: Props): JSX.Element => {
   const navigationRef = useNavigationContainerRef()
   useFlipper(navigationRef)
+  useAndroidBackNavigation(navigationRef)
 
   useEffect(() => {
     registerOnActionFactory(onActionFactory)
