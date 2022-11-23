@@ -5,7 +5,7 @@
 **/
 
 import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
-import { getActiveLeafNavigationNode } from '../Api/NavigationUtils'
+import { getActiveLeafRoute } from '../Api/NavigationUtils'
 import type { OnActionAttributes } from '../Model/Types'
 
 export const onRequireConditionsAction = ({
@@ -19,7 +19,7 @@ export const onRequireConditionsAction = ({
   if (conditionList) {
     const resolveConditionsResult = conditionalNavigationManager.resolveConditions(conditionList, action, state)
     if (resolveConditionsResult && state) {
-      const activeLeafNavigationNode = getActiveLeafNavigationNode(state)
+      const activeLeafNavigationNode = getActiveLeafRoute(state)
       activeLeafNavigationNode.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
       return nextOnAction(resolveConditionsResult.navigationAction, ...restArgs)
     }

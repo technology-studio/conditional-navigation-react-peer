@@ -6,13 +6,12 @@
 
 import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
 import {
-  getActiveLeafNavigationNode,
-  getActiveScreenPath,
-  getNavigationPathFromAction,
+  getActiveLeafRoute,
+  getActiveRoutePath,
 } from '../Api/NavigationUtils'
 import type {
   OnActionAttributes,
-  Condition,
+  ResolveConditionsResult,
 } from '../Model/Types'
 
 export const onValidateConditionsAction = ({
@@ -23,22 +22,18 @@ export const onValidateConditionsAction = ({
   screenConditionsMap,
 }: OnActionAttributes): boolean => {
   const state = getState()
-  const currentActiveScreenPath = getActiveScreenPath(state)
-  const desiredScreenPath = [
-    ...currentActiveScreenPath ?? [],
-    ...getNavigationPathFromAction(action) ?? [],
-  ]
-  const conditionList = desiredScreenPath?.reduce<Condition[] | undefined>((conditions, screenName) => {
-    const screenConditions = screenConditionsMap[screenName]
-    return screenConditions?.length > 0 && !conditions
-      ? screenConditions
-      : conditions
-  }, undefined)
-  if (conditionList) {
-    const resolveConditionsResult = conditionalNavigationManager.resolveConditions(conditionList, action, state)
-    if (resolveConditionsResult && state) {
-      const activeLeafNavigationNode = getActiveLeafNavigationNode(state)
-      activeLeafNavigationNode.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
+  const currentActiveScreenPath = getActiveRoutePath(state) ?? []
+  if (state) {
+    let resolveConditionsResult: ResolveConditionsResult | undefined
+    for (const routeName of currentActiveScreenPath) {
+      const screenConditions = screenConditionsMap[routeName]
+      if (screenConditions && screenConditions.length > 0) {
+        resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state)
+      }
+    }
+    if (resolveConditionsResult) {
+      const activeLeafRoute = getActiveLeafRoute(state)
+      activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
       return originalOnAction(resolveConditionsResult.navigationAction, ...restArgs)
     }
   }
