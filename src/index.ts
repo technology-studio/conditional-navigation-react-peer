@@ -51,6 +51,7 @@ export {
   registerResolveCondition,
 } from './Api/ConditionalNavigationManager'
 export { useIsInitial } from './Hooks/UseIsInitial'
+export { useNavigation } from './Hooks/UseNavigation'
 
 // export {
 //   combineReducers,
