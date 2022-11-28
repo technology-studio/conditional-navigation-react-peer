@@ -8,6 +8,7 @@ import {
   useCallback,
   useMemo,
 } from 'react'
+import type { NavigationProp } from '@react-navigation/native'
 import { useNavigation as useRNNavigation } from '@react-navigation/native'
 
 import { ConditionalActions } from '../Navigation/ConditionalActions'
@@ -16,7 +17,7 @@ import type {
   NavigatePayload,
 } from '../Model/Types'
 
-type Navigation = ReturnType<typeof useRNNavigation> & {
+type Navigation = Omit<NavigationProp<ReactNavigation.RootParamList>, 'navigate'> & {
   cancelFlow: () => void,
   finishFlowAndContinue: () => void,
   navigate: (payload: NavigatePayload) => void,
