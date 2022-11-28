@@ -7,6 +7,7 @@
 
 import { Log } from '@txo/log'
 import type {
+  CommonActions,
   NavigationState,
 } from '@react-navigation/native'
 
@@ -23,7 +24,7 @@ export type ResolveCondition<CONDITION extends Condition, ROOT_STATE extends Nav
   condition: CONDITION,
   navigationAction: NavigationAction,
   rootState: ROOT_STATE,
-) => NavigationAction | undefined
+) => NavigationAction | CommonActions.Action | undefined
 
 class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE extends NavigationState> {
   _conditionToResolveCondition: Record<string, ResolveCondition<CONDITION, ROOT_STATE>>
@@ -39,7 +40,7 @@ class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE exten
       for (const condition of conditionList) {
         const resolveCondition: ResolveCondition<CONDITION, ROOT_STATE> = this._conditionToResolveCondition[condition.key]
         if (resolveCondition) {
-          const newNavigationAction: NavigationAction | undefined = resolveCondition(condition, navigationAction, rootState)
+          const newNavigationAction = resolveCondition(condition, navigationAction, rootState) as NavigationAction | undefined
           if (newNavigationAction) {
             log.debug('NEW NAVIGATION ACTION', { preview: condition.key, newNavigationAction, navigationAction })
             return {
