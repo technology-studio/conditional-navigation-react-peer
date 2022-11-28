@@ -17,7 +17,7 @@ import type {
   NavigatePayload,
 } from '../Model/Types'
 
-type Navigation = Omit<NavigationProp<ReactNavigation.RootParamList>, 'navigate'> & {
+export type Navigation = Omit<NavigationProp<ReactNavigation.RootParamList>, 'navigate'> & {
   cancelFlow: () => void,
   finishFlowAndContinue: () => void,
   navigate: (payload: NavigatePayload) => void,

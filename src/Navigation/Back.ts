@@ -92,8 +92,8 @@ export const onBackAction = ({
     return originalOnAction(action, ...restArgs)
   }
   const backedState = getBackedState(stateDeepCopy, count)
-  const activeLeafNavigationNode = getActiveLeafRoute(backedState)
-  activeLeafNavigationNode.conditionalNavigation = undefined
+  const activeLeafRoute = getActiveLeafRoute(backedState)
+  activeLeafRoute.conditionalNavigation = undefined
   log.debug(`B: count: ${String(count)}`, { backedState })
   setState(backedState)
   return true

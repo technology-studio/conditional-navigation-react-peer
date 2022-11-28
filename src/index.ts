@@ -55,7 +55,10 @@ export {
   registerResolveCondition,
 } from './Api/ConditionalNavigationManager'
 export { useIsInitial } from './Hooks/UseIsInitial'
-export { useNavigation } from './Hooks/UseNavigation'
+export {
+  type Navigation,
+  useNavigation,
+} from './Hooks/UseNavigation'
 export { navigationParams } from './Screens'
 
 // export {
