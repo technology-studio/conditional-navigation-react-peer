@@ -5,6 +5,10 @@
  * @Copyright: Technology Studio
  */
 
+export {
+  registerScreenConditions,
+  screenConditionConfigMap,
+} from './Api/ConditionManager'
 export { configManager } from './Config'
 export { registerOnActionFactory } from './Containers/ReactNavigationInjection'
 export { InjectedNavigationContainer } from './Containers/InjectedNavigationContainer'

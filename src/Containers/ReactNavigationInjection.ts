@@ -14,7 +14,7 @@ import type {
   OnActionFactoryAttributes,
   UseOnActionOptions,
 } from '../Model/Types'
-import { configManager } from '../Config'
+import { screenConditionConfigMap } from '../Api/ConditionManager'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const useOnActionObject = require('@react-navigation/core/lib/commonjs/useOnAction')
@@ -30,13 +30,11 @@ useOnActionObject.default = function useOnAction (options: UseOnActionOptions): 
   const onAction = originalUseOnAction(options) as OnAction
   const { getState, setState, router, routerConfigOptions } = options ?? {}
   const nextOnAction: typeof onAction = useCallback((...args: Parameters<OnAction>) => {
-    const screenConditionsMap = configManager.config.screenConditionsMap
-
     if (onActionFactory) {
       return onActionFactory(onAction)({
         getState,
         nextOnAction,
-        screenConditionsMap,
+        screenConditionConfigMap,
         setState,
         router,
         routerConfigOptions,

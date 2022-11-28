@@ -7,11 +7,13 @@
 
 import type {
   NavigationAction as RNNavigationAction,
+  Route,
   Router,
   RouterConfigOptions,
 } from '@react-navigation/native'
 import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useOnAction'
 import type { NavigationState } from '@react-navigation/routers'
+import type { DefaultRootState } from '@txo-peer-dep/redux'
 
 export type NavigationAction = RNNavigationAction & {
   payload?: Record<string, unknown> & {
@@ -71,7 +73,7 @@ export type OnActionAttributes = {
   restArgs: RestArgs,
   router: Router<NavigationState, NavigationAction>,
   routerConfigOptions: RouterConfigOptions,
-  screenConditionsMap: Record<string, Condition[]>,
+  screenConditionConfigMap: Record<string, ConditionConfig>,
   setState: UseOnActionOptions['setState'],
 }
 
@@ -80,7 +82,7 @@ export type OnActionFactoryAttributes = {
   nextOnAction: OnAction,
   router: Router<NavigationState, NavigationAction>,
   routerConfigOptions: RouterConfigOptions,
-  screenConditionsMap: Record<string, Condition[]>,
+  screenConditionConfigMap: Record<string, ConditionConfig>,
   setState: UseOnActionOptions['setState'],
 }
 
@@ -92,4 +94,17 @@ export type NavigatePayload = {
     reset?: boolean,
     skipConditionalNavigation?: boolean,
   },
+}
+
+export type ConditionConfig = {
+  conditions?: ((state: DefaultRootState) => Condition[]) | Condition[],
+  statusConditions?: ((state: DefaultRootState) => Condition[]) | Condition[],
+}
+
+export type NavigationProps<PARAMS extends Record<string, unknown>> = {
+  route?: Route<string, PARAMS>,
+}
+
+export type WithConditionalNavigationState<TYPE> = TYPE & {
+  conditionalNavigation?: ConditionalNavigationState,
 }
