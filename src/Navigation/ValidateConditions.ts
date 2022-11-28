@@ -8,6 +8,7 @@ import { conditionalNavigationManager } from '../Api/ConditionalNavigationManage
 import {
   getActiveLeafRoute,
   getActiveRoutePath,
+  getScreenNavigationConditions,
 } from '../Api/NavigationUtils'
 import type {
   OnActionAttributes,
@@ -19,14 +20,14 @@ export const onValidateConditionsAction = ({
   getState,
   originalOnAction,
   restArgs,
-  screenConditionsMap,
+  screenConditionConfigMap,
 }: OnActionAttributes): boolean => {
   const state = getState()
   const currentActiveScreenPath = getActiveRoutePath(state) ?? []
   if (state) {
     let resolveConditionsResult: ResolveConditionsResult | undefined
     for (const routeName of currentActiveScreenPath) {
-      const screenConditions = screenConditionsMap[routeName]
+      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName], state)
       if (screenConditions && screenConditions.length > 0) {
         resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state)
       }
