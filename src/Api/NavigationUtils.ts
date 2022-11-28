@@ -12,7 +12,13 @@ import type {
   Route,
 } from '@react-navigation/native'
 
-export const getActiveLeafRoute = (state: NavigationState): Route<string> => {
+import type {
+  Condition,
+  ConditionConfig,
+  WithConditionalNavigationState,
+} from '../Model/Types'
+
+export const getActiveLeafRoute = (state: NavigationState): WithConditionalNavigationState<Route<string>> => {
   const { routes, index } = state
   const currentRoute = routes[index] as NavigationState | Route<string>
   if ('routes' in currentRoute) {
@@ -21,7 +27,10 @@ export const getActiveLeafRoute = (state: NavigationState): Route<string> => {
   return currentRoute
 }
 
-export const getExistingRouteByRouteName = (state: NavigationState | PartialState<NavigationState> | undefined, routeName: string): PartialRoute<Route<string>> | Route<string> | undefined => {
+export const getExistingRouteByRouteName = (state: NavigationState | PartialState<NavigationState> | undefined, routeName: string):
+| WithConditionalNavigationState<PartialRoute<Route<string>>>
+| WithConditionalNavigationState<Route<string>>
+| undefined => {
   if (!state) {
     return undefined
   }
@@ -107,4 +116,14 @@ export const calculateIsInitial = (state: NavigationState, currentRoute: Route<s
     return isInitial
   }
   return false
+}
+
+export const getScreenNavigationConditions = (
+  { conditions }: ConditionConfig,
+  state: NavigationState,
+): Condition[] | undefined => {
+  if (typeof conditions === 'function') {
+    return conditions(state)
+  }
+  return conditions
 }

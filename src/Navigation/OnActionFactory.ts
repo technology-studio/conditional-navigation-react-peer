@@ -26,7 +26,7 @@ const log = new Log('txo.react-conditional-navigation.Navigation.onActionFactory
 export const onActionFactory = (originalOnAction: OnAction) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction>): boolean => {
   const {
     nextOnAction,
-    screenConditionsMap,
+    screenConditionConfigMap,
     getState,
     setState,
     router,
@@ -35,8 +35,8 @@ export const onActionFactory = (originalOnAction: OnAction) => (attributes: OnAc
   const [action, ...restArgs] = args
 
   const { type } = action ?? {}
-  log.debug('N: onAction', { screenConditionsMap, action })
-  const onActionAttributes: OnActionAttributes = { action, getState, setState, nextOnAction, originalOnAction, restArgs, router, routerConfigOptions, screenConditionsMap }
+  log.debug('N: onAction', { screenConditionConfigMap, action })
+  const onActionAttributes: OnActionAttributes = { action, getState, setState, nextOnAction, originalOnAction, restArgs, router, routerConfigOptions, screenConditionConfigMap }
   const onActionMap = {
     CANCEL_FLOW: onCancelFlowAction,
     FINISH_FLOW_AND_CONTINUE: onFinishFlowAndContinueAction,

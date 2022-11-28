@@ -7,13 +7,8 @@
 
 import { ConfigManager } from '@txo/config-manager'
 
-import type {
-  Condition,
-} from '../Model/Types'
-
 export type Config = {
   ignoreConditionalNavigation: boolean,
-  screenConditionsMap: Record<string, Condition[]>,
 }
 
 export const configManager = new ConfigManager<Config>({
