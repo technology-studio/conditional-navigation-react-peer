@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import {
   NavigationContainer,
-  useNavigationContainerRef,
+  createNavigationContainerRef,
 } from '@react-navigation/native'
 import { useFlipper } from '@react-navigation/devtools'
 
@@ -24,8 +24,9 @@ type Props = {
   children: React.ReactNode,
 }
 
+export const navigationRef = createNavigationContainerRef()
+
 export const InjectedNavigationContainer = ({ children }: Props): JSX.Element => {
-  const navigationRef = useNavigationContainerRef()
   useFlipper(navigationRef)
   useAndroidBackNavigation(navigationRef)
 

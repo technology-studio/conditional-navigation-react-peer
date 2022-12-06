@@ -17,16 +17,22 @@ import type {
   NavigatePayload,
 } from '../Model/Types'
 
-export type Navigation = Omit<NavigationProp<ReactNavigation.RootParamList>, 'navigate'> & {
+export type Navigation<
+NAVIGATION_PROP,
+PARAMS_MAP extends Record<string, Record<string, unknown> | undefined>
+> = Omit<NAVIGATION_PROP, 'navigate'> & {
   cancelFlow: () => void,
   finishFlowAndContinue: () => void,
-  navigate: (payload: NavigatePayload) => void,
+  navigate: <ROUTE_NAME extends keyof PARAMS_MAP>(payload: NavigatePayload<PARAMS_MAP, ROUTE_NAME>) => void,
   requireConditions: (conditionList?: Condition[]) => void,
   validateConditions: () => void,
 }
 
-export const useNavigation = (): Navigation => {
-  const _navigation = useRNNavigation()
+export const useNavigation = <
+  NAVIGATION_PROP extends NavigationProp<Record<string, unknown>>,
+  PARAMS_MAP extends Record<string, Record<string, unknown> | undefined>
+  >(): Navigation<NAVIGATION_PROP, PARAMS_MAP> => {
+  const _navigation = useRNNavigation<NAVIGATION_PROP>()
   const cancelFlow = useCallback(() => {
     _navigation.dispatch({
       ...ConditionalActions.cancelFlow(),
@@ -47,13 +53,14 @@ export const useNavigation = (): Navigation => {
       ...ConditionalActions.validateConditions(),
     })
   }, [_navigation])
-  const navigate = useCallback((payload: NavigatePayload) => {
+  const navigate = useCallback((payload: NavigatePayload<PARAMS_MAP>) => {
     _navigation.dispatch({
       ...ConditionalActions.navigate(payload),
     })
   }, [_navigation])
   // TODO: add goBack
-  const navigation = useMemo(() => ({
+
+  const navigation: Navigation<NAVIGATION_PROP, PARAMS_MAP> = useMemo(() => ({
     ..._navigation,
     cancelFlow,
     finishFlowAndContinue,

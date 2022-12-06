@@ -11,7 +11,10 @@ export {
 } from './Api/ConditionManager'
 export { configManager } from './Config'
 export { registerOnActionFactory } from './Containers/ReactNavigationInjection'
-export { InjectedNavigationContainer } from './Containers/InjectedNavigationContainer'
+export {
+  InjectedNavigationContainer,
+  navigationRef,
+} from './Containers/InjectedNavigationContainer'
 export * from './Model/Types'
 // import { navigationManager } from './Api/NavigationManager'
 // import { isInitialNavigationOptions } from './Api/NavigationOptionsHelper'
