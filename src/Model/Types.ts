@@ -14,9 +14,11 @@ import type {
 import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useOnAction'
 import type { NavigationState } from '@react-navigation/routers'
 import type { DefaultRootState } from '@txo-peer-dep/redux'
+import type { RequiredKeys } from 'utility-types'
 
 export type NavigationAction = RNNavigationAction & {
   payload?: Record<string, unknown> & {
+    name?: string,
     params?: Record<string, unknown>,
   },
   // requireConditions
@@ -86,15 +88,47 @@ export type OnActionFactoryAttributes = {
   setState: UseOnActionOptions['setState'],
 }
 
-export type NavigatePayload = {
-  routeName: string,
-  params?: Record<string, unknown>,
-  options?: {
-    flow?: boolean,
-    reset?: boolean,
-    skipConditionalNavigation?: boolean,
-  },
+type NavigatePayloadOptions = {
+  flow?: boolean,
+  reset?: boolean,
+  skipConditionalNavigation?: boolean,
 }
+
+export type NavigatePayload<PARAMS_MAP, ROUTE_NAME extends keyof PARAMS_MAP = keyof PARAMS_MAP> = ROUTE_NAME extends keyof PARAMS_MAP
+  ? RequiredKeys<PARAMS_MAP[ROUTE_NAME]> extends never
+    ? {
+        routeName: ROUTE_NAME,
+        params?: PARAMS_MAP[ROUTE_NAME],
+        options?: NavigatePayloadOptions,
+      } | {
+        routeName: string,
+        params: { screen: ROUTE_NAME, params?: PARAMS_MAP[ROUTE_NAME] },
+        options?: NavigatePayloadOptions,
+      } | {
+        routeName: string,
+        params: {
+          screen: string,
+          params: { screen: ROUTE_NAME, params?: PARAMS_MAP[ROUTE_NAME] },
+        },
+        options?: NavigatePayloadOptions,
+      }
+    : {
+        routeName: ROUTE_NAME,
+        params: PARAMS_MAP[ROUTE_NAME],
+        options?: NavigatePayloadOptions,
+      } | {
+        routeName: string,
+        params: { screen: ROUTE_NAME, params: PARAMS_MAP[ROUTE_NAME] },
+        options?: NavigatePayloadOptions,
+      } | {
+        routeName: string,
+        params: {
+          screen: string,
+          params: { screen: ROUTE_NAME, params: PARAMS_MAP[ROUTE_NAME] },
+        },
+        options?: NavigatePayloadOptions,
+      }
+  : never
 
 export type ConditionConfig = {
   conditions?: ((state: DefaultRootState) => Condition[]) | Condition[],

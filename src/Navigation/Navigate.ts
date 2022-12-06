@@ -64,12 +64,13 @@ export const onNavigateAction = ({
     }
   }
 
-  if (reset) {
+  const name = payload?.name
+  if (reset && name) {
     log.debug('NAVIGATE WITH RESET')
     const newState = {
       index: 0,
       routes: [
-        { name: leafRouteName, params: payload?.params },
+        { name, params: payload?.params },
       ],
     }
     setState(newState)
