@@ -12,6 +12,7 @@ import { Log } from '@txo/log'
 import type {
   OnActionAttributes,
   ConditionalNavigationState,
+  WithConditionalNavigationState,
 } from '../Model/Types'
 
 const log = new Log('txo.react-conditional-navigation.Navigation.Flow')
@@ -22,7 +23,12 @@ const findLatestConditionNavigationState = (
   latestConditionalNavigation: ConditionalNavigationState | undefined,
   latestLogicalTimestamp: number,
 }>(({ latestConditionalNavigation, latestLogicalTimestamp }, route) => {
-  const { conditionalNavigation } = route
+  const isTabNavigator = route.state?.type === 'tab'
+  let conditionalNavigation: ConditionalNavigationState | undefined
+  conditionalNavigation = (route as WithConditionalNavigationState<typeof route>).conditionalNavigation
+  if (isTabNavigator) {
+    conditionalNavigation = findLatestConditionNavigationState(route.state?.routes as NavigationState['routes'])
+  }
   if (conditionalNavigation) {
     const { logicalTimestamp } = conditionalNavigation
     log.debug('findLatest', { conditionalNavigation, logicalTimestamp, latestLogicalTimestamp, latestConditionalNavigation })
