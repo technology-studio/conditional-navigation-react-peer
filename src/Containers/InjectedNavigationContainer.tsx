@@ -17,22 +17,24 @@ import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 import {
   onActionFactory,
 } from '../Navigation/OnActionFactory'
+import type { ResolveConditionContext } from '../Model/Types'
 
 import { registerOnActionFactory } from './ReactNavigationInjection'
 
 type Props = {
   children: React.ReactNode,
+  getContext?: () => ResolveConditionContext,
 }
 
 export const navigationRef = createNavigationContainerRef()
 
-export const InjectedNavigationContainer = ({ children }: Props): JSX.Element => {
+export const InjectedNavigationContainer = ({ children, getContext }: Props): JSX.Element => {
   useFlipper(navigationRef)
   useAndroidBackNavigation(navigationRef)
 
   useEffect(() => {
-    registerOnActionFactory(onActionFactory)
-  }, [])
+    registerOnActionFactory(onActionFactory, getContext)
+  }, [getContext])
 
   return (
     <NavigationContainer ref={navigationRef}>

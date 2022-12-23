@@ -15,32 +15,40 @@ import { configManager } from '../Config'
 import type {
   Condition,
   NavigationAction,
+  ResolveConditionContext,
   ResolveConditionsResult,
 } from '../Model/Types'
 
+import { cloneState } from './StateHelper'
+
 const log = new Log('txo.react-conditional-navigation.Api.ConditionalNavigationManager')
 
-export type ResolveCondition<CONDITION extends Condition, ROOT_STATE extends NavigationState> = (
+export type ResolveCondition<CONDITION extends Condition> = (
   condition: CONDITION,
   navigationAction: NavigationAction,
-  rootState: ROOT_STATE,
+  getContext: (() => ResolveConditionContext) | undefined,
 ) => NavigationAction | CommonActions.Action | undefined
 
-class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE extends NavigationState> {
-  _conditionToResolveCondition: Record<string, ResolveCondition<CONDITION, ROOT_STATE>>
+class ConditionalNavigationManager<CONDITION extends Condition> {
+  _conditionToResolveCondition: Record<string, ResolveCondition<CONDITION>>
   _logicalClock = 0
 
   constructor () {
     this._conditionToResolveCondition = {}
   }
 
-  resolveConditions (conditionList: CONDITION[], navigationAction: NavigationAction, rootState: ROOT_STATE): ResolveConditionsResult | undefined {
+  resolveConditions (
+    conditionList: CONDITION[],
+    navigationAction: NavigationAction,
+    navigationState: NavigationState,
+    getContext: (() => ResolveConditionContext) | undefined,
+  ): ResolveConditionsResult | undefined {
     if (!configManager.config.ignoreConditionalNavigation) {
       log.debug('RESOLVE CONDITIONS', { conditionList, navigationAction })
       for (const condition of conditionList) {
-        const resolveCondition: ResolveCondition<CONDITION, ROOT_STATE> = this._conditionToResolveCondition[condition.key]
+        const resolveCondition: ResolveCondition<CONDITION> = this._conditionToResolveCondition[condition.key]
         if (resolveCondition) {
-          const newNavigationAction = resolveCondition(condition, navigationAction, rootState) as NavigationAction | undefined
+          const newNavigationAction = resolveCondition(condition, navigationAction, getContext) as NavigationAction | undefined
           if (newNavigationAction) {
             log.debug('NEW NAVIGATION ACTION', { preview: condition.key, newNavigationAction, navigationAction })
             return {
@@ -54,7 +62,7 @@ class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE exten
                 condition,
                 postponedAction: navigationAction,
                 logicalTimestamp: this.tickLogicalClock(),
-                previousState: JSON.parse(JSON.stringify(rootState)),
+                previousState: cloneState(navigationState),
               },
             }
           }
@@ -63,7 +71,7 @@ class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE exten
     }
   }
 
-  registerResolveCondition (conditionKey: string, resolveCondition: ResolveCondition<CONDITION, ROOT_STATE>): () => void {
+  registerResolveCondition (conditionKey: string, resolveCondition: ResolveCondition<CONDITION>): () => void {
     this._conditionToResolveCondition[conditionKey] = resolveCondition
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- TODO: check if this is correct
     return () => { delete this._conditionToResolveCondition[conditionKey] }
@@ -74,9 +82,9 @@ class ConditionalNavigationManager<CONDITION extends Condition, ROOT_STATE exten
   }
 }
 
-export const conditionalNavigationManager = new ConditionalNavigationManager<Condition, NavigationState>()
+export const conditionalNavigationManager = new ConditionalNavigationManager<Condition>()
 
 export const registerResolveCondition = (
   conditionKey: string,
-  resolveCondition: ResolveCondition<Condition, NavigationState>,
+  resolveCondition: ResolveCondition<Condition>,
 ): () => void => conditionalNavigationManager.registerResolveCondition(conditionKey, resolveCondition)

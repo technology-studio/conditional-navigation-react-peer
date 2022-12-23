@@ -27,7 +27,9 @@ export const onActionFactory = (originalOnAction: OnAction) => (attributes: OnAc
   const {
     nextOnAction,
     screenConditionConfigMap,
+    getContext,
     getState,
+    getRootState,
     setState,
     router,
     routerConfigOptions,
@@ -36,7 +38,7 @@ export const onActionFactory = (originalOnAction: OnAction) => (attributes: OnAc
 
   const { type } = action ?? {}
   log.debug('N: onAction', { screenConditionConfigMap, action })
-  const onActionAttributes: OnActionAttributes = { action, getState, setState, nextOnAction, originalOnAction, restArgs, router, routerConfigOptions, screenConditionConfigMap }
+  const onActionAttributes: OnActionAttributes = { action, getContext, getState, getRootState, setState, nextOnAction, originalOnAction, restArgs, router, routerConfigOptions, screenConditionConfigMap }
   const onActionMap = {
     CANCEL_FLOW: onCancelFlowAction,
     FINISH_FLOW_AND_CONTINUE: onFinishFlowAndContinueAction,
