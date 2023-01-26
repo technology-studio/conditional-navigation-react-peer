@@ -36,6 +36,9 @@ export const onNavigateAction = ({
   screenConditionConfigMap,
   setState,
 }: OnActionAttributes): boolean => {
+  if (action.type !== 'NAVIGATE') {
+    return false
+  }
   const {
     payload,
     flow,

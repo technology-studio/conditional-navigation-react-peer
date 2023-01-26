@@ -20,7 +20,7 @@ export type NavigationAction = RNNavigationAction & {
     name?: string,
     params?: Record<string, unknown>,
   },
-} & {
+} & ({
   type: 'REQUIRE_CONDITIONS',
   conditionList: Condition[],
 } | {
@@ -40,7 +40,7 @@ export type NavigationAction = RNNavigationAction & {
   type: 'CANCEL_FLOW',
 } | {
   type: 'VALIDATE_CONDITIONS',
-}
+})
 
 export type ConditionalNavigationState = {
   condition: Condition,

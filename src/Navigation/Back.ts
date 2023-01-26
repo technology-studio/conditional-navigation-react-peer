@@ -18,11 +18,11 @@ export const onBackAction = ({
   restArgs,
 }: OnActionAttributes): boolean => {
   // TODO: add backToRouteName, key and routeName when necessary
-  const {
-    count,
-  } = action
   log.debug('B', { action })
-  if (count) {
+  if ('count' in action && typeof action.count === 'number') {
+    const {
+      count,
+    } = action
     const { count: _, ...originalAction } = action
     let result = false
     for (let i = 0; i < count; i++) {
