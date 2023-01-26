@@ -20,14 +20,26 @@ export type NavigationAction = RNNavigationAction & {
     name?: string,
     params?: Record<string, unknown>,
   },
-  // requireConditions
-  conditionList?: Condition[],
-  // navigate
+} & {
+  type: 'REQUIRE_CONDITIONS',
+  conditionList: Condition[],
+} | {
+  type: 'NAVIGATE',
   flow?: boolean,
   reset?: boolean,
   skipConditionalNavigation?: boolean,
-  // back
+} | {
+  type: 'BACK',
+  backToRouteName?: boolean,
   count?: number,
+  key?: string,
+  routeName?: string,
+} | {
+  type: 'FINISH_FLOW_AND_CONTINUE',
+} | {
+  type: 'CANCEL_FLOW',
+} | {
+  type: 'VALIDATE_CONDITIONS',
 }
 
 export type ConditionalNavigationState = {
