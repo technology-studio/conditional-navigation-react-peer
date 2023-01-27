@@ -17,7 +17,6 @@ export const onBackAction = ({
   originalOnAction,
   restArgs,
 }: OnActionAttributes): boolean => {
-  // TODO: add backToRouteName, key and routeName when necessary
   log.debug('B', { action })
   if ('count' in action && typeof action.count === 'number') {
     const {
