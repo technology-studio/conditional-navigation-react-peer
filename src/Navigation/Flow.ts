@@ -13,6 +13,8 @@ import type {
   OnActionAttributes,
   ConditionalNavigationState,
   WithConditionalNavigationState,
+  CancelFlowNavigationAction,
+  FinishFlowAndContinueNavigationAction,
 } from '../Model/Types'
 
 const log = new Log('txo.react-conditional-navigation.Navigation.Flow')
@@ -40,12 +42,12 @@ const findLatestConditionNavigationState = (
   }
 }, { latestConditionalNavigation: undefined, latestLogicalTimestamp: 0 }).latestConditionalNavigation
 
-export const abstractOnFlowActionFactory = (type: 'CANCEL_FLOW' | 'FINISH_FLOW_AND_CONTINUE') => ({
+export const abstractOnFlowActionFactory = <NAVIGATION_ACTION extends CancelFlowNavigationAction | FinishFlowAndContinueNavigationAction>(type: 'CANCEL_FLOW' | 'FINISH_FLOW_AND_CONTINUE') => ({
   getState,
   nextOnAction,
   restArgs,
   setState,
-}: OnActionAttributes): boolean => {
+}: OnActionAttributes<NAVIGATION_ACTION>): boolean => {
   const state = getState()
   if (state?.routes) {
     const { previousState, postponedAction } = findLatestConditionNavigationState(state.routes) ?? {}
@@ -53,15 +55,15 @@ export const abstractOnFlowActionFactory = (type: 'CANCEL_FLOW' | 'FINISH_FLOW_A
     if (previousState) {
       setState(previousState)
       return type === 'FINISH_FLOW_AND_CONTINUE'
-        ? postponedAction ? nextOnAction(postponedAction, ...restArgs) : true
+        ? postponedAction ? nextOnAction(postponedAction as NAVIGATION_ACTION, ...restArgs) : true
         : true
     }
   }
   return false
 }
 
-export const onCancelFlowAction = abstractOnFlowActionFactory('CANCEL_FLOW')
+export const onCancelFlowAction = abstractOnFlowActionFactory<CancelFlowNavigationAction>('CANCEL_FLOW')
 
 // TODO: if the coresponding conditional navigation state was destroyed, we shouldn't pick the one before
 // we can solve it in the future by creating clockTimestampHistory array and we will be popping the last one and trying to find conditional navigation state with the same clockTimestamp
-export const onFinishFlowAndContinueAction = abstractOnFlowActionFactory('FINISH_FLOW_AND_CONTINUE')
+export const onFinishFlowAndContinueAction = abstractOnFlowActionFactory<FinishFlowAndContinueNavigationAction>('FINISH_FLOW_AND_CONTINUE')

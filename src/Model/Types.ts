@@ -15,32 +15,41 @@ import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useO
 import type { NavigationState } from '@react-navigation/routers'
 import type { RequiredKeys } from 'utility-types'
 
-export type NavigationAction = RNNavigationAction & {
+export type AbstractNavigationAction = RNNavigationAction & {
   payload?: Record<string, unknown> & {
     name?: string,
     params?: Record<string, unknown>,
   },
-} & ({
+}
+
+export type RequireConditionsNavigationAction = AbstractNavigationAction & {
   type: 'REQUIRE_CONDITIONS',
   conditionList: Condition[],
-} | {
+}
+
+export type NavigateNavigationAction = AbstractNavigationAction & {
   type: 'NAVIGATE',
   flow?: boolean,
   reset?: boolean,
   skipConditionalNavigation?: boolean,
-} | {
+}
+
+export type BackNavigationAction = AbstractNavigationAction & {
   type: 'BACK',
-  backToRouteName?: boolean,
   count?: number,
-  key?: string,
-  routeName?: string,
-} | {
+}
+
+export type FinishFlowAndContinueNavigationAction = AbstractNavigationAction & {
   type: 'FINISH_FLOW_AND_CONTINUE',
-} | {
+}
+
+export type CancelFlowNavigationAction = AbstractNavigationAction & {
   type: 'CANCEL_FLOW',
-} | {
+}
+
+export type ValidateConditionsNavigationAction = AbstractNavigationAction & {
   type: 'VALIDATE_CONDITIONS',
-})
+}
 
 export type ConditionalNavigationState = {
   condition: Condition,
@@ -69,21 +78,28 @@ declare module '@react-navigation/routers' {
   }
 }
 
-export type UseOnActionOptions = Parameters<typeof UseOnActionType>[0] & {
-  router: Router<NavigationState, NavigationAction>,
-}
-export type OnAction = (action: NavigationAction, visitedNavigators?: Set<string>) => boolean
-type RestArgs = Parameters<OnAction> extends [Parameters<OnAction>[0], ...infer R] ? R : never
+export type NavigationAction = | RequireConditionsNavigationAction
+| NavigateNavigationAction
+| BackNavigationAction
+| FinishFlowAndContinueNavigationAction
+| CancelFlowNavigationAction
+| ValidateConditionsNavigationAction
 
-export type OnActionAttributes = {
-  action: NavigationAction,
+export type UseOnActionOptions = Parameters<typeof UseOnActionType>[0] & {
+  router: Router<NavigationState, AbstractNavigationAction>,
+}
+
+export type OnAction<ACTION extends NavigationAction> = (action: ACTION, ...restArgs: unknown[]) => boolean
+
+export type OnActionAttributes<ACTION extends NavigationAction> = {
+  action: ACTION,
   getContext: (() => ResolveConditionContext) | undefined,
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
-  nextOnAction: OnAction,
-  originalOnAction: OnAction,
-  restArgs: RestArgs,
-  router: Router<NavigationState, NavigationAction>,
+  nextOnAction: OnAction<NavigationAction>,
+  originalOnAction: OnAction<NavigationAction>,
+  restArgs: unknown[],
+  router: Router<NavigationState, AbstractNavigationAction>,
   routerConfigOptions: RouterConfigOptions,
   screenConditionConfigMap: Record<string, ConditionConfig>,
   setState: UseOnActionOptions['setState'],
@@ -93,8 +109,8 @@ export type OnActionFactoryAttributes = {
   getContext: (() => ResolveConditionContext) | undefined,
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
-  nextOnAction: OnAction,
-  router: Router<NavigationState, NavigationAction>,
+  nextOnAction: OnAction<NavigationAction>,
+  router: Router<NavigationState, AbstractNavigationAction>,
   routerConfigOptions: RouterConfigOptions,
   screenConditionConfigMap: Record<string, ConditionConfig>,
   setState: UseOnActionOptions['setState'],

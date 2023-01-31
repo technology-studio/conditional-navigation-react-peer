@@ -7,6 +7,7 @@
 import { Log } from '@txo/log'
 
 import type {
+  BackNavigationAction,
   OnActionAttributes,
 } from '../Model/Types'
 
@@ -16,7 +17,7 @@ export const onBackAction = ({
   action,
   originalOnAction,
   restArgs,
-}: OnActionAttributes): boolean => {
+}: OnActionAttributes<BackNavigationAction>): boolean => {
   log.debug('B', { action })
   if ('count' in action && typeof action.count === 'number') {
     const {
