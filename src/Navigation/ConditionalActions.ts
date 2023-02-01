@@ -4,7 +4,13 @@
  * @Copyright: Technology Studio
 **/
 
+import {
+  CommonActions,
+} from '@react-navigation/native'
+
 import type {
+  BackPayload,
+  NavigatePayload,
   Condition,
   NavigationAction,
 } from '../Model/Types'
@@ -16,7 +22,21 @@ export const ConditionalActions = {
   finishFlowAndContinue: (): NavigationAction => ({
     type: 'FINISH_FLOW_AND_CONTINUE',
   }),
-  requireConditions: (conditionList?: Condition[]): NavigationAction => ({
+  navigate: <
+    PARAMS_MAP extends Record<string, Record<string, unknown> | undefined>,
+    ROUTE_NAME extends keyof PARAMS_MAP = keyof PARAMS_MAP
+  >(payload: NavigatePayload<PARAMS_MAP, ROUTE_NAME>): NavigationAction => ({
+    ...CommonActions.navigate({
+      name: payload.routeName as string,
+      params: 'params' in payload ? payload.params : undefined,
+    }) as NavigationAction,
+    ...payload.options ?? {},
+  }),
+  goBack: (payload?: BackPayload): NavigationAction => ({
+    ...CommonActions.goBack() as NavigationAction,
+    ...payload ?? {},
+  }),
+  requireConditions: (conditionList: Condition[]): NavigationAction => ({
     type: 'REQUIRE_CONDITIONS',
     conditionList,
   }),
