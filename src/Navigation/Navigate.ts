@@ -11,6 +11,7 @@ import {
   conditionalNavigationManager,
 } from '../Api/ConditionalNavigationManager'
 import type {
+  NavigateNavigationAction,
   OnActionAttributes,
   WithConditionalNavigationState,
 } from '../Model/Types'
@@ -35,7 +36,7 @@ export const onNavigateAction = ({
   restArgs,
   screenConditionConfigMap,
   setState,
-}: OnActionAttributes): boolean => {
+}: OnActionAttributes<NavigateNavigationAction>): boolean => {
   const {
     payload,
     flow,

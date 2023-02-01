@@ -6,13 +6,20 @@
 
 import { Log } from '@txo/log'
 
-import type {
+import {
   OnActionAttributes,
+  NavigationAction,
+} from '../Model/Types'
+import type {
   OnAction,
   OnActionFactoryAttributes,
+  BackNavigationAction,
+  CancelFlowNavigationAction,
+  FinishFlowAndContinueNavigationAction,
+  NavigateNavigationAction,
 } from '../Model/Types'
 
-// import { backActionCreator } from './Back'
+import { onBackAction } from './Back'
 import {
   onCancelFlowAction,
   onFinishFlowAndContinueAction,
@@ -21,7 +28,7 @@ import { onNavigateAction } from './Navigate'
 
 const log = new Log('txo.react-conditional-navigation.Navigation.onActionFactory')
 
-export const onActionFactory = (originalOnAction: OnAction) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction>): boolean => {
+export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>): boolean => {
   const {
     nextOnAction,
     screenConditionConfigMap,
@@ -34,16 +41,31 @@ export const onActionFactory = (originalOnAction: OnAction) => (attributes: OnAc
   } = attributes
   const [action, ...restArgs] = args
 
-  const { type } = action ?? {}
   log.debug('N: onAction', { screenConditionConfigMap, action })
-  const onActionAttributes: OnActionAttributes = { action, getContext, getState, getRootState, setState, nextOnAction, originalOnAction, restArgs, router, routerConfigOptions, screenConditionConfigMap }
-  const onActionMap = {
-    CANCEL_FLOW: onCancelFlowAction,
-    FINISH_FLOW_AND_CONTINUE: onFinishFlowAndContinueAction,
-    // GO_BACK: backActionCreator,
-    NAVIGATE: onNavigateAction,
-  }
+  const onActionAttributes = {
+    action,
+    getContext,
+    getState,
+    getRootState,
+    setState,
+    nextOnAction,
+    originalOnAction,
+    restArgs,
+    router,
+    routerConfigOptions,
+    screenConditionConfigMap,
+  } satisfies OnActionAttributes<NavigationAction>
 
-  const onAction = type in onActionMap ? onActionMap[type as keyof typeof onActionMap] : undefined
-  return onAction ? onAction(onActionAttributes) : originalOnAction(...args)
+  switch (action.type) {
+    case 'CANCEL_FLOW':
+      return onCancelFlowAction(onActionAttributes as OnActionAttributes<CancelFlowNavigationAction>)
+    case 'FINISH_FLOW_AND_CONTINUE':
+      return onFinishFlowAndContinueAction(onActionAttributes as OnActionAttributes<FinishFlowAndContinueNavigationAction>)
+    case 'BACK':
+      return onBackAction(onActionAttributes as OnActionAttributes<BackNavigationAction>)
+    case 'NAVIGATE':
+      return onNavigateAction(onActionAttributes as OnActionAttributes<NavigateNavigationAction>)
+    default:
+      return originalOnAction(...args)
+  }
 }
