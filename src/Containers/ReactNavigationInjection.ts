@@ -12,6 +12,7 @@ import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useO
 import type NavigationContainerRefContextType from '@react-navigation/core/lib/typescript/src/NavigationContainerRefContext'
 
 import type {
+  NavigationAction,
   OnAction,
   OnActionFactoryAttributes,
   ResolveConditionContext,
@@ -26,7 +27,7 @@ const originalUseOnAction = useOnActionObject.default as typeof UseOnActionType
 const NavigationContainerRefContextObject = require('@react-navigation/core/lib/commonjs/NavigationContainerRefContext')
 const NavigationContainerRefContext = NavigationContainerRefContextObject.default as typeof NavigationContainerRefContextType
 
-let onActionFactory: ((onAction: OnAction) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction>) => boolean) | null = null
+let onActionFactory: ((onAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>) => boolean) | null = null
 let getContext: (() => ResolveConditionContext) | undefined
 
 export const registerOnActionFactory = (_onActionFactory: typeof onActionFactory, _getContext: (() => ResolveConditionContext) | undefined): void => {
@@ -34,12 +35,12 @@ export const registerOnActionFactory = (_onActionFactory: typeof onActionFactory
   getContext = _getContext
 }
 
-useOnActionObject.default = function useOnAction (options: UseOnActionOptions): OnAction {
-  const onAction = originalUseOnAction(options) as OnAction
+useOnActionObject.default = function useOnAction (options: UseOnActionOptions): OnAction<NavigationAction> {
+  const onAction = originalUseOnAction(options) as OnAction<NavigationAction>
   const { getState, setState, router, routerConfigOptions } = options ?? {}
   const navigationContainerRefContext = useContext(NavigationContainerRefContext)
 
-  const nextOnAction: typeof onAction = useCallback((...args: Parameters<OnAction>) => {
+  const nextOnAction: typeof onAction = useCallback((...args: Parameters<OnAction<NavigationAction>>) => {
     if (onActionFactory) {
       return onActionFactory(onAction)({
         getContext,

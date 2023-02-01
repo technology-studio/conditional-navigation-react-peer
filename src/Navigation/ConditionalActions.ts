@@ -9,6 +9,7 @@ import {
 } from '@react-navigation/native'
 
 import type {
+  BackPayload,
   Condition,
   NavigatePayload,
   NavigationAction,
@@ -31,7 +32,11 @@ export const ConditionalActions = {
     }) as NavigationAction,
     ...payload.options ?? {},
   }),
-  requireConditions: (conditionList?: Condition[]): NavigationAction => ({
+  goBack: (payload?: BackPayload): NavigationAction => ({
+    ...CommonActions.goBack() as NavigationAction,
+    ...payload ?? {},
+  }),
+  requireConditions: (conditionList: Condition[]): NavigationAction => ({
     type: 'REQUIRE_CONDITIONS',
     conditionList,
   }),

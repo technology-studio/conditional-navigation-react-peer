@@ -6,18 +6,22 @@
 
 import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
 import { getActiveLeafRoute } from '../Api/NavigationUtils'
-import type { OnActionAttributes } from '../Model/Types'
+import type {
+  OnActionAttributes,
+  RequireConditionsNavigationAction,
+} from '../Model/Types'
 
 export const onRequireConditionsAction = ({
   action,
+  getContext,
   getState,
   nextOnAction,
   restArgs,
-}: OnActionAttributes): boolean => {
+}: OnActionAttributes<RequireConditionsNavigationAction>): boolean => {
   const { conditionList } = action
   const state = getState()
   if (conditionList) {
-    const resolveConditionsResult = conditionalNavigationManager.resolveConditions(conditionList, action, state)
+    const resolveConditionsResult = conditionalNavigationManager.resolveConditions(conditionList, action, state, getContext)
     if (resolveConditionsResult && state) {
       const activeLeafNavigationNode = getActiveLeafRoute(state)
       activeLeafNavigationNode.conditionalNavigation = resolveConditionsResult.conditionalNavigationState

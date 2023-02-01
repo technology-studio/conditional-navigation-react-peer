@@ -13,23 +13,25 @@ import {
 import type {
   OnActionAttributes,
   ResolveConditionsResult,
+  ValidateConditionsNavigationAction,
 } from '../Model/Types'
 
 export const onValidateConditionsAction = ({
   action,
+  getContext,
   getState,
   originalOnAction,
   restArgs,
   screenConditionConfigMap,
-}: OnActionAttributes): boolean => {
+}: OnActionAttributes<ValidateConditionsNavigationAction>): boolean => {
   const state = getState()
   const currentActiveScreenPath = getActiveRoutePath(state) ?? []
   if (state) {
     let resolveConditionsResult: ResolveConditionsResult | undefined
     for (const routeName of currentActiveScreenPath) {
-      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName], state)
+      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
       if (screenConditions && screenConditions.length > 0) {
-        resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state)
+        resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
       }
     }
     if (resolveConditionsResult) {

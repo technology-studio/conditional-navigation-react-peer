@@ -92,11 +92,6 @@ export const getActiveRoutePath = (
   return undefined
 }
 
-export const getStateNearestRouteKeyByRouteName = (state: NavigationState | null | undefined, name: string): string | undefined => {
-  const route = state?.routes?.find(route => route.name === name)
-  return route ? route.key : undefined
-}
-
 export const calculateIsInitial = (state: NavigationState, currentRoute: Route<string>): boolean => {
   const { routes, type } = state
   const { name } = currentRoute
