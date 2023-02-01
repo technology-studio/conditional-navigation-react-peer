@@ -13,6 +13,7 @@ import { useNavigation as useRNNavigation } from '@react-navigation/native'
 
 import { ConditionalActions } from '../Navigation/ConditionalActions'
 import type {
+  BackPayload,
   Condition,
   NavigatePayload,
 } from '../Model/Types'
@@ -24,8 +25,9 @@ PARAMS_MAP extends Record<string, Record<string, unknown> | undefined>
   cancelFlow: () => void,
   finishFlowAndContinue: () => void,
   navigate: <ROUTE_NAME extends keyof PARAMS_MAP>(payload: NavigatePayload<PARAMS_MAP, ROUTE_NAME>) => void,
-  requireConditions: (conditionList?: Condition[]) => void,
+  requireConditions: (conditionList: Condition[]) => void,
   validateConditions: () => void,
+  goBack: (payload?: BackPayload) => void,
 }
 
 export const useNavigation = <
@@ -58,7 +60,11 @@ export const useNavigation = <
       ...ConditionalActions.navigate(payload),
     })
   }, [_navigation])
-  // TODO: add goBack
+  const goBack = useCallback((payload?: BackPayload) => {
+    _navigation.dispatch({
+      ...ConditionalActions.goBack(payload),
+    })
+  }, [_navigation])
 
   const navigation: Navigation<NAVIGATION_PROP, PARAMS_MAP> = useMemo(() => ({
     ..._navigation,
@@ -67,6 +73,7 @@ export const useNavigation = <
     requireConditions,
     validateConditions,
     navigate,
-  }), [_navigation, cancelFlow, finishFlowAndContinue, navigate, requireConditions, validateConditions])
+    goBack,
+  }), [_navigation, cancelFlow, finishFlowAndContinue, goBack, navigate, requireConditions, validateConditions])
   return navigation
 }
