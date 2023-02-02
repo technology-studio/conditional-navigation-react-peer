@@ -6,13 +6,12 @@
 
 import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
 import {
-  getActiveLeafRoute,
   getActiveRoutePath,
+  getAndCallConditionResultAction,
   getScreenNavigationConditions,
 } from '../Api/NavigationUtils'
 import type {
   OnActionAttributes,
-  ResolveConditionsResult,
   ValidateConditionsNavigationAction,
 } from '../Model/Types'
 
@@ -27,17 +26,19 @@ export const onValidateConditionsAction = ({
   const state = getState()
   const currentActiveScreenPath = getActiveRoutePath(state) ?? []
   if (state) {
-    let resolveConditionsResult: ResolveConditionsResult | undefined
     for (const routeName of currentActiveScreenPath) {
       const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
       if (screenConditions && screenConditions.length > 0) {
-        resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
+        const resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
+        if (resolveConditionsResult) {
+          return getAndCallConditionResultAction(
+            state,
+            originalOnAction,
+            resolveConditionsResult,
+            restArgs,
+          )
+        }
       }
-    }
-    if (resolveConditionsResult) {
-      const activeLeafRoute = getActiveLeafRoute(state)
-      activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
-      return originalOnAction(resolveConditionsResult.navigationAction, ...restArgs)
     }
   }
   return true
