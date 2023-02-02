@@ -16,7 +16,7 @@ import type {
   WithConditionalNavigationState,
 } from '../Model/Types'
 import {
-  getActiveLeafRoute,
+  getAndCallConditionResultAction,
   getExistingRouteByRouteName,
   getRoutePathFromAction,
   getScreenNavigationConditions,
@@ -56,9 +56,12 @@ export const onNavigateAction = ({
           const resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, navigationState, getContext)
           log.debug('N: RESOLVE CONDITIONS RESULT', { resolveConditionsResult, action, _conditionToResolveCondition: conditionalNavigationManager._conditionToResolveCondition, screenConditionConfigMap })
           if (resolveConditionsResult) {
-            const activeLeafRoute = getActiveLeafRoute(navigationState)
-            activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
-            return nextOnAction(resolveConditionsResult.navigationAction, ...restArgs)
+            return getAndCallConditionResultAction(
+              navigationState,
+              nextOnAction,
+              resolveConditionsResult,
+              restArgs,
+            )
           }
         }
       }

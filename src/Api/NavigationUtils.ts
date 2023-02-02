@@ -5,7 +5,7 @@
 **/
 
 import type {
-  NavigationAction,
+  NavigationAction as RNNavigationAction,
   NavigationState,
   PartialRoute,
   PartialState,
@@ -15,6 +15,9 @@ import type {
 import type {
   Condition,
   ConditionConfig,
+  NavigationAction,
+  OnAction,
+  ResolveConditionsResult,
   WithConditionalNavigationState,
 } from '../Model/Types'
 
@@ -64,7 +67,7 @@ export const getNestedRoutePath = (params: Params | undefined): string[] | undef
   return [screen]
 }
 
-export const getRoutePathFromAction = (action: NavigationAction): string[] | undefined => {
+export const getRoutePathFromAction = (action: RNNavigationAction): string[] | undefined => {
   const { payload } = action
   if (!payload) {
     return undefined
@@ -121,4 +124,15 @@ export const getScreenNavigationConditions = (
     return conditions()
   }
   return conditions
+}
+
+export const getAndCallConditionResultAction = (
+  state: NavigationState,
+  onAction: OnAction<NavigationAction>,
+  resolveConditionsResult: ResolveConditionsResult,
+  restArgs: unknown[],
+): boolean => {
+  const activeLeafRoute = getActiveLeafRoute(state)
+  activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
+  return onAction(resolveConditionsResult.navigationAction, ...restArgs)
 }
