@@ -19,7 +19,7 @@ import {
   onResolveConditionsResultAction,
   getExistingRouteByRouteName,
   getRoutePathFromAction,
-  getScreenNavigationConditions,
+  getResolveConditionsResult,
 } from '../Api/NavigationUtils'
 import { cloneState } from '../Api/StateHelper'
 
@@ -49,22 +49,20 @@ export const onNavigateAction = ({
   const leafRouteName = last(nextRoutePath)
   log.debug('NAVIGATE', { action, navigationState })
   if (!skipConditionalNavigation) {
-    if (navigationState) {
-      for (const routeName of nextRoutePath) {
-        const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
-        if (screenConditions && screenConditions.length > 0) {
-          const resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, navigationState, getContext)
-          log.debug('N: RESOLVE CONDITIONS RESULT', { resolveConditionsResult, action, _conditionToResolveCondition: conditionalNavigationManager._conditionToResolveCondition, screenConditionConfigMap })
-          if (resolveConditionsResult) {
-            return onResolveConditionsResultAction(
-              navigationState,
-              nextOnAction,
-              resolveConditionsResult,
-              restArgs,
-            )
-          }
-        }
-      }
+    const resolveConditionsResult = getResolveConditionsResult(
+      action,
+      navigationState,
+      nextRoutePath,
+      screenConditionConfigMap,
+      getContext,
+    )
+    if (resolveConditionsResult) {
+      return onResolveConditionsResultAction(
+        navigationState,
+        nextOnAction,
+        resolveConditionsResult,
+        restArgs,
+      )
     }
   }
 

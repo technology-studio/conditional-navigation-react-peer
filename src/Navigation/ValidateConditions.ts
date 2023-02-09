@@ -4,11 +4,10 @@
  * @Copyright: Technology Studio
 **/
 
-import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
 import {
   getActiveRoutePath,
   onResolveConditionsResultAction,
-  getScreenNavigationConditions,
+  getResolveConditionsResult,
 } from '../Api/NavigationUtils'
 import type {
   OnActionAttributes,
@@ -25,21 +24,20 @@ export const onValidateConditionsAction = ({
 }: OnActionAttributes<ValidateConditionsNavigationAction>): boolean => {
   const state = getState()
   const currentActiveScreenPath = getActiveRoutePath(state) ?? []
-  if (state) {
-    for (const routeName of currentActiveScreenPath) {
-      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
-      if (screenConditions && screenConditions.length > 0) {
-        const resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
-        if (resolveConditionsResult) {
-          return onResolveConditionsResultAction(
-            state,
-            originalOnAction,
-            resolveConditionsResult,
-            restArgs,
-          )
-        }
-      }
-    }
+  const resolveConditionsResult = getResolveConditionsResult(
+    action,
+    state,
+    currentActiveScreenPath,
+    screenConditionConfigMap,
+    getContext,
+  )
+  if (resolveConditionsResult) {
+    return onResolveConditionsResultAction(
+      state,
+      originalOnAction,
+      resolveConditionsResult,
+      restArgs,
+    )
   }
   return true
 }

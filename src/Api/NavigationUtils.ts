@@ -17,9 +17,12 @@ import type {
   ConditionConfig,
   NavigationAction,
   OnAction,
+  ResolveConditionContext,
   ResolveConditionsResult,
   WithConditionalNavigationState,
 } from '../Model/Types'
+
+import { conditionalNavigationManager } from './ConditionalNavigationManager'
 
 export const getActiveLeafRoute = (state: NavigationState): WithConditionalNavigationState<Route<string>> => {
   const { routes, index } = state
@@ -135,4 +138,21 @@ export const onResolveConditionsResultAction = (
   const activeLeafRoute = getActiveLeafRoute(state)
   activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
   return onAction(resolveConditionsResult.navigationAction, ...restArgs)
+}
+
+export const getResolveConditionsResult = (
+  action: NavigationAction,
+  state: NavigationState,
+  routePath: string[],
+  screenConditionConfigMap: Record<string, ConditionConfig>,
+  getContext: (() => ResolveConditionContext) | undefined,
+): ResolveConditionsResult | undefined => {
+  if (state) {
+    for (const routeName of routePath) {
+      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
+      if (screenConditions && screenConditions.length > 0) {
+        return conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
+      }
+    }
+  }
 }
