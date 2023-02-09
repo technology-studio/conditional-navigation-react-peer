@@ -7,7 +7,7 @@
 import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
 import {
   getActiveRoutePath,
-  getAndCallConditionResultAction,
+  onResolveConditionsResultAction,
   getScreenNavigationConditions,
 } from '../Api/NavigationUtils'
 import type {
@@ -31,7 +31,7 @@ export const onValidateConditionsAction = ({
       if (screenConditions && screenConditions.length > 0) {
         const resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
         if (resolveConditionsResult) {
-          return getAndCallConditionResultAction(
+          return onResolveConditionsResultAction(
             state,
             originalOnAction,
             resolveConditionsResult,

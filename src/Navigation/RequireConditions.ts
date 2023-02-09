@@ -6,7 +6,7 @@
 
 import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
 import {
-  getAndCallConditionResultAction,
+  onResolveConditionsResultAction,
 } from '../Api/NavigationUtils'
 import type {
   OnActionAttributes,
@@ -25,7 +25,7 @@ export const onRequireConditionsAction = ({
   if (conditionList) {
     const resolveConditionsResult = conditionalNavigationManager.resolveConditions(conditionList, action, state, getContext)
     if (resolveConditionsResult && state) {
-      return getAndCallConditionResultAction(
+      return onResolveConditionsResultAction(
         state,
         nextOnAction,
         resolveConditionsResult,

@@ -126,7 +126,7 @@ export const getScreenNavigationConditions = (
   return conditions
 }
 
-export const getAndCallConditionResultAction = (
+export const onResolveConditionsResultAction = (
   state: NavigationState,
   onAction: OnAction<NavigationAction>,
   resolveConditionsResult: ResolveConditionsResult,

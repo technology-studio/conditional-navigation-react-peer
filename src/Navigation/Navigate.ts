@@ -16,7 +16,7 @@ import type {
   WithConditionalNavigationState,
 } from '../Model/Types'
 import {
-  getAndCallConditionResultAction,
+  onResolveConditionsResultAction,
   getExistingRouteByRouteName,
   getRoutePathFromAction,
   getScreenNavigationConditions,
@@ -56,7 +56,7 @@ export const onNavigateAction = ({
           const resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, navigationState, getContext)
           log.debug('N: RESOLVE CONDITIONS RESULT', { resolveConditionsResult, action, _conditionToResolveCondition: conditionalNavigationManager._conditionToResolveCondition, screenConditionConfigMap })
           if (resolveConditionsResult) {
-            return getAndCallConditionResultAction(
+            return onResolveConditionsResultAction(
               navigationState,
               nextOnAction,
               resolveConditionsResult,
