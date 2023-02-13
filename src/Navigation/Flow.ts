@@ -43,13 +43,13 @@ const findLatestConditionNavigationState = (
 }, { latestConditionalNavigation: undefined, latestLogicalTimestamp: 0 }).latestConditionalNavigation
 
 export const abstractOnFlowActionFactory = <NAVIGATION_ACTION extends CancelFlowNavigationAction | FinishFlowAndContinueNavigationAction>(type: 'CANCEL_FLOW' | 'FINISH_FLOW_AND_CONTINUE') => ({
-  getState,
+  getRootState,
   nextOnAction,
   restArgs,
   setState,
 }: OnActionAttributes<NAVIGATION_ACTION>): boolean => {
-  const state = getState()
-  if (state?.routes) {
+  const state = getRootState()
+  if (state.routes) {
     const { previousState, postponedAction } = findLatestConditionNavigationState(state.routes) ?? {}
     log.debug(`${type}: onAction - abstractOnFlowActionFactory`, { type, previousState, state })
     if (previousState) {
