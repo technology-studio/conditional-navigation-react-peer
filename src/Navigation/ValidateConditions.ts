@@ -17,12 +17,12 @@ import type {
 export const onValidateConditionsAction = ({
   action,
   getContext,
-  getState,
+  getRootState,
   originalOnAction,
   restArgs,
   screenConditionConfigMap,
 }: OnActionAttributes<ValidateConditionsNavigationAction>): boolean => {
-  const state = getState()
+  const state = getRootState()
   const currentActiveScreenPath = getActiveRoutePath(state) ?? []
   const resolveConditionsResult = getResolveConditionsResult(
     action,

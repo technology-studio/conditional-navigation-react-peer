@@ -16,15 +16,15 @@ import type {
 export const onRequireConditionsAction = ({
   action,
   getContext,
-  getState,
+  getRootState,
   nextOnAction,
   restArgs,
 }: OnActionAttributes<RequireConditionsNavigationAction>): boolean => {
   const { conditionList } = action
-  const state = getState()
+  const state = getRootState()
   if (conditionList) {
     const resolveConditionsResult = conditionalNavigationManager.resolveConditions(conditionList, action, state, getContext)
-    if (resolveConditionsResult && state) {
+    if (resolveConditionsResult) {
       return onResolveConditionsResultAction(
         state,
         nextOnAction,

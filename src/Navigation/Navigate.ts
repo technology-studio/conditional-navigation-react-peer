@@ -80,7 +80,7 @@ export const onNavigateAction = ({
   }
 
   if (flow) {
-    const route = navigationState && typeof navigationState.index === 'number' ? navigationState.routes[navigationState.index] : undefined
+    const route = typeof navigationState.index === 'number' ? navigationState.routes[navigationState.index] : undefined
     if (route) {
       (route as WithConditionalNavigationState<typeof route>).conditionalNavigation = {
         condition: { key: VOID },
