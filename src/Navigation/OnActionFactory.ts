@@ -16,6 +16,8 @@ import type {
   BackNavigationAction,
   CancelFlowNavigationAction,
   FinishFlowAndContinueNavigationAction,
+  RequireConditionsNavigationAction,
+  ValidateConditionsNavigationAction,
   NavigateNavigationAction,
 } from '../Model/Types'
 
@@ -24,6 +26,8 @@ import {
   onCancelFlowAction,
   onFinishFlowAndContinueAction,
 } from './Flow'
+import { onRequireConditionsAction } from './RequireConditions'
+import { onValidateConditionsAction } from './ValidateConditions'
 import { onNavigateAction } from './Navigate'
 
 const log = new Log('txo.react-conditional-navigation.Navigation.onActionFactory')
@@ -65,6 +69,10 @@ export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) =>
       return onBackAction(onActionAttributes as OnActionAttributes<BackNavigationAction>)
     case 'NAVIGATE':
       return onNavigateAction(onActionAttributes as OnActionAttributes<NavigateNavigationAction>)
+    case 'REQUIRE_CONDITIONS':
+      return onRequireConditionsAction(onActionAttributes as OnActionAttributes<RequireConditionsNavigationAction>)
+    case 'VALIDATE_CONDITIONS':
+      return onValidateConditionsAction(onActionAttributes as OnActionAttributes<ValidateConditionsNavigationAction>)
     default:
       return originalOnAction(...args)
   }

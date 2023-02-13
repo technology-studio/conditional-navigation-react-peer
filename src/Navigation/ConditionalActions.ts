@@ -11,6 +11,7 @@ import {
 import type {
   BackPayload,
   NavigatePayload,
+  Condition,
   NavigationAction,
 } from '../Model/Types'
 
@@ -34,5 +35,12 @@ export const ConditionalActions = {
   goBack: (payload?: BackPayload): NavigationAction => ({
     ...CommonActions.goBack() as NavigationAction,
     ...payload ?? {},
+  }),
+  requireConditions: (conditionList: Condition[]): NavigationAction => ({
+    type: 'REQUIRE_CONDITIONS',
+    conditionList,
+  }),
+  validateConditions: (): NavigationAction => ({
+    type: 'VALIDATE_CONDITIONS',
   }),
 }

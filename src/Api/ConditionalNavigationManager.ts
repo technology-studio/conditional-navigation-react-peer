@@ -7,7 +7,8 @@
 
 import { Log } from '@txo/log'
 import type {
-  CommonActions, NavigationState,
+  CommonActions,
+  NavigationState,
 } from '@react-navigation/native'
 
 import { configManager } from '../Config'

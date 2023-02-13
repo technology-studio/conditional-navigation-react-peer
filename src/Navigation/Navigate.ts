@@ -16,10 +16,10 @@ import type {
   WithConditionalNavigationState,
 } from '../Model/Types'
 import {
-  getActiveLeafRoute,
+  onResolveConditionsResultAction,
   getExistingRouteByRouteName,
   getRoutePathFromAction,
-  getScreenNavigationConditions,
+  getResolveConditionsResult,
 } from '../Api/NavigationUtils'
 import { cloneState } from '../Api/StateHelper'
 
@@ -49,19 +49,20 @@ export const onNavigateAction = ({
   const leafRouteName = last(nextRoutePath)
   log.debug('NAVIGATE', { action, navigationState })
   if (!skipConditionalNavigation) {
-    if (navigationState) {
-      for (const routeName of nextRoutePath) {
-        const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
-        if (screenConditions && screenConditions.length > 0) {
-          const resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, navigationState, getContext)
-          log.debug('N: RESOLVE CONDITIONS RESULT', { resolveConditionsResult, action, _conditionToResolveCondition: conditionalNavigationManager._conditionToResolveCondition, screenConditionConfigMap })
-          if (resolveConditionsResult) {
-            const activeLeafRoute = getActiveLeafRoute(navigationState)
-            activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
-            return nextOnAction(resolveConditionsResult.navigationAction, ...restArgs)
-          }
-        }
-      }
+    const resolveConditionsResult = getResolveConditionsResult(
+      action,
+      navigationState,
+      nextRoutePath,
+      screenConditionConfigMap,
+      getContext,
+    )
+    if (resolveConditionsResult) {
+      return onResolveConditionsResultAction(
+        navigationState,
+        nextOnAction,
+        resolveConditionsResult,
+        restArgs,
+      )
     }
   }
 
@@ -79,7 +80,7 @@ export const onNavigateAction = ({
   }
 
   if (flow) {
-    const route = navigationState && typeof navigationState.index === 'number' ? navigationState.routes[navigationState.index] : undefined
+    const route = typeof navigationState.index === 'number' ? navigationState.routes[navigationState.index] : undefined
     if (route) {
       (route as WithConditionalNavigationState<typeof route>).conditionalNavigation = {
         condition: { key: VOID },
