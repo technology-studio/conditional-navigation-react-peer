@@ -4,41 +4,40 @@
  * @Copyright: Technology Studio
 **/
 
-import { conditionalNavigationManager } from '../Api/ConditionalNavigationManager'
 import {
-  getActiveLeafRoute,
   getActiveRoutePath,
-  getScreenNavigationConditions,
+  onResolveConditionsResultAction,
+  getResolveConditionsResult,
 } from '../Api/NavigationUtils'
 import type {
   OnActionAttributes,
-  ResolveConditionsResult,
   ValidateConditionsNavigationAction,
 } from '../Model/Types'
 
 export const onValidateConditionsAction = ({
   action,
   getContext,
-  getState,
+  getRootState,
   originalOnAction,
   restArgs,
   screenConditionConfigMap,
 }: OnActionAttributes<ValidateConditionsNavigationAction>): boolean => {
-  const state = getState()
+  const state = getRootState()
   const currentActiveScreenPath = getActiveRoutePath(state) ?? []
-  if (state) {
-    let resolveConditionsResult: ResolveConditionsResult | undefined
-    for (const routeName of currentActiveScreenPath) {
-      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
-      if (screenConditions && screenConditions.length > 0) {
-        resolveConditionsResult = conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
-      }
-    }
-    if (resolveConditionsResult) {
-      const activeLeafRoute = getActiveLeafRoute(state)
-      activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
-      return originalOnAction(resolveConditionsResult.navigationAction, ...restArgs)
-    }
+  const resolveConditionsResult = getResolveConditionsResult(
+    action,
+    state,
+    currentActiveScreenPath,
+    screenConditionConfigMap,
+    getContext,
+  )
+  if (resolveConditionsResult) {
+    return onResolveConditionsResultAction(
+      state,
+      originalOnAction,
+      resolveConditionsResult,
+      restArgs,
+    )
   }
   return true
 }
