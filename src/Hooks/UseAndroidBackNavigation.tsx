@@ -22,7 +22,10 @@ export const useAndroidBackNavigation = (navigationRef: NavigationContainerRefWi
       return false
     }
     if (backHandlerManager.handlerList.length > 0) {
-      return backHandlerManager.handlerList.some(handler => handler())
+      const isHandled = backHandlerManager.handlerList.some(handler => handler())
+      if (isHandled) {
+        return isHandled
+      }
     }
     navigationRef.goBack()
     return true
