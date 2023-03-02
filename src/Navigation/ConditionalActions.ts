@@ -10,8 +10,8 @@ import {
 
 import type {
   BackPayload,
-  NavigatePayload,
   Condition,
+  NavigatePayload,
   NavigationAction,
 } from '../Model/Types'
 

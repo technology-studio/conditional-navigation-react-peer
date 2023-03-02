@@ -9,10 +9,11 @@ import React, {
 } from 'react'
 import {
   NavigationContainer,
-  useNavigationContainerRef,
+  createNavigationContainerRef,
 } from '@react-navigation/native'
 import { useFlipper } from '@react-navigation/devtools'
 
+import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 import {
   onActionFactory,
 } from '../Navigation/OnActionFactory'
@@ -25,9 +26,11 @@ type Props = {
   getContext?: () => ResolveConditionContext,
 }
 
+export const navigationRef = createNavigationContainerRef()
+
 export const InjectedNavigationContainer = ({ children, getContext }: Props): JSX.Element => {
-  const navigationRef = useNavigationContainerRef()
   useFlipper(navigationRef)
+  useAndroidBackNavigation(navigationRef)
 
   useEffect(() => {
     registerOnActionFactory(onActionFactory, getContext)

@@ -11,7 +11,10 @@ export {
 } from './Api/ConditionManager'
 export { configManager } from './Config'
 export { registerOnActionFactory } from './Containers/ReactNavigationInjection'
-export { InjectedNavigationContainer } from './Containers/InjectedNavigationContainer'
+export {
+  InjectedNavigationContainer,
+  navigationRef,
+} from './Containers/InjectedNavigationContainer'
 export * from './Model/Types'
 // import { navigationManager } from './Api/NavigationManager'
 // import { isInitialNavigationOptions } from './Api/NavigationOptionsHelper'
@@ -47,14 +50,18 @@ export * from './Model/Types'
 //   RootStateFragment,
 //   State as NavigationState,
 // } from './Redux/Types'
-export { onNavigateAction } from './Navigation/Navigate'
 export { onActionFactory } from './Navigation/OnActionFactory'
+export { backHandlerManager } from './Api/BackHandlerManager'
 export {
   type ResolveCondition,
   conditionalNavigationManager,
   registerResolveCondition,
 } from './Api/ConditionalNavigationManager'
 export { useIsInitial } from './Hooks/UseIsInitial'
+export {
+  type Navigation,
+  useNavigation,
+} from './Hooks/UseNavigation'
 export { navigationParams } from './Screens'
 
 // export {
