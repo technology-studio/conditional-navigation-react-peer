@@ -22,9 +22,9 @@ export const onRequireConditionsAction = ({
 }: OnActionAttributes<RequireConditionsNavigationAction>): boolean => {
   const { conditionList } = action
   const state = getRootState()
-  if (conditionList) {
+  if (conditionList != null) {
     const resolveConditionsResult = conditionalNavigationManager.resolveConditions(conditionList, action, state, getContext)
-    if (resolveConditionsResult) {
+    if (resolveConditionsResult != null) {
       return onResolveConditionsResultAction(
         state,
         nextOnAction,

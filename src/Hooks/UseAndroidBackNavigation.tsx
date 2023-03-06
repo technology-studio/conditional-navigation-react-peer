@@ -18,7 +18,7 @@ import { backHandlerManager } from '../Api/BackHandlerManager'
 export const useAndroidBackNavigation = (navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>): void => {
   const onBackPressHandler = useCallback((): boolean => {
     const navigationState = navigationRef.getRootState()
-    if (!navigationState || navigationState.index === 0) {
+    if (navigationState == null || navigationState.index === 0) {
       return false
     }
     if (backHandlerManager.handlerList.length > 0) {

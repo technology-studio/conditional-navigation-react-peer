@@ -31,7 +31,7 @@ export const onValidateConditionsAction = ({
     screenConditionConfigMap,
     getContext,
   )
-  if (resolveConditionsResult) {
+  if (resolveConditionsResult != null) {
     return onResolveConditionsResultAction(
       state,
       originalOnAction,

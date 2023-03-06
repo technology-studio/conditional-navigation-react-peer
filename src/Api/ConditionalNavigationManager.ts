@@ -47,9 +47,9 @@ class ConditionalNavigationManager<CONDITION extends Condition> {
       log.debug('RESOLVE CONDITIONS', { conditionList, navigationAction })
       for (const condition of conditionList) {
         const resolveCondition: ResolveCondition<CONDITION> = this._conditionToResolveCondition[condition.key]
-        if (resolveCondition) {
+        if (resolveCondition != null) {
           const newNavigationAction = resolveCondition(condition, navigationAction, getContext) as NavigationAction | undefined
-          if (newNavigationAction) {
+          if (newNavigationAction != null) {
             log.debug('NEW NAVIGATION ACTION', { preview: condition.key, newNavigationAction, navigationAction })
             return {
               navigationAction: {
