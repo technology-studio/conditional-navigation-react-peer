@@ -64,8 +64,8 @@ export const getNestedRoutePath = (params: Params | undefined): string[] | undef
     return undefined
   }
   if (innerParams != null) {
-    const nextScreen = getNestedRoutePath(innerParams)
-    return (nextScreen != null && nextScreen !== '') ? [screen, ...nextScreen] : [screen]
+    const nextScreenList = getNestedRoutePath(innerParams)
+    return (nextScreenList != null) ? [screen, ...nextScreenList] : [screen]
   }
   return [screen]
 }
