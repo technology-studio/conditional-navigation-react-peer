@@ -81,7 +81,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-native": "0.70.3",
-    "redux-saga": "^1.2.1",
+    "redux-saga": "^1.2.2",
     "rimraf": "^3.0.2",
     "semantic-release": "^19.0.5",
     "semantic-release-slack-bot": "^3.5.3",
