@@ -61,7 +61,7 @@
     "@types/react-native": "^0.71.3",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
-    "commitizen": "^4.2.5",
+    "commitizen": "^4.3.0",
     "concurrently": "^7.4.0",
     "eslint": "^8.25.0",
     "eslint-config-txo-typescript-react": "^1.0.11",
