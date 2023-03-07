@@ -1,6 +1,6 @@
 {
   "name": "@txo-peer-dep/react-conditional-navigation",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Technology Studio - React conditional navigation peer",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@txo/config-manager": "^3.1.0",
-    "@txo/functional": "^4.5.1",
+    "@txo/functional": "^4.5.2",
     "@txo/log": "^2.0.1"
   },
   "peerDependencies": {
@@ -86,7 +86,7 @@
     "rimraf": "^3.0.2",
     "semantic-release": "^19.0.5",
     "semantic-release-slack-bot": "^3.5.3",
-    "ts-jest": "^29.0.3",
+    "ts-jest": "^29.0.5",
     "typescript": "^4.9.5"
   },
   "config": {
