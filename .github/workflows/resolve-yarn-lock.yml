@@ -1,0 +1,32 @@
+name: Resolve yarn.lock
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  resolve-yarn-lock:
+    if: contains(github.event.comment.body, 'resolve yarn.lock')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Merge base branch into pull request
+        run: |
+          git fetch origin ${{ github.event.issue.pull_request.base.ref }}
+          git merge --no-commit --no-ff FETCH_HEAD
+
+      - name: Check for merge conflict on yarn.lock file
+        id: check-conflict
+        run: |
+          CONFLICTS=$(git ls-files -u | grep yarn.lock | wc -l)
+          echo "::set-output name=conflicts::$CONFLICTS"
+
+      - name: Run yarn command and commit yarn.lock file into pull request
+        if: steps.check-conflict.outputs.conflicts > 0
+        run: |
+          yarn install
+          git add yarn.lock
+          git commit -m "Resolve yarn.lock"
