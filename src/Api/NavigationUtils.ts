@@ -37,17 +37,17 @@ export const getExistingRouteByRouteName = (state: NavigationState | PartialStat
 | WithConditionalNavigationState<PartialRoute<Route<string>>>
 | WithConditionalNavigationState<Route<string>>
 | undefined => {
-  if (!state) {
+  if (state == null) {
     return undefined
   }
   const { routes, index } = state
   const currentRoute = typeof index === 'number' ? routes[index] as NavigationState | Route<string> : undefined
-  if (!currentRoute) {
+  if (currentRoute == null) {
     return undefined
   }
   if ('name' in currentRoute && currentRoute.name === routeName) {
     return currentRoute
-  } else if ('routes' in currentRoute && currentRoute.routes) {
+  } else if ('routes' in currentRoute && currentRoute.routes != null) {
     return getExistingRouteByRouteName(currentRoute, routeName)
   }
   return undefined
@@ -56,44 +56,44 @@ export const getExistingRouteByRouteName = (state: NavigationState | PartialStat
 type Params = { screen?: string, params?: Params }
 
 export const getNestedRoutePath = (params: Params | undefined): string[] | undefined => {
-  if (!params) {
+  if (params == null) {
     return undefined
   }
   const { params: innerParams, screen } = params
-  if (!screen) {
+  if (screen == null || screen === '') {
     return undefined
   }
-  if (innerParams) {
-    const nextScreen = getNestedRoutePath(innerParams)
-    return nextScreen ? [screen, ...nextScreen] : [screen]
+  if (innerParams != null) {
+    const nextScreenList = getNestedRoutePath(innerParams)
+    return (nextScreenList != null) ? [screen, ...nextScreenList] : [screen]
   }
   return [screen]
 }
 
 export const getRoutePathFromAction = (action: RNNavigationAction): string[] | undefined => {
   const { payload } = action
-  if (!payload) {
+  if (payload == null) {
     return undefined
   }
   const { params, name } = payload as { params?: Params, name: string }
   const routePath = getNestedRoutePath(params)
-  return routePath ? [name, ...routePath] : [name]
+  return (routePath != null) ? [name, ...routePath] : [name]
 }
 
 export const getActiveRoutePath = (
   state: NavigationState | Route<string> | undefined,
   tempIndex = 0,
 ): string[] | undefined => {
-  if (!state || !('type' in state)) {
+  if ((state == null) || !('type' in state)) {
     return undefined
   }
   const { routes, index, type } = state
   if (type === 'stack' && tempIndex < index) {
     const nextPath = getActiveRoutePath(state, tempIndex + 1)
-    return nextPath ? [routes[tempIndex].name, ...nextPath] : [routes[tempIndex].name]
+    return (nextPath != null) ? [routes[tempIndex].name, ...nextPath] : [routes[tempIndex].name]
   } else if (type === 'tab' || type === 'stack') {
     const nextPath = getActiveRoutePath(routes[index])
-    return nextPath ? [routes[index].name, ...nextPath] : [routes[index].name]
+    return (nextPath != null) ? [routes[index].name, ...nextPath] : [routes[index].name]
   }
   return undefined
 }
@@ -104,7 +104,7 @@ export const calculateIsInitial = (state: NavigationState, currentRoute: Route<s
   if (type === 'tab') {
     return true
   }
-  if (routes) {
+  if (routes != null) {
     const containsSplashScreen = routes[0].name === 'SPLASH_SCREEN'
     let isInitial = false
     for (let index = 0; index < routes.length; index++) {
@@ -147,10 +147,10 @@ export const getResolveConditionsResult = (
   screenConditionConfigMap: Record<string, ConditionConfig>,
   getContext: (() => ResolveConditionContext) | undefined,
 ): ResolveConditionsResult | undefined => {
-  if (state) {
+  if (state != null) {
     for (const routeName of routePath) {
       const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
-      if (screenConditions && screenConditions.length > 0) {
+      if ((screenConditions != null) && screenConditions.length > 0) {
         return conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
       }
     }

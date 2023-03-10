@@ -48,7 +48,7 @@ export const onNavigateAction = ({
   const nextRoutePath = getRoutePathFromAction(action) ?? []
   const leafRouteName = last(nextRoutePath)
   log.debug('NAVIGATE', { action, navigationState })
-  if (!skipConditionalNavigation) {
+  if (!(skipConditionalNavigation ?? false)) {
     const resolveConditionsResult = getResolveConditionsResult(
       action,
       navigationState,
@@ -56,7 +56,7 @@ export const onNavigateAction = ({
       screenConditionConfigMap,
       getContext,
     )
-    if (resolveConditionsResult) {
+    if (resolveConditionsResult != null) {
       return onResolveConditionsResultAction(
         navigationState,
         nextOnAction,
@@ -67,7 +67,7 @@ export const onNavigateAction = ({
   }
 
   const name = payload?.name
-  if (reset && name) {
+  if ((reset ?? false) && (name != null && name !== '')) {
     log.debug('NAVIGATE WITH RESET')
     const newState = {
       index: 0,
@@ -79,9 +79,9 @@ export const onNavigateAction = ({
     return true
   }
 
-  if (flow) {
+  if (flow ?? false) {
     const route = typeof navigationState.index === 'number' ? navigationState.routes[navigationState.index] : undefined
-    if (route) {
+    if (route != null) {
       (route as WithConditionalNavigationState<typeof route>).conditionalNavigation = {
         condition: { key: VOID },
         postponedAction: null,
@@ -92,7 +92,7 @@ export const onNavigateAction = ({
   }
 
   const destinationNode = getExistingRouteByRouteName(navigationState, leafRouteName)
-  if (destinationNode?.conditionalNavigation) {
+  if ((destinationNode?.conditionalNavigation) != null) {
     delete destinationNode.conditionalNavigation
   }
 

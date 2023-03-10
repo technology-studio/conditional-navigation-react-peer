@@ -6,11 +6,9 @@
 
 import { Log } from '@txo/log'
 
-import {
+import type {
   OnActionAttributes,
   NavigationAction,
-} from '../Model/Types'
-import type {
   OnAction,
   OnActionFactoryAttributes,
   BackNavigationAction,

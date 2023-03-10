@@ -41,7 +41,7 @@ useOnActionObject.default = function useOnAction (options: UseOnActionOptions): 
   const navigationContainerRefContext = useContext(NavigationContainerRefContext)
 
   const nextOnAction: typeof onAction = useCallback((...args: Parameters<OnAction<NavigationAction>>) => {
-    if (onActionFactory) {
+    if (onActionFactory != null) {
       return onActionFactory(onAction)({
         getContext,
         getState,
