@@ -21,7 +21,7 @@ import type {
 
 import { cloneState } from './StateHelper'
 
-const log = new Log('txo.react-conditional-navigation.Api.ConditionalNavigationManager')
+const log = new Log('txo.conditional-navigation-react.Api.ConditionalNavigationManager')
 
 export type ResolveCondition<CONDITION extends Condition> = (
   condition: CONDITION,

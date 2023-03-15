@@ -1,12 +1,12 @@
 {
-  "name": "@txo-peer-dep/react-conditional-navigation",
+  "name": "@txo-peer-dep/conditional-navigation-react",
   "version": "6.0.3",
-  "description": "Technology Studio - React conditional navigation peer",
+  "description": "Technology Studio - Conditional navigation react peer",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/technology-studio/react-conditional-navigation-peer.git"
+    "url": "https://github.com/technology-studio/conditional-navigation-react-peer.git"
   },
   "author": {
     "name": "Technology Studio",
