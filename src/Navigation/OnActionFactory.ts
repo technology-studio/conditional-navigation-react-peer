@@ -28,7 +28,7 @@ import { onRequireConditionsAction } from './RequireConditions'
 import { onValidateConditionsAction } from './ValidateConditions'
 import { onNavigateAction } from './Navigate'
 
-const log = new Log('txo.react-conditional-navigation.Navigation.onActionFactory')
+const log = new Log('txo.conditional-navigation-react.Navigation.onActionFactory')
 
 export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>): boolean => {
   const {

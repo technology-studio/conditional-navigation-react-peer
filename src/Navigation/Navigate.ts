@@ -23,7 +23,7 @@ import {
 } from '../Api/NavigationUtils'
 import { cloneState } from '../Api/StateHelper'
 
-const log = new Log('txo.react-conditional-navigation.Navigation.Navigate')
+const log = new Log('txo.conditional-navigation-react.Navigation.Navigate')
 
 const VOID = 'void'
 

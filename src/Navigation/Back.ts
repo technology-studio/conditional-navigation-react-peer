@@ -11,7 +11,7 @@ import type {
   OnActionAttributes,
 } from '../Model/Types'
 
-const log = new Log('txo.react-conditional-navigation.Navigation.Back')
+const log = new Log('txo.conditional-navigation-react.Navigation.Back')
 
 export const onBackAction = ({
   action,

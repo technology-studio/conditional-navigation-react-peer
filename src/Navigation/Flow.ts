@@ -17,7 +17,7 @@ import type {
   FinishFlowAndContinueNavigationAction,
 } from '../Model/Types'
 
-const log = new Log('txo.react-conditional-navigation.Navigation.Flow')
+const log = new Log('txo.conditional-navigation-react.Navigation.Flow')
 
 const findLatestConditionNavigationState = (
   routes: NavigationState['routes'],
