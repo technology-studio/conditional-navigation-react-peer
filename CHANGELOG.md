@@ -1,3 +1,10 @@
+## [6.1.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.0.3...v6.1.0) (2023-03-15)
+
+
+### Features
+
+* rename package ([#50](https://github.com/technology-studio/conditional-navigation-react-peer/issues/50)) ([064e2ad](https://github.com/technology-studio/conditional-navigation-react-peer/commit/064e2ad749f51a4ddca7bcb1d88acd2952865a8b))
+
 ## [6.0.3](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.0.2...v6.0.3) (2023-03-08)
 
 
