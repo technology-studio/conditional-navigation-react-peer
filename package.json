@@ -50,8 +50,8 @@
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
-    "@commitlint/cli": "^17.5.1",
-    "@commitlint/config-conventional": "^17.4.4",
+    "@commitlint/cli": "^17.6.0",
+    "@commitlint/config-conventional": "^17.6.0",
     "@react-navigation/devtools": "^6.0.18",
     "@react-navigation/native": "^6.1.6",
     "@semantic-release/changelog": "^6.0.3",
