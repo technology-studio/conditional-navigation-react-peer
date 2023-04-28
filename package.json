@@ -48,8 +48,8 @@
     "react-native": "*"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.4",
-    "@babel/preset-env": "^7.21.4",
+    "@babel/core": "^7.21.5",
+    "@babel/preset-env": "^7.21.5",
     "@commitlint/cli": "^17.6.1",
     "@commitlint/config-conventional": "^17.6.1",
     "@react-navigation/devtools": "^6.0.18",
