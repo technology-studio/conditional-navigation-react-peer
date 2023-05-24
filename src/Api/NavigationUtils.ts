@@ -11,6 +11,8 @@ import type {
   PartialState,
   Route,
 } from '@react-navigation/native'
+import { isNotEmptyString } from '@txo/functional'
+import { Log } from '@txo/log'
 
 import type {
   Condition,
@@ -23,6 +25,8 @@ import type {
 } from '../Model/Types'
 
 import { conditionalNavigationManager } from './ConditionalNavigationManager'
+
+const log = new Log('txo.conditional-navigation-react.Api.NavigationUtils')
 
 export const getActiveLeafRoute = (state: NavigationState): WithConditionalNavigationState<Route<string>> => {
   const { routes, index } = state
@@ -136,7 +140,15 @@ export const onResolveConditionsResultAction = (
   restArgs: unknown[],
 ): boolean => {
   const activeLeafRoute = getActiveLeafRoute(state)
-  activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
+  if (activeLeafRoute.params == null) {
+    // @ts-expect-error -- NOTE: params are read-only in react-navigation types but we need to override them
+    activeLeafRoute.params = {
+      _conditionalNavigationState: resolveConditionsResult.conditionalNavigationState,
+    }
+  } else {
+    // @ts-expect-error -- NOTE: params are read-only in react-navigation types but we need to override them
+    activeLeafRoute.params._conditionalNavigationState = resolveConditionsResult.conditionalNavigationState
+  }
   return onAction(resolveConditionsResult.navigationAction, ...restArgs)
 }
 
@@ -149,7 +161,12 @@ export const getResolveConditionsResult = (
 ): ResolveConditionsResult | undefined => {
   if (state != null) {
     for (const routeName of routePath) {
-      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
+      const screenParam = action.payload?.params?.screen as string | undefined
+      const routeNameWithScreenParam = isNotEmptyString(screenParam)
+        ? `${routeName}.${screenParam}`
+        : routeName
+      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeNameWithScreenParam])
+      log.debug('RESOLVE CONDITIONS', { routeNameWithScreenParam, screenConditions, action, state })
       if ((screenConditions != null) && screenConditions.length > 0) {
         return conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
       }

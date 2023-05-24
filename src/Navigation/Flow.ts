@@ -25,7 +25,8 @@ const findLatestConditionNavigationState = (
   latestConditionalNavigation: ConditionalNavigationState | undefined,
   latestLogicalTimestamp: number,
 }>(({ latestConditionalNavigation, latestLogicalTimestamp }, route) => {
-  const conditionalNavigation: ConditionalNavigationState | undefined = (route as WithConditionalNavigationState<typeof route>).conditionalNavigation
+  // @ts-expect-error -- NOTE: conditionalNavigation is added in Navigate onAction
+  const conditionalNavigation: ConditionalNavigationState | undefined = (route as WithConditionalNavigationState<typeof route>).params?._conditionalNavigationState
   if (conditionalNavigation != null) {
     const { logicalTimestamp } = conditionalNavigation
     log.debug('findLatest', { conditionalNavigation, logicalTimestamp, latestLogicalTimestamp, latestConditionalNavigation })
