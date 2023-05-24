@@ -21,10 +21,10 @@ import type {
 import { screenConditionConfigMap } from '../Api/ConditionManager'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const useOnActionObject = require('@react-navigation/core/lib/commonjs/useOnAction')
+const useOnActionObject = require('@react-navigation/core/src/useOnAction')
 const originalUseOnAction = useOnActionObject.default as typeof UseOnActionType
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const NavigationContainerRefContextObject = require('@react-navigation/core/lib/commonjs/NavigationContainerRefContext')
+const NavigationContainerRefContextObject = require('@react-navigation/core/src/NavigationContainerRefContext')
 const NavigationContainerRefContext = NavigationContainerRefContextObject.default as typeof NavigationContainerRefContextType
 
 let onActionFactory: ((onAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>) => boolean) | null = null
