@@ -6,6 +6,7 @@
 
 import { last } from '@txo/functional'
 import { Log } from '@txo/log'
+import type { NavigationState } from '@react-navigation/native'
 
 import {
   conditionalNavigationManager,
@@ -72,10 +73,28 @@ export const onNavigateAction = ({
     const newState = {
       index: 0,
       routes: [
-        { name, params: payload?.params },
+        {
+          name,
+          params: payload?.params,
+        },
       ],
-    }
+    } as unknown as NavigationState // NOTE: react-navigation adds missing parameters automatically
     setState(newState)
+    const resolveConditionsResult = getResolveConditionsResult(
+      action,
+      newState,
+      nextRoutePath,
+      screenConditionConfigMap,
+      getContext,
+    )
+    if (resolveConditionsResult != null) {
+      return onResolveConditionsResultAction(
+        newState,
+        nextOnAction,
+        resolveConditionsResult,
+        restArgs,
+      )
+    }
     return true
   }
 
