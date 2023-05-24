@@ -21,49 +21,83 @@ import type {
 export type Navigation<
 NAVIGATION_PROP,
 PARAMS_MAP extends Record<string, Record<string, unknown> | undefined>
-> = Omit<NAVIGATION_PROP, 'navigate'> & {
+> = Omit<NAVIGATION_PROP, 'navigate' | 'getParent'> & {
   cancelFlow: () => void,
   finishFlowAndContinue: () => void,
   navigate: <ROUTE_NAME extends keyof PARAMS_MAP>(payload: NavigatePayload<PARAMS_MAP, ROUTE_NAME>) => void,
   requireConditions: (conditionList: Condition[]) => void,
   validateConditions: () => void,
   goBack: (payload?: BackPayload) => void,
+  getParent: (id?: string | undefined) => Navigation<NAVIGATION_PROP, PARAMS_MAP> | undefined,
 }
 
-export const useNavigation = <
+const navigationActionsFactory = <
   NAVIGATION_PROP extends NavigationProp<Record<string, unknown>>,
+  PARAMS_MAP extends Record<string, Record<string, unknown> | undefined>
+>(navigation: NAVIGATION_PROP): {
+    cancelFlow: () => void,
+    finishFlowAndContinue: () => void,
+    navigate: <ROUTE_NAME extends keyof PARAMS_MAP>(payload: NavigatePayload<PARAMS_MAP, ROUTE_NAME>) => void,
+    requireConditions: (conditionList: Condition[]) => void,
+    validateConditions: () => void,
+    goBack: (payload?: BackPayload) => void,
+  } => ({
+    cancelFlow: () => {
+      navigation.dispatch({
+        ...ConditionalActions.cancelFlow(),
+      })
+    },
+    finishFlowAndContinue: () => {
+      navigation.dispatch({
+        ...ConditionalActions.finishFlowAndContinue(),
+      })
+    },
+    requireConditions: (...args: Parameters<typeof ConditionalActions.requireConditions>) => {
+      navigation.dispatch({
+        ...ConditionalActions.requireConditions(...args),
+      })
+    },
+    validateConditions: () => {
+      navigation.dispatch({
+        ...ConditionalActions.validateConditions(),
+      })
+    },
+    navigate: <ROUTE_NAME extends keyof PARAMS_MAP>(payload: NavigatePayload<PARAMS_MAP, ROUTE_NAME>) => {
+      navigation.dispatch({
+        ...ConditionalActions.navigate(payload),
+      })
+    },
+    goBack: (payload?: BackPayload) => {
+      navigation.dispatch({
+        ...ConditionalActions.goBack(payload),
+      })
+    },
+  })
+
+export const useNavigation = <
+  NAVIGATION_PROP extends NavigationProp<Record<string, unknown>, keyof Record<string, unknown>, string | undefined>,
   PARAMS_MAP extends Record<string, Record<string, unknown> | undefined>
   >(): Navigation<NAVIGATION_PROP, PARAMS_MAP> => {
   const _navigation = useRNNavigation<NAVIGATION_PROP>()
-  const cancelFlow = useCallback(() => {
-    _navigation.dispatch({
-      ...ConditionalActions.cancelFlow(),
-    })
-  }, [_navigation])
-  const finishFlowAndContinue = useCallback(() => {
-    _navigation.dispatch({
-      ...ConditionalActions.finishFlowAndContinue(),
-    })
-  }, [_navigation])
-  const requireConditions = useCallback((...args: Parameters<typeof ConditionalActions.requireConditions>) => {
-    _navigation.dispatch({
-      ...ConditionalActions.requireConditions(...args),
-    })
-  }, [_navigation])
-  const validateConditions = useCallback(() => {
-    _navigation.dispatch({
-      ...ConditionalActions.validateConditions(),
-    })
-  }, [_navigation])
-  const navigate = useCallback((payload: NavigatePayload<PARAMS_MAP>) => {
-    _navigation.dispatch({
-      ...ConditionalActions.navigate(payload),
-    })
-  }, [_navigation])
-  const goBack = useCallback((payload?: BackPayload) => {
-    _navigation.dispatch({
-      ...ConditionalActions.goBack(payload),
-    })
+  const {
+    cancelFlow,
+    finishFlowAndContinue,
+    requireConditions,
+    validateConditions,
+    navigate,
+    goBack,
+  } = useMemo(() => navigationActionsFactory(_navigation), [_navigation])
+  const getParent = useCallback((id?: string | undefined) => {
+    const parent = _navigation.getParent(id)
+    if (parent == null) {
+      return undefined
+    }
+    const navigationActions = navigationActionsFactory(parent)
+    return {
+      ...parent,
+      ...navigationActions,
+      getParent,
+    }
   }, [_navigation])
 
   const navigation: Navigation<NAVIGATION_PROP, PARAMS_MAP> = useMemo(() => ({
@@ -74,6 +108,7 @@ export const useNavigation = <
     validateConditions,
     navigate,
     goBack,
-  }), [_navigation, cancelFlow, finishFlowAndContinue, goBack, navigate, requireConditions, validateConditions])
+    getParent,
+  }), [_navigation, cancelFlow, finishFlowAndContinue, getParent, goBack, navigate, requireConditions, validateConditions])
   return navigation
 }
