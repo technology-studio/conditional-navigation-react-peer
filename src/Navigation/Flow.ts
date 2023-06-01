@@ -12,9 +12,9 @@ import { Log } from '@txo/log'
 import type {
   OnActionAttributes,
   ConditionalNavigationState,
-  WithConditionalNavigationState,
   CancelFlowNavigationAction,
   FinishFlowAndContinueNavigationAction,
+  WithConditionalNavigationState,
 } from '../Model/Types'
 
 const log = new Log('txo.conditional-navigation-react.Navigation.Flow')
@@ -25,7 +25,6 @@ const findLatestConditionNavigationState = (
   latestConditionalNavigation: ConditionalNavigationState | undefined,
   latestLogicalTimestamp: number,
 }>(({ latestConditionalNavigation, latestLogicalTimestamp }, route) => {
-  // @ts-expect-error -- NOTE: _conditionalNavigationState is added in Navigate onAction
   const conditionalNavigation: ConditionalNavigationState | undefined = (route as WithConditionalNavigationState<typeof route>).params?._conditionalNavigationState
   if (conditionalNavigation != null) {
     const { logicalTimestamp } = conditionalNavigation

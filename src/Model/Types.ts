@@ -171,9 +171,14 @@ export type NavigationProps<PARAMS extends Record<string, unknown>> = {
   route?: Route<string, PARAMS>,
 }
 
-export type WithConditionalNavigationState<TYPE> = TYPE & {
-  conditionalNavigation?: ConditionalNavigationState,
-}
+export type WithConditionalNavigationState<
+  TYPE,
+  PARAMS extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+> = Omit<TYPE, 'params'> & (
+  undefined extends PARAMS
+    ? { params?: PARAMS & { _conditionalNavigationState?: ConditionalNavigationState } }
+    : { params: PARAMS & { _conditionalNavigationState?: ConditionalNavigationState } }
+)
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ResolveConditionContext {}

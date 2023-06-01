@@ -101,18 +101,26 @@ export const onNavigateAction = ({
   if (flow ?? false) {
     const route = typeof navigationState.index === 'number' ? navigationState.routes[navigationState.index] : undefined
     if (route != null) {
-      (route as WithConditionalNavigationState<typeof route>).conditionalNavigation = {
+      const conditionalNavigationState = {
         condition: { key: VOID },
         postponedAction: null,
         logicalTimestamp: conditionalNavigationManager.tickLogicalClock(),
         previousState: cloneState(navigationState),
       }
+      const params = (route as WithConditionalNavigationState<typeof route>).params
+      if (params != null) {
+        params._conditionalNavigationState = conditionalNavigationState
+      } else {
+        (route as WithConditionalNavigationState<typeof route>).params = {
+          _conditionalNavigationState: conditionalNavigationState,
+        }
+      }
     }
   }
 
   const destinationNode = getExistingRouteByRouteName(navigationState, leafRouteName)
-  if ((destinationNode?.conditionalNavigation) != null) {
-    delete destinationNode.conditionalNavigation
+  if ((destinationNode?.params?._conditionalNavigationState) != null) {
+    delete destinationNode.params._conditionalNavigationState
   }
 
   return originalOnAction(action, ...restArgs)

@@ -30,7 +30,7 @@ const log = new Log('txo.conditional-navigation-react.Api.NavigationUtils')
 
 export const getActiveLeafRoute = (state: NavigationState): WithConditionalNavigationState<Route<string>> => {
   const { routes, index } = state
-  const currentRoute = routes[index] as NavigationState | Route<string>
+  const currentRoute = routes[index] as NavigationState | WithConditionalNavigationState<Route<string>>
   if ('routes' in currentRoute) {
     return getActiveLeafRoute(currentRoute)
   }
@@ -45,7 +45,7 @@ export const getExistingRouteByRouteName = (state: NavigationState | PartialStat
     return undefined
   }
   const { routes, index } = state
-  const currentRoute = typeof index === 'number' ? routes[index] as NavigationState | Route<string> : undefined
+  const currentRoute = typeof index === 'number' ? routes[index] as NavigationState | WithConditionalNavigationState<Route<string>> : undefined
   if (currentRoute == null) {
     return undefined
   }
@@ -141,12 +141,10 @@ export const onResolveConditionsResultAction = (
 ): boolean => {
   const activeLeafRoute = getActiveLeafRoute(state)
   if (activeLeafRoute.params == null) {
-    // @ts-expect-error -- NOTE: params are read-only in react-navigation types but we need to override them
     activeLeafRoute.params = {
       _conditionalNavigationState: resolveConditionsResult.conditionalNavigationState,
     }
   } else {
-    // @ts-expect-error -- NOTE: params are read-only in react-navigation types but we need to override them
     activeLeafRoute.params._conditionalNavigationState = resolveConditionsResult.conditionalNavigationState
   }
   return onAction(resolveConditionsResult.navigationAction, ...restArgs)
