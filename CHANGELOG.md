@@ -1,3 +1,10 @@
+## [6.1.1](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.1.0...v6.1.1) (2023-06-22)
+
+
+### Bug fixes
+
+* **deps:** update react-navigation monorepo ([febcc2f](https://github.com/technology-studio/conditional-navigation-react-peer/commit/febcc2f863bd501848912ddd7db079779700eb4c))
+
 ## [6.1.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.0.3...v6.1.0) (2023-03-15)
 
 
