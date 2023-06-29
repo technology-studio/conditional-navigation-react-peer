@@ -259,7 +259,7 @@ const state: NavigationState = {
 }
 
 const treeWithoutOrder: StaticScreenTreeNavigator = {
-  routeName: ROOT_NAVIGATOR_ID, // NOTE: this doesn't exist?
+  routeName: ROOT_NAVIGATOR_ID,
   id: ROOT_NAVIGATOR_ID,
   screens: [
     {
@@ -356,7 +356,7 @@ const treeWithoutOrder: StaticScreenTreeNavigator = {
   handlerMap: {},
 }
 const treeWithDepth: StaticScreenTreeNavigatorWithDepth = {
-  routeName: ROOT_NAVIGATOR_ID, // NOTE: this doesn't exist?
+  routeName: ROOT_NAVIGATOR_ID,
   id: ROOT_NAVIGATOR_ID,
   depth: 0,
   getParent: () => undefined,
