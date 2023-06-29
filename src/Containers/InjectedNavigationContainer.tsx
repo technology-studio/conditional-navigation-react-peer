@@ -10,6 +10,8 @@ import React, {
 import {
   NavigationContainer,
   createNavigationContainerRef,
+  DefaultTheme,
+  DarkTheme,
 } from '@react-navigation/native'
 import { useFlipper } from '@react-navigation/devtools'
 
@@ -23,12 +25,13 @@ import { registerOnActionFactory } from './ReactNavigationInjection'
 
 type Props = {
   children: React.ReactNode,
+  isDarkThemeEnabled: boolean,
   getContext?: () => ResolveConditionContext,
 }
 
 export const navigationRef = createNavigationContainerRef()
 
-export const InjectedNavigationContainer = ({ children, getContext }: Props): JSX.Element => {
+export const InjectedNavigationContainer = ({ children, isDarkThemeEnabled, getContext }: Props): JSX.Element => {
   useFlipper(navigationRef)
   useAndroidBackNavigation(navigationRef)
 
@@ -37,7 +40,10 @@ export const InjectedNavigationContainer = ({ children, getContext }: Props): JS
   }, [getContext])
 
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      theme={isDarkThemeEnabled ? DarkTheme : DefaultTheme}
+    >
       {children}
     </NavigationContainer>
   )
