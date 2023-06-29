@@ -6,7 +6,7 @@
 
 import {
   CommonActions,
-} from '@react-navigation/native'
+} from '@react-navigation/routers'
 
 import type {
   BackPayload,

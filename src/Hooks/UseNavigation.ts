@@ -8,7 +8,6 @@ import {
   useCallback,
   useMemo,
 } from 'react'
-import type { NavigationProp } from '@react-navigation/native'
 import { useNavigation as useRNNavigation } from '@react-navigation/native'
 
 import { ConditionalActions } from '../Navigation/ConditionalActions'
@@ -16,14 +15,13 @@ import type {
   BackPayload,
   Condition,
   NavigatePayload,
+  DefaultNavigationProp,
+  DefaultParamsMap,
 } from '../Model/Types'
 
-type NavigationPropExtend = NavigationProp<Record<string, unknown>, keyof Record<string, unknown>, string | undefined>
-type ParamsMapExtend = Record<string, Record<string, unknown> | undefined>
-
 export type Navigation<
-NAVIGATION_PROP extends NavigationPropExtend,
-PARAMS_MAP extends ParamsMapExtend,
+NAVIGATION_PROP extends DefaultNavigationProp,
+PARAMS_MAP extends DefaultParamsMap,
 > = Omit<NAVIGATION_PROP, 'navigate'> & {
   cancelFlow: () => void,
   finishFlowAndContinue: () => void,
@@ -35,8 +33,8 @@ PARAMS_MAP extends ParamsMapExtend,
 }
 
 const navigationActionsFactory = <
-  NAVIGATION_PROP extends NavigationPropExtend,
-  PARAMS_MAP extends ParamsMapExtend
+  NAVIGATION_PROP extends DefaultNavigationProp,
+  PARAMS_MAP extends DefaultParamsMap
 >(navigation: NAVIGATION_PROP): {
     cancelFlow: () => void,
     finishFlowAndContinue: () => void,
@@ -78,8 +76,8 @@ const navigationActionsFactory = <
   })
 
 export const useNavigation = <
-  NAVIGATION_PROP extends NavigationPropExtend,
-  PARAMS_MAP extends ParamsMapExtend,
+  NAVIGATION_PROP extends DefaultNavigationProp,
+  PARAMS_MAP extends DefaultParamsMap,
   >(): Navigation<NAVIGATION_PROP, PARAMS_MAP> => {
   const _navigation = useRNNavigation<NAVIGATION_PROP>()
   const {

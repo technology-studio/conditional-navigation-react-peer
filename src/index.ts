@@ -15,6 +15,7 @@ export {
   InjectedNavigationContainer,
   navigationRef,
 } from './Containers/InjectedNavigationContainer'
+export { ROOT_NAVIGATOR_ID } from './Model'
 export * from './Model/Types'
 // import { navigationManager } from './Api/NavigationManager'
 // import { isInitialNavigationOptions } from './Api/NavigationOptionsHelper'
@@ -50,6 +51,7 @@ export * from './Model/Types'
 //   RootStateFragment,
 //   State as NavigationState,
 // } from './Redux/Types'
+export { ConditionalActions } from './Navigation/ConditionalActions'
 export { onActionFactory } from './Navigation/OnActionFactory'
 export { backHandlerManager } from './Api/BackHandlerManager'
 export {
@@ -57,6 +59,7 @@ export {
   conditionalNavigationManager,
   registerResolveCondition,
 } from './Api/ConditionalNavigationManager'
+export { calculateStaticTreeOrder } from './Api/NavigationUtils'
 export { useIsInitial } from './Hooks/UseIsInitial'
 export {
   type Navigation,

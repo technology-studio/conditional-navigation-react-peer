@@ -6,6 +6,7 @@
 **/
 
 import type {
+  NavigationProp,
   NavigationAction as RNNavigationAction,
   Route,
   Router,
@@ -15,7 +16,12 @@ import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useO
 import type { NavigationState } from '@react-navigation/routers'
 import type { RequiredKeys } from 'utility-types'
 
+export type DefaultNavigationProp = NavigationProp<Record<string, unknown>, keyof Record<string, unknown>, string | undefined>
+export type DefaultParamsMap = Record<string, Record<string, unknown> | undefined>
+
 export type AbstractNavigationAction = RNNavigationAction & {
+  isTransformed?: boolean,
+  navigatorId?: string,
   payload?: Record<string, unknown> & {
     name?: string,
     params?: Record<string, unknown>,
@@ -51,6 +57,10 @@ export type ValidateConditionsNavigationAction = AbstractNavigationAction & {
   type: 'VALIDATE_CONDITIONS',
 }
 
+export type CloseNavigationAction = AbstractNavigationAction & {
+  type: 'CLOSE',
+}
+
 export type ConditionalNavigationState = {
   condition: Condition,
   logicalTimestamp: number,
@@ -84,6 +94,7 @@ export type NavigationAction = | RequireConditionsNavigationAction
 | FinishFlowAndContinueNavigationAction
 | CancelFlowNavigationAction
 | ValidateConditionsNavigationAction
+| CloseNavigationAction
 
 export type UseOnActionOptions = Parameters<typeof UseOnActionType>[0] & {
   router: Router<NavigationState, AbstractNavigationAction>,
@@ -98,6 +109,7 @@ export type OnActionAttributes<ACTION extends NavigationAction> = {
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,
   originalOnAction: OnAction<NavigationAction>,
+  parentNavigationHelpers: DefaultNavigationProp | undefined,
   restArgs: unknown[],
   router: Router<NavigationState, AbstractNavigationAction>,
   routerConfigOptions: RouterConfigOptions,
@@ -110,6 +122,7 @@ export type OnActionFactoryAttributes = {
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,
+  parentNavigationHelpers: DefaultNavigationProp | undefined,
   router: Router<NavigationState, AbstractNavigationAction>,
   routerConfigOptions: RouterConfigOptions,
   screenConditionConfigMap: Record<string, ConditionConfig>,
@@ -182,3 +195,35 @@ export type WithConditionalNavigationState<
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ResolveConditionContext {}
+
+export type CustomActionHandler = () => (NavigationAction & { navigatorId: string }) | undefined | null
+
+type StaticScreenTreeBase = {
+  routeName: string,
+}
+
+export type StaticScreenTreeNavigator = StaticScreenTreeBase & {
+  type: 'NAVIGATOR',
+  id: string,
+  screens: StaticScreenTree[],
+  handlerMap?: Record<string, CustomActionHandler>,
+}
+
+type StaticScreenTreeScreen = StaticScreenTreeBase & {
+  type: 'SCREEN',
+}
+
+export type StaticScreenTree = StaticScreenTreeNavigator | StaticScreenTreeScreen
+
+export type StaticScreenTreeNavigatorWithDepth = Omit<StaticScreenTreeNavigator, 'screens'> & {
+  screens: StaticScreenTreeWithDepth[],
+  depth: number,
+  getParent: () => StaticScreenTreeNavigatorWithDepth | undefined,
+}
+
+export type StaticScreenTreeScreenWithDepth = StaticScreenTreeScreen & {
+  depth: number,
+  getParent: () => StaticScreenTreeNavigatorWithDepth | undefined,
+}
+
+export type StaticScreenTreeWithDepth = StaticScreenTreeNavigatorWithDepth | StaticScreenTreeScreenWithDepth
