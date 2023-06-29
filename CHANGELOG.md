@@ -1,3 +1,10 @@
+## [6.2.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.1.1...v6.2.0) (2023-06-29)
+
+
+### Features
+
+* add dark mode support with `isDarkThemeEnabled` prop ([#150](https://github.com/technology-studio/conditional-navigation-react-peer/issues/150)) ([8c016cf](https://github.com/technology-studio/conditional-navigation-react-peer/commit/8c016cfb25d06689ecc22b07bde28fe28743b1d1))
+
 ## [6.1.1](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.1.0...v6.1.1) (2023-06-22)
 
 
