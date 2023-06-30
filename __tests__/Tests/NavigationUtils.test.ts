@@ -7,15 +7,14 @@
 import type { NavigationState } from '@react-navigation/routers/src/types'
 
 import {
-  calculateStaticTreeOrder,
-  findStaticScreenTree,
-  findStaticNavigatorForStateKey,
+  calculateStaticTreeDepth,
+  findStaticTreeScreen,
+  findStaticNavigatorByStateKey,
   getRouteNameForStateKey,
 } from '../../src/Api/NavigationUtils'
 import {
-  type StaticScreenTreeNavigatorWithDepth,
-  type StaticScreenTreeNavigator,
-  type StaticScreenTreeWithDepth,
+  type StaticTreeNavigatorDeclaration,
+  type StaticTreeNavigator,
 } from '../../src/Model/Types'
 import {
   ROOT_NAVIGATOR_ID,
@@ -24,7 +23,7 @@ import {
   ConditionalActions,
 } from '../../src/Navigation/ConditionalActions'
 
-const tree: StaticScreenTreeWithDepth = {
+const tree: StaticTreeNavigator = {
   routeName: ROOT_NAVIGATOR_ID,
   id: ROOT_NAVIGATOR_ID,
   depth: 0,
@@ -32,12 +31,6 @@ const tree: StaticScreenTreeWithDepth = {
   screens: [
     {
       routeName: 'SPLASH_SCREEN',
-      type: 'SCREEN',
-      depth: 1,
-      getParent: () => undefined,
-    },
-    {
-      routeName: 'HAPPY_END_SCREEN',
       type: 'SCREEN',
       depth: 1,
       getParent: () => undefined,
@@ -143,12 +136,6 @@ const state: NavigationState = {
   index: 1,
   routeNames: [
     'SPLASH_SCREEN',
-    'HAPPY_END_SCREEN',
-    'SANDBOX_SCREEN',
-    'SECOND_SANDBOX_SCREEN',
-    'ERROR_DETAIL_SCREEN',
-    'SELECT_SCREEN',
-    'ABOUT_APPLICATION_SCREEN',
     'MAIN_SCREEN',
     'SECOND_TAB_SCREEN',
     'SECOND_STACK',
@@ -258,36 +245,12 @@ const state: NavigationState = {
   ],
 }
 
-const treeWithoutOrder: StaticScreenTreeNavigator = {
+const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
   routeName: ROOT_NAVIGATOR_ID,
   id: ROOT_NAVIGATOR_ID,
   screens: [
     {
       routeName: 'SPLASH_SCREEN',
-      type: 'SCREEN' as const,
-    },
-    {
-      routeName: 'HAPPY_END_SCREEN',
-      type: 'SCREEN' as const,
-    },
-    {
-      routeName: 'SANDBOX_SCREEN',
-      type: 'SCREEN' as const,
-    },
-    {
-      routeName: 'SECOND_SANDBOX_SCREEN',
-      type: 'SCREEN' as const,
-    },
-    {
-      routeName: 'ERROR_DETAIL_SCREEN',
-      type: 'SCREEN' as const,
-    },
-    {
-      routeName: 'SELECT_SCREEN',
-      type: 'SCREEN' as const,
-    },
-    {
-      routeName: 'ABOUT_APPLICATION_SCREEN',
       type: 'SCREEN' as const,
     },
     {
@@ -355,7 +318,7 @@ const treeWithoutOrder: StaticScreenTreeNavigator = {
   type: 'NAVIGATOR' as const,
   handlerMap: {},
 }
-const treeWithDepth: StaticScreenTreeNavigatorWithDepth = {
+const staticTree: StaticTreeNavigator = {
   routeName: ROOT_NAVIGATOR_ID,
   id: ROOT_NAVIGATOR_ID,
   depth: 0,
@@ -363,42 +326,6 @@ const treeWithDepth: StaticScreenTreeNavigatorWithDepth = {
   screens: [
     {
       routeName: 'SPLASH_SCREEN',
-      type: 'SCREEN' as const,
-      getParent: () => undefined,
-      depth: 1,
-    },
-    {
-      routeName: 'HAPPY_END_SCREEN',
-      type: 'SCREEN' as const,
-      getParent: () => undefined,
-      depth: 1,
-    },
-    {
-      routeName: 'SANDBOX_SCREEN',
-      type: 'SCREEN' as const,
-      getParent: () => undefined,
-      depth: 1,
-    },
-    {
-      routeName: 'SECOND_SANDBOX_SCREEN',
-      type: 'SCREEN' as const,
-      getParent: () => undefined,
-      depth: 1,
-    },
-    {
-      routeName: 'ERROR_DETAIL_SCREEN',
-      type: 'SCREEN' as const,
-      getParent: () => undefined,
-      depth: 1,
-    },
-    {
-      routeName: 'SELECT_SCREEN',
-      type: 'SCREEN' as const,
-      getParent: () => undefined,
-      depth: 1,
-    },
-    {
-      routeName: 'ABOUT_APPLICATION_SCREEN',
       type: 'SCREEN' as const,
       getParent: () => undefined,
       depth: 1,
@@ -490,31 +417,31 @@ const treeWithDepth: StaticScreenTreeNavigatorWithDepth = {
   handlerMap: {},
 }
 
-describe('findStaticScreenTree function', () => {
+describe('findStaticTreeScreen function', () => {
   test('should return undefined if the routeName does not exist', () => {
-    expect(findStaticScreenTree(tree, 'NonexistentRoute')).toBeUndefined()
+    expect(findStaticTreeScreen(tree, 'NonexistentRoute')).toBeUndefined()
   })
 
   test('should return the root navigator if the routeName is root and isRoot is true', () => {
-    expect(findStaticScreenTree(tree, ROOT_NAVIGATOR_ID)).toBe(tree)
+    expect(findStaticTreeScreen(tree, ROOT_NAVIGATOR_ID)).toBe(tree)
   })
 
   test('should return the correct navigator if the routeName exists and is not the root', () => {
     const mainScreenNavigator = tree.screens.find(screen => screen.routeName === 'MAIN_SCREEN')
-    expect(findStaticScreenTree(tree, 'MAIN_SCREEN')).toBe(mainScreenNavigator)
+    expect(findStaticTreeScreen(tree, 'MAIN_SCREEN')).toBe(mainScreenNavigator)
   })
 
   test('should return nested navigator when routeName exists in nested navigator', () => {
     const secondStackNavigator = tree.screens.find(screen => screen.routeName === 'SECOND_STACK')
-    expect(findStaticScreenTree(tree, 'SECOND_STACK')).toBe(secondStackNavigator)
+    expect(findStaticTreeScreen(tree, 'SECOND_STACK')).toBe(secondStackNavigator)
   })
 
   test('should return undefined if nonexisting routeName is used', () => {
-    expect(findStaticScreenTree(tree, 'NONEXISTENT_ROUTE_NAME')).toBeUndefined()
+    expect(findStaticTreeScreen(tree, 'NONEXISTENT_ROUTE_NAME')).toBeUndefined()
   })
 
-  test('should return the StaticScreenTreeNavigator if found in a nested screen', () => {
-    const result = findStaticScreenTree(tree, 'SECOND_TAB_SCREEN')
+  test('should return the StaticScreenTreeNavigatorDeclaration if found in a nested screen', () => {
+    const result = findStaticTreeScreen(tree, 'SECOND_TAB_SCREEN')
 
     expect(result?.routeName).toEqual('SECOND_TAB_SCREEN')
   })
@@ -538,41 +465,41 @@ describe('getRouteNameForStateKey function', () => {
   })
 })
 
-describe('findStaticNavigatorForStateKey function', () => {
+describe('findStaticNavigatorByStateKey function', () => {
   test('should return undefined if the stateKey does not exist', () => {
-    expect(findStaticNavigatorForStateKey(tree, state, 'NonexistentKey')).toBeUndefined()
+    expect(findStaticNavigatorByStateKey(tree, state, 'NonexistentKey')).toBeUndefined()
   })
 
   test('should return static navigator if the stateKey does exist', () => {
-    expect(findStaticNavigatorForStateKey(tree, state, 'stack-9x-M96FX1Pv-1-XbVNbeJ')).toBe(tree.screens[4])
+    expect(findStaticNavigatorByStateKey(tree, state, 'stack-9x-M96FX1Pv-1-XbVNbeJ')).toBe(tree.screens[3])
   })
 })
 
-describe('calculateStaticTreeOrder function', () => {
-  test('should add order to every screen', () => {
-    const rootTree = calculateStaticTreeOrder(treeWithoutOrder)
-    const mainScreen = (rootTree as StaticScreenTreeNavigatorWithDepth).screens[7]
-    const mockedMainScreen = treeWithDepth.screens[7]
+describe('calculateStaticTreeDepth function', () => {
+  test('should add depth to every screen', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const mainScreen = (rootTree as StaticTreeNavigator).screens[1]
+    const mockedMainScreen = staticTree.screens[1]
     expect(mainScreen.depth).toBe(mockedMainScreen.depth)
   })
 
   test('should get parent for screen in root stack navigator', () => {
-    const rootTree = calculateStaticTreeOrder(treeWithoutOrder)
-    const screen = (rootTree as StaticScreenTreeNavigatorWithDepth).screens[0]
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const screen = (rootTree as StaticTreeNavigator).screens[0]
     expect(screen.getParent()).toBe(rootTree)
   })
 
   test('should get parent for screen in main tab navigator', () => {
-    const rootTree = calculateStaticTreeOrder(treeWithoutOrder)
-    const mainScreen = (rootTree as StaticScreenTreeNavigatorWithDepth).screens[7]
-    const screen = (mainScreen as StaticScreenTreeNavigatorWithDepth).screens[0]
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const mainScreen = (rootTree as StaticTreeNavigator).screens[1]
+    const screen = (mainScreen as StaticTreeNavigator).screens[0]
     expect(screen.getParent()).toBe(mainScreen)
   })
 
   test('should get root parent for screen in main tab navigator', () => {
-    const rootTree = calculateStaticTreeOrder(treeWithoutOrder)
-    const mainScreen = (rootTree as StaticScreenTreeNavigatorWithDepth).screens[7]
-    const screen = (mainScreen as StaticScreenTreeNavigatorWithDepth).screens[0]
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const mainScreen = (rootTree as StaticTreeNavigator).screens[1]
+    const screen = (mainScreen as StaticTreeNavigator).screens[0]
     expect(screen.getParent()?.getParent()).toBe(rootTree)
   })
 })
