@@ -10,7 +10,7 @@ import {
   calculateStaticTreeDepth,
   findStaticTreeScreen,
   findStaticNavigatorByStateKey,
-  getRouteNameForStateKey,
+  getRouteNameByStateKey,
 } from '../../src/Api/NavigationUtils'
 import {
   type StaticTreeNavigatorDeclaration,
@@ -447,21 +447,21 @@ describe('findStaticTreeScreen function', () => {
   })
 })
 
-describe('getRouteNameForStateKey function', () => {
+describe('getRouteNameByStateKey function', () => {
   test('should return undefined if the stateKey does not exist', () => {
-    expect(getRouteNameForStateKey(state, 'NonexistentKey')).toBeUndefined()
+    expect(getRouteNameByStateKey(state, 'NonexistentKey')).toBeUndefined()
   })
 
   test('should return route name if the stateKey does exist', () => {
-    expect(getRouteNameForStateKey(state, 'stack-9x-M96FX1Pv-1-XbVNbeJ')).toBe('SECOND_STACK')
+    expect(getRouteNameByStateKey(state, 'stack-9x-M96FX1Pv-1-XbVNbeJ')).toBe('SECOND_STACK')
   })
 
   test('should return route name if the stateKey does exist and is root key', () => {
-    expect(getRouteNameForStateKey(state, 'stack-saoN1PLMXksuZ5Va5TQ79')).toBe(ROOT_NAVIGATOR_ID)
+    expect(getRouteNameByStateKey(state, 'stack-saoN1PLMXksuZ5Va5TQ79')).toBe(ROOT_NAVIGATOR_ID)
   })
 
   test('should return route name if the stateKey does exist and is nested', () => {
-    expect(getRouteNameForStateKey(state, 'stack-TrcrV6x8MEXXElnpJiLhT')).toBe('THIRD_STACK')
+    expect(getRouteNameByStateKey(state, 'stack-TrcrV6x8MEXXElnpJiLhT')).toBe('THIRD_STACK')
   })
 })
 

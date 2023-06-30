@@ -208,7 +208,7 @@ export const findStaticTreeScreen = (
   }
 }
 
-export const getRouteNameForStateKey = (
+export const getRouteNameByStateKey = (
   state: NavigationState,
   stateKey: string,
   isRoot = true,
@@ -222,7 +222,7 @@ export const getRouteNameForStateKey = (
       return route.name
     }
     if (route.state?.routes != null) {
-      const routeName = getRouteNameForStateKey(route.state as NavigationState, stateKey, false)
+      const routeName = getRouteNameByStateKey(route.state as NavigationState, stateKey, false)
       if (routeName != null) {
         return routeName
       }
@@ -235,7 +235,7 @@ export const findStaticNavigatorByStateKey = (
   state: NavigationState,
   stateKey: string,
 ): StaticTreeNavigator | undefined => {
-  const routeName = getRouteNameForStateKey(state, stateKey)
+  const routeName = getRouteNameByStateKey(state, stateKey)
   if (routeName == null) {
     return undefined
   }
