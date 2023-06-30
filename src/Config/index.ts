@@ -7,11 +7,11 @@
 
 import { ConfigManager } from '@txo/config-manager'
 
-import { type StaticScreenTreeNavigatorWithDepth } from '../Model/Types'
+import { type StaticTreeNavigator } from '../Model/Types'
 
 export type Config = {
   ignoreConditionalNavigation: boolean,
-  staticScreenTree: StaticScreenTreeNavigatorWithDepth,
+  staticScreenTree: StaticTreeNavigator,
 }
 
 export const configManager = new ConfigManager<Config>({

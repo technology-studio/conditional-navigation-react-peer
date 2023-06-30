@@ -198,32 +198,32 @@ export interface ResolveConditionContext {}
 
 export type CustomActionHandler = () => (NavigationAction & { navigatorId: string }) | undefined | null
 
-type StaticScreenTreeBase = {
+type StaticTreeNodeBaseDeclaration = {
   routeName: string,
 }
 
-export type StaticScreenTreeNavigator = StaticScreenTreeBase & {
+export type StaticTreeNavigatorDeclaration = StaticTreeNodeBaseDeclaration & {
   type: 'NAVIGATOR',
   id: string,
-  screens: StaticScreenTree[],
+  screens: StaticTreeNodeDeclaration[],
   handlerMap?: Record<string, CustomActionHandler>,
 }
 
-type StaticScreenTreeScreen = StaticScreenTreeBase & {
+type StaticTreeScreenDeclaration = StaticTreeNodeBaseDeclaration & {
   type: 'SCREEN',
 }
 
-export type StaticScreenTree = StaticScreenTreeNavigator | StaticScreenTreeScreen
+export type StaticTreeNodeDeclaration = StaticTreeNavigatorDeclaration | StaticTreeScreenDeclaration
 
-export type StaticScreenTreeNavigatorWithDepth = Omit<StaticScreenTreeNavigator, 'screens'> & {
-  screens: StaticScreenTreeWithDepth[],
+export type StaticTreeNavigator = Omit<StaticTreeNavigatorDeclaration, 'screens'> & {
+  screens: StaticTreeNode[],
   depth: number,
-  getParent: () => StaticScreenTreeNavigatorWithDepth | undefined,
+  getParent: () => StaticTreeNavigator | undefined,
 }
 
-export type StaticScreenTreeScreenWithDepth = StaticScreenTreeScreen & {
+export type StaticTreeScreen = StaticTreeScreenDeclaration & {
   depth: number,
-  getParent: () => StaticScreenTreeNavigatorWithDepth | undefined,
+  getParent: () => StaticTreeNavigator | undefined,
 }
 
-export type StaticScreenTreeWithDepth = StaticScreenTreeNavigatorWithDepth | StaticScreenTreeScreenWithDepth
+export type StaticTreeNode = StaticTreeNavigator | StaticTreeScreen

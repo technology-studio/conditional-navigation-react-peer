@@ -20,10 +20,10 @@ import type {
   ValidateConditionsNavigationAction,
   NavigateNavigationAction,
   CustomActionHandler,
-  StaticScreenTreeNavigatorWithDepth,
+  StaticTreeNavigator,
 } from '../Model/Types'
 import {
-  findStaticNavigatorForStateKey,
+  findStaticNavigatorByStateKey,
   transformForNearestExistingNavigator,
 } from '../Api/NavigationUtils'
 import { configManager } from '../Config'
@@ -40,12 +40,12 @@ import { onNavigateAction } from './Navigate'
 
 const log = new Log('txo.conditional-navigation-react.Navigation.onActionFactory')
 
-const getHandlerWithPathFromParents = (staticScreenTreeNavigator: StaticScreenTreeNavigatorWithDepth, actionType: string): CustomActionHandler | undefined => {
-  const handler = staticScreenTreeNavigator.handlerMap?.[actionType]
+const getHandlerWithPathFromParents = (staticTreeNavigator: StaticTreeNavigator, actionType: string): CustomActionHandler | undefined => {
+  const handler = staticTreeNavigator.handlerMap?.[actionType]
   if (handler != null) {
     return handler
   }
-  const parent = staticScreenTreeNavigator.getParent()
+  const parent = staticTreeNavigator.getParent()
   if (parent == null) {
     return undefined
   }
@@ -66,7 +66,7 @@ const onExplicitNavigatorAction = (onActionAttributes: OnActionAttributes<Naviga
   const rootState = getRootState()
   const navigatorState = getState()
   const isRootNavigator = navigatorState.key === rootState.key
-  const staticNavigator = findStaticNavigatorForStateKey(staticScreenTree, rootState, navigatorState.key)
+  const staticNavigator = findStaticNavigatorByStateKey(staticScreenTree, rootState, navigatorState.key)
   const navigatorId = staticNavigator?.id
   const shouldConsumeAction = isNotEmptyString(action.navigatorId)
     ? navigatorId === action.navigatorId || isRootNavigator

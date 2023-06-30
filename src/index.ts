@@ -59,7 +59,7 @@ export {
   conditionalNavigationManager,
   registerResolveCondition,
 } from './Api/ConditionalNavigationManager'
-export { calculateStaticTreeOrder } from './Api/NavigationUtils'
+export { calculateStaticTreeDepth } from './Api/NavigationUtils'
 export { useIsInitial } from './Hooks/UseIsInitial'
 export {
   type Navigation,

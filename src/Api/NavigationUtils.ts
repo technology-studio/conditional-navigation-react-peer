@@ -24,10 +24,10 @@ import type {
   OnAction,
   ResolveConditionContext,
   ResolveConditionsResult,
-  StaticScreenTree,
-  StaticScreenTreeWithDepth,
   WithConditionalNavigationState,
-  StaticScreenTreeNavigatorWithDepth,
+  StaticTreeNavigator,
+  StaticTreeNodeDeclaration,
+  StaticTreeNode,
 } from '../Model/Types'
 import { ROOT_NAVIGATOR_ID } from '../Model'
 
@@ -185,10 +185,10 @@ export const getResolveConditionsResult = (
   }
 }
 
-export const findStaticScreenTree = (
-  tree: StaticScreenTreeWithDepth,
+export const findStaticTreeScreen = (
+  tree: StaticTreeNavigator,
   routeName: string,
-): StaticScreenTreeWithDepth | undefined => {
+): StaticTreeNode | undefined => {
   if (tree.routeName === routeName) {
     return tree
   }
@@ -199,7 +199,7 @@ export const findStaticScreenTree = (
         foundScreen = screen
       }
       if ('screens' in screen) {
-        foundScreen = findStaticScreenTree(screen, routeName)
+        foundScreen = findStaticTreeScreen(screen, routeName)
       }
       if (foundScreen != null) {
         return foundScreen
@@ -230,16 +230,16 @@ export const getRouteNameForStateKey = (
   }
 }
 
-export const findStaticNavigatorForStateKey = (
-  tree: StaticScreenTreeWithDepth,
+export const findStaticNavigatorByStateKey = (
+  tree: StaticTreeNavigator,
   state: NavigationState,
   stateKey: string,
-): StaticScreenTreeNavigatorWithDepth | undefined => {
+): StaticTreeNavigator | undefined => {
   const routeName = getRouteNameForStateKey(state, stateKey)
   if (routeName == null) {
     return undefined
   }
-  return findStaticScreenTree(tree, routeName) as StaticScreenTreeNavigatorWithDepth
+  return findStaticTreeScreen(tree, routeName) as StaticTreeNavigator
 }
 
 const createParams = (path: string[]): Params | undefined => {
@@ -285,29 +285,29 @@ const getCommonStaticNavigatorWithPaths = ({
   currentStaticTreeScreen,
   finalStaticTreeScreen,
 }: {
-  currentStaticTreeScreen?: StaticScreenTreeWithDepth,
-  finalStaticTreeScreen?: StaticScreenTreeWithDepth,
+  currentStaticTreeScreen: StaticTreeNode,
+  finalStaticTreeScreen: StaticTreeNode,
 }): {
-  commonStaticNavigator: StaticScreenTreeNavigatorWithDepth | undefined,
+  commonStaticNavigator: StaticTreeNavigator,
   targetPathFromCommonNavigator: string[],
   sourcePathFromCommonNavigator: string[],
 } => {
-  let leftDepth = currentStaticTreeScreen?.depth ?? 0
-  let rightDepth = finalStaticTreeScreen?.depth ?? 0
-  let leftParent = currentStaticTreeScreen
-  let rightParent = finalStaticTreeScreen
+  let leftDepth = currentStaticTreeScreen.depth ?? 0
+  let rightDepth = finalStaticTreeScreen.depth ?? 0
+  let leftParent: StaticTreeNode = currentStaticTreeScreen
+  let rightParent: StaticTreeNode = finalStaticTreeScreen
   const leftPath: string[] = []
   const rightPath: string[] = []
   const biggerDepth = Math.max(leftDepth, rightDepth)
   for (let i = biggerDepth; i > 1; i--) {
     if (leftDepth === i) {
-      leftParent = leftParent?.getParent()
-      leftPath.unshift(is(leftParent?.routeName))
+      leftParent = is(leftParent.getParent())
+      leftPath.unshift(is(leftParent.routeName))
       leftDepth--
     }
     if (rightDepth === i) {
-      rightParent = rightParent?.getParent()
-      rightPath.unshift(is(rightParent?.routeName))
+      rightParent = is(rightParent.getParent())
+      rightPath.unshift(rightParent.routeName)
       rightDepth--
     }
     if (leftParent?.routeName === rightParent?.routeName) {
@@ -316,7 +316,7 @@ const getCommonStaticNavigatorWithPaths = ({
   }
 
   return {
-    commonStaticNavigator: leftParent as StaticScreenTreeNavigatorWithDepth | undefined,
+    commonStaticNavigator: leftParent as StaticTreeNavigator,
     targetPathFromCommonNavigator: rightPath,
     sourcePathFromCommonNavigator: leftPath,
   }
@@ -325,7 +325,7 @@ const getCommonStaticNavigatorWithPaths = ({
 export const transformForNearestExistingNavigator = (
   action: NavigationAction,
   getRootState: () => NavigationState,
-  tree: StaticScreenTreeNavigatorWithDepth,
+  tree: StaticTreeNavigator,
 ): NavigationAction => {
   if (action.isTransformed ?? false) {
     return action
@@ -336,10 +336,12 @@ export const transformForNearestExistingNavigator = (
   const targetRouteName = last(getRoutePathFromAction(action) ?? [])
 
   const currentStaticTreeScreen = isNotEmptyString(activeRouteName)
-    ? findStaticScreenTree(tree, activeRouteName)
+    ? findStaticTreeScreen(tree, activeRouteName)
     : undefined
-  const finalStaticTreeScreen = findStaticScreenTree(tree, targetRouteName)
-
+  const finalStaticTreeScreen = findStaticTreeScreen(tree, targetRouteName)
+  if (currentStaticTreeScreen == null || finalStaticTreeScreen == null) {
+    throw Error(`Missing static tree screen for route name: ${currentStaticTreeScreen == null ? activeRouteName : targetRouteName}`)
+  }
   if (currentStaticTreeScreen === finalStaticTreeScreen) {
     return action
   }
@@ -376,16 +378,16 @@ export const transformForNearestExistingNavigator = (
   }
 }
 
-export const calculateStaticTreeOrder = (tree: StaticScreenTree, parent?: StaticScreenTreeNavigatorWithDepth, depth = 0): StaticScreenTreeWithDepth => {
-  const treeWithDepth: StaticScreenTreeWithDepth = {
-    ...tree as StaticScreenTreeWithDepth,
+export const calculateStaticTreeDepth = (tree: StaticTreeNodeDeclaration, parent?: StaticTreeNavigator, depth = 0): StaticTreeNode => {
+  const treeWithDepth: StaticTreeNode = {
+    ...tree as StaticTreeNode,
     getParent: () => parent,
     depth,
   }
   if ('screens' in treeWithDepth && 'screens' in tree) {
     const { screens } = tree
     treeWithDepth.screens = screens.map((screen) => (
-      calculateStaticTreeOrder(screen, treeWithDepth, depth + 1)
+      calculateStaticTreeDepth(screen, treeWithDepth, depth + 1)
     ))
   }
   return treeWithDepth
