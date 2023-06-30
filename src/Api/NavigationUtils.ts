@@ -158,12 +158,9 @@ export const onResolveConditionsResultAction = (
 ): boolean => {
   const activeLeafRoute = getActiveLeafRoute(state)
   if (activeLeafRoute.params == null) {
-    activeLeafRoute.params = {
-      _conditionalNavigationState: resolveConditionsResult.conditionalNavigationState,
-    }
-  } else {
-    activeLeafRoute.params._conditionalNavigationState = resolveConditionsResult.conditionalNavigationState
+    activeLeafRoute.params = {}
   }
+  activeLeafRoute.params._conditionalNavigationState = resolveConditionsResult.conditionalNavigationState
   return onAction(resolveConditionsResult.navigationAction, ...restArgs)
 }
 
