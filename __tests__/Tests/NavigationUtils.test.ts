@@ -11,6 +11,7 @@ import {
   findStaticTreeScreen,
   findStaticNavigatorByStateKey,
   getRouteNameByStateKey,
+  transformForNearestExistingNavigator,
 } from '../../src/Api/NavigationUtils'
 import {
   type StaticTreeNavigatorDeclaration,
@@ -121,6 +122,28 @@ const tree: StaticTreeNavigator = {
           depth: 2,
           getParent: () => undefined,
         },
+        {
+          routeName: 'THIRD_STACK',
+          id: 'thirdStack',
+          type: 'NAVIGATOR',
+          handlerMap: {},
+          depth: 2,
+          getParent: () => undefined,
+          screens: [
+            {
+              routeName: 'SCREEN5',
+              type: 'SCREEN',
+              depth: 3,
+              getParent: () => undefined,
+            },
+            {
+              routeName: 'SCREEN6',
+              type: 'SCREEN',
+              depth: 3,
+              getParent: () => undefined,
+            },
+          ],
+        },
       ],
     },
   ],
@@ -128,16 +151,14 @@ const tree: StaticTreeNavigator = {
   handlerMap: {},
 }
 
-// NOTE: navigated to MAIN_SCREEN -> HAPPY_END_TAB -> SECOND_STACK -> SCREEN3 -> SCREEN4
+// NOTE: navigated to MAIN_SCREEN -> SECOND_STACK -> THIRD_STACK -> SCREEN6
 const state: NavigationState = {
   stale: false,
   type: 'stack',
   key: 'stack-saoN1PLMXksuZ5Va5TQ79',
   index: 1,
   routeNames: [
-    'SPLASH_SCREEN',
     'MAIN_SCREEN',
-    'SECOND_TAB_SCREEN',
     'SECOND_STACK',
   ],
   routes: [
@@ -205,6 +226,7 @@ const state: NavigationState = {
         routeNames: [
           'SCREEN3',
           'SCREEN4',
+          'THIRD_STACK',
         ],
         routes: [
           {
@@ -266,11 +288,11 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
           handlerMap: {},
           screens: [
             {
-              routeName: 'SCREEN5',
+              routeName: 'SCREEN7',
               type: 'SCREEN' as const,
             },
             {
-              routeName: 'SCREEN6',
+              routeName: 'SCREEN8',
               type: 'SCREEN' as const,
             },
           ],
@@ -311,6 +333,22 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
         {
           routeName: 'SCREEN4',
           type: 'SCREEN' as const,
+        },
+        {
+          routeName: 'THIRD_STACK',
+          id: 'thirdStack',
+          type: 'NAVIGATOR' as const,
+          handlerMap: {},
+          screens: [
+            {
+              routeName: 'SCREEN5',
+              type: 'SCREEN' as const,
+            },
+            {
+              routeName: 'SCREEN6',
+              type: 'SCREEN' as const,
+            },
+          ],
         },
       ],
     },
@@ -501,5 +539,40 @@ describe('calculateStaticTreeDepth function', () => {
     const mainScreen = (rootTree as StaticTreeNavigator).screens[1]
     const screen = (mainScreen as StaticTreeNavigator).screens[0]
     expect(screen.getParent()?.getParent()).toBe(rootTree)
+  })
+})
+
+describe('transformForNearestExistingNavigator function', () => {
+  test('should create action for navigating to neighbouring navigator (with parent navigator in action)', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'EXAMPLE_TAB',
+      params: {
+        screen: 'SCREEN7',
+      },
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual({
+      ...ConditionalActions.navigate({
+        routeName: 'MAIN_SCREEN',
+        params: {
+          screen: 'EXAMPLE_TAB',
+          params: {
+            screen: 'SCREEN7',
+          },
+        },
+      }),
+      navigatorId: 'secondStack',
+      isTransformed: true,
+    })
+  })
+
+  test('should not change action', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'SCREEN5',
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual(originalAction)
   })
 })
