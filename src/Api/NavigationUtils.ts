@@ -256,9 +256,9 @@ const createParams = (path: string[]): Params | undefined => {
 }
 
 const createNavigateActionForPath = (path: string[], originalAction: NavigationAction): NavigationAction => {
-  const pathFromAction = getRoutePathFromAction(originalAction)
+  const pathFromAction = getRoutePathFromAction(originalAction) ?? []
   const [routeName, ...restPath] = path
-  const nextPath = pathFromAction != null ? [...restPath, ...pathFromAction] : restPath
+  const nextPath = Array.from(new Set([...restPath, ...pathFromAction]))
   return {
     type: 'NAVIGATE',
     payload: {
