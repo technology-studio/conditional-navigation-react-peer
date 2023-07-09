@@ -19,7 +19,6 @@ import type {
   RequireConditionsNavigationAction,
   ValidateConditionsNavigationAction,
   NavigateNavigationAction,
-  CustomActionHandler,
   StaticTreeNavigator,
 } from '../Model/Types'
 import {
@@ -40,77 +39,70 @@ import { onNavigateAction } from './Navigate'
 
 const log = new Log('txo.conditional-navigation-react.Navigation.onActionFactory')
 
-const getHandlerWithPathFromParents = (staticTreeNavigator: StaticTreeNavigator, actionType: string): CustomActionHandler | undefined => {
+const getHandlerResultWithPathFromParents = (staticTreeNavigator: StaticTreeNavigator, actionType: string): (NavigationAction & { navigatorId: string }) | undefined | null => {
   const handler = staticTreeNavigator.handlerMap?.[actionType]
   if (handler != null) {
-    return handler
+    const handlerResult = handler()
+    if (handlerResult !== undefined) {
+      return handlerResult
+    }
   }
   const parent = staticTreeNavigator.getParent()
   if (parent == null) {
     return undefined
   }
-  return getHandlerWithPathFromParents(parent, actionType)
+  return getHandlerResultWithPathFromParents(parent, actionType)
 }
 
-const onExplicitNavigatorAction = (onActionAttributes: OnActionAttributes<NavigationAction & { navigatorId?: string }>): boolean => {
+const getCurrentStaticTreeNavigator = (
+  onActionAttributes: OnActionAttributes<NavigationAction>,
+): StaticTreeNavigator => {
   const {
-    action,
     getState,
     getRootState,
-    nextOnAction,
-    parentNavigationHelpers,
-    restArgs,
   } = onActionAttributes
-
   const { staticScreenTree } = configManager.config
   const rootState = getRootState()
   const navigatorState = getState()
-  const isRootNavigator = navigatorState.key === rootState.key
-  const staticNavigator = findStaticNavigatorByStateKey(staticScreenTree, rootState, navigatorState.key)
-  const navigatorId = staticNavigator?.id
-  const shouldConsumeAction = isNotEmptyString(action.navigatorId)
-    ? navigatorId === action.navigatorId || isRootNavigator
-    : true
+  return findStaticNavigatorByStateKey(staticScreenTree, rootState, navigatorState.key)
+}
 
-  const handler: CustomActionHandler | undefined = staticNavigator != null
-    ? getHandlerWithPathFromParents(staticNavigator, action.type)
-    : undefined
-  const handlerResult = handler?.()
+const onExplicitNavigatorAction = (
+  currentStaticTreeNavigator: StaticTreeNavigator,
+  onActionAttributes: OnActionAttributes<NavigationAction & { navigatorId?: string }>,
+): boolean => {
+  const {
+    action,
+    nextOnAction,
+    navigation,
+    restArgs,
+  } = onActionAttributes
 
   log.debug('ON EXPLICIT NAVIGATOR ACTION', {
     action,
-    navigatorId,
-    handlerResult,
-    shouldConsumeAction,
-    staticScreenTree,
+    currentStaticTreeNavigator,
   })
 
-  if (shouldConsumeAction && action.navigatorId != null) {
-    return false
-  }
-  if (
-    handlerResult === undefined &&
-    action.navigatorId != null &&
-    action.navigatorId !== navigatorId
-  ) {
-    parentNavigationHelpers?.dispatch(action)
-    return true
-  }
-  if (handler == null) {
-    return false
-  }
+  const handlerResult = getHandlerResultWithPathFromParents(currentStaticTreeNavigator, action.type)
   if (handlerResult === null) {
     return true
   }
   if (handlerResult != null) {
-    if (handlerResult.navigatorId !== navigatorId) {
-      parentNavigationHelpers?.dispatch(handlerResult)
+    if (handlerResult.navigatorId !== currentStaticTreeNavigator.id) {
+      navigation.dispatch(handlerResult)
       return true
     }
     return nextOnAction(handlerResult, ...restArgs)
   }
   return false
 }
+
+const isActionForAnotherNavigator = (
+  currentStaticTreeNavigator: StaticTreeNavigator,
+  action: NavigationAction,
+): boolean => (
+  isNotEmptyString(action.navigatorId) && currentStaticTreeNavigator.id !== action.navigatorId
+)
 
 export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>): boolean => {
   const {
@@ -119,7 +111,7 @@ export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) =>
     getContext,
     getState,
     getRootState,
-    parentNavigationHelpers,
+    navigation,
     setState,
     router,
     routerConfigOptions,
@@ -153,34 +145,55 @@ export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) =>
         ? nextOnAction(nextAction)
         : originalOnAction(nextAction, ...restArgs)
     },
-    parentNavigationHelpers,
+    navigation,
     restArgs,
     router,
     routerConfigOptions,
     screenConditionConfigMap,
   } satisfies OnActionAttributes<NavigationAction>
 
-  if (onExplicitNavigatorAction(onActionAttributes)) {
+  const currentStaticTreeNavigator = getCurrentStaticTreeNavigator(onActionAttributes)
+
+  if (isActionForAnotherNavigator(currentStaticTreeNavigator, action)) {
+    return false
+  }
+
+  if (onExplicitNavigatorAction(currentStaticTreeNavigator, onActionAttributes)) {
     return true
   }
 
+  let onActionResult
+
   switch (action.type) {
     case 'CANCEL_FLOW':
-      return onCancelFlowAction(onActionAttributes as OnActionAttributes<CancelFlowNavigationAction>)
+      onActionResult = onCancelFlowAction(onActionAttributes as OnActionAttributes<CancelFlowNavigationAction>)
+      break
     // NOTE: this is a fallback for when close is not handled by custom handler
     case 'CLOSE':
-      return onCloseAction(onActionAttributes as OnActionAttributes<CloseNavigationAction>)
+      onActionResult = onCloseAction(onActionAttributes as OnActionAttributes<CloseNavigationAction>)
+      break
     case 'FINISH_FLOW_AND_CONTINUE':
-      return onFinishFlowAndContinueAction(onActionAttributes as OnActionAttributes<FinishFlowAndContinueNavigationAction>)
+      onActionResult = onFinishFlowAndContinueAction(onActionAttributes as OnActionAttributes<FinishFlowAndContinueNavigationAction>)
+      break
     case 'BACK':
-      return onBackAction(onActionAttributes as OnActionAttributes<BackNavigationAction>)
+      onActionResult = onBackAction(onActionAttributes as OnActionAttributes<BackNavigationAction>)
+      break
     case 'NAVIGATE':
-      return onNavigateAction(onActionAttributes as OnActionAttributes<NavigateNavigationAction>)
+      onActionResult = onNavigateAction(onActionAttributes as OnActionAttributes<NavigateNavigationAction>)
+      break
     case 'REQUIRE_CONDITIONS':
-      return onRequireConditionsAction(onActionAttributes as OnActionAttributes<RequireConditionsNavigationAction>)
+      onActionResult = onRequireConditionsAction(onActionAttributes as OnActionAttributes<RequireConditionsNavigationAction>)
+      break
     case 'VALIDATE_CONDITIONS':
-      return onValidateConditionsAction(onActionAttributes as OnActionAttributes<ValidateConditionsNavigationAction>)
+      onActionResult = onValidateConditionsAction(onActionAttributes as OnActionAttributes<ValidateConditionsNavigationAction>)
+      break
     default:
-      return originalOnAction(...args)
+      onActionResult = originalOnAction(...args)
   }
+
+  if (!onActionResult && action.navigatorId === currentStaticTreeNavigator.id) {
+    throw new Error(`Fallbacking action ${action.type} forced to current navigator ${action.navigatorId} should never happen`)
+  }
+
+  return onActionResult
 }

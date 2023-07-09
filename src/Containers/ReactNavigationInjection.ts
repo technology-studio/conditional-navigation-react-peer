@@ -10,7 +10,9 @@ import {
 } from 'react'
 import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useOnAction'
 import type NavigationContainerRefContextType from '@react-navigation/core/lib/typescript/src/NavigationContainerRefContext'
-import { NavigationContext } from '@react-navigation/core'
+import {
+  NavigationContext,
+} from '@react-navigation/core'
 
 import type {
   NavigationAction,
@@ -40,7 +42,7 @@ useOnActionObject.default = function useOnAction (options: UseOnActionOptions): 
   const onAction = originalUseOnAction(options) as OnAction<NavigationAction>
   const { getState, setState, router, routerConfigOptions } = options ?? {}
   const navigationContainerRefContext = useContext(NavigationContainerRefContext)
-  const parentNavigationHelpers = useContext(NavigationContext)
+  const navigation = useContext(NavigationContext)
 
   const nextOnAction: typeof onAction = useCallback((...args: Parameters<OnAction<NavigationAction>>) => {
     if (onActionFactory != null) {
@@ -50,7 +52,8 @@ useOnActionObject.default = function useOnAction (options: UseOnActionOptions): 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         getRootState: navigationContainerRefContext!.getRootState,
         nextOnAction,
-        parentNavigationHelpers,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        navigation: navigation!,
         screenConditionConfigMap,
         setState,
         router,
@@ -59,7 +62,7 @@ useOnActionObject.default = function useOnAction (options: UseOnActionOptions): 
     }
 
     return onAction(...args)
-  }, [getState, navigationContainerRefContext, onAction, parentNavigationHelpers, router, routerConfigOptions, setState])
+  }, [onAction, getState, navigationContainerRefContext, navigation, setState, router, routerConfigOptions])
 
   return nextOnAction
 }

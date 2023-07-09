@@ -19,7 +19,7 @@ import type {
 import {
   onResolveConditionsResultAction,
   getExistingRouteByRouteName,
-  getRoutePathFromAction,
+  getRoutePathFromNavigateAction,
   getResolveConditionsResult,
 } from '../Api/NavigationUtils'
 import { cloneState } from '../Api/StateHelper'
@@ -46,7 +46,7 @@ export const onNavigateAction = ({
   } = action
   const navigationState = getRootState()
 
-  const nextRoutePath = getRoutePathFromAction(action) ?? []
+  const nextRoutePath = getRoutePathFromNavigateAction(action) ?? []
   const leafRouteName = last(nextRoutePath)
   log.debug('NAVIGATE', { action, navigationState })
   if (!(skipConditionalNavigation ?? false)) {

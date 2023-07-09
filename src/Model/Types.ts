@@ -109,7 +109,7 @@ export type OnActionAttributes<ACTION extends NavigationAction> = {
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,
   originalOnAction: OnAction<NavigationAction>,
-  parentNavigationHelpers: DefaultNavigationProp | undefined,
+  navigation: DefaultNavigationProp,
   restArgs: unknown[],
   router: Router<NavigationState, AbstractNavigationAction>,
   routerConfigOptions: RouterConfigOptions,
@@ -122,7 +122,7 @@ export type OnActionFactoryAttributes = {
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,
-  parentNavigationHelpers: DefaultNavigationProp | undefined,
+  navigation: DefaultNavigationProp,
   router: Router<NavigationState, AbstractNavigationAction>,
   routerConfigOptions: RouterConfigOptions,
   screenConditionConfigMap: Record<string, ConditionConfig>,
@@ -205,7 +205,7 @@ type StaticTreeNodeBaseDeclaration = {
 export type StaticTreeNavigatorDeclaration = StaticTreeNodeBaseDeclaration & {
   type: 'NAVIGATOR',
   id: string,
-  screens: StaticTreeNodeDeclaration[],
+  children: StaticTreeNodeDeclaration[],
   handlerMap?: Record<string, CustomActionHandler>,
 }
 
@@ -215,8 +215,8 @@ type StaticTreeScreenDeclaration = StaticTreeNodeBaseDeclaration & {
 
 export type StaticTreeNodeDeclaration = StaticTreeNavigatorDeclaration | StaticTreeScreenDeclaration
 
-export type StaticTreeNavigator = Omit<StaticTreeNavigatorDeclaration, 'screens'> & {
-  screens: StaticTreeNode[],
+export type StaticTreeNavigator = Omit<StaticTreeNavigatorDeclaration, 'children'> & {
+  children: StaticTreeNode[],
   depth: number,
   getParent: () => StaticTreeNavigator | undefined,
 }
