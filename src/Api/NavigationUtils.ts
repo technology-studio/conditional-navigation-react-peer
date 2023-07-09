@@ -185,24 +185,29 @@ export const getResolveConditionsResult = (
 export const findStaticTreeScreen = (
   tree: StaticTreeNavigator,
   routeName: string,
-): StaticTreeNode | undefined => {
+  isRoot = true,
+): StaticTreeNode => {
   if (tree.routeName === routeName) {
     return tree
   }
+  let foundScreen
   if ('screens' in tree) {
     for (const screen of tree.screens) {
-      let foundScreen
       if (screen.routeName === routeName) {
         foundScreen = screen
-      }
-      if ('screens' in screen) {
-        foundScreen = findStaticTreeScreen(screen, routeName)
-      }
-      if (foundScreen != null) {
-        return foundScreen
+        break
+      } else if ('screens' in screen) {
+        foundScreen = findStaticTreeScreen(screen, routeName, false)
+        if (foundScreen != null) {
+          break
+        }
       }
     }
   }
+  if (isRoot && foundScreen == null) {
+    throw new Error(`Missing static tree screen for route name: ${routeName}`)
+  }
+  return foundScreen as StaticTreeNode
 }
 
 export const getRouteNameByStateKey = (
