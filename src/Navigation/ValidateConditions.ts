@@ -23,7 +23,7 @@ export const onValidateConditionsAction = ({
   screenConditionConfigMap,
 }: OnActionAttributes<ValidateConditionsNavigationAction>): boolean => {
   const state = getRootState()
-  const currentActiveScreenPath = getActiveRoutePath(state) ?? []
+  const currentActiveScreenPath = getActiveRoutePath(state)
   const resolveConditionsResult = getResolveConditionsResult(
     action,
     state,

@@ -46,7 +46,7 @@ export const onNavigateAction = ({
   } = action
   const navigationState = getRootState()
 
-  const nextRoutePath = getRoutePathFromNavigateAction(action) ?? []
+  const nextRoutePath = getRoutePathFromNavigateAction(action)
   const leafRouteName = last(nextRoutePath)
   log.debug('NAVIGATE', { action, navigationState })
   if (!(skipConditionalNavigation ?? false)) {

@@ -92,12 +92,12 @@ export const getRoutePathFromNavigateAction = (action: NavigateNavigationAction)
   return (routePath != null) ? [name, ...routePath] : [name]
 }
 
-export const getActiveRoutePath = (
+const getActiveRoutePathInternal = (
   state: NavigationState | Route<string> | undefined,
   tempIndex = 0,
 ): string[] | undefined => {
   if (state != null && 'state' in state && state.state != null) {
-    return getActiveRoutePath(state.state as NavigationState, tempIndex)
+    return getActiveRoutePathInternal(state.state as NavigationState, tempIndex)
   }
   if ((state == null) || !('type' in state)) {
     return undefined
@@ -108,13 +108,21 @@ export const getActiveRoutePath = (
     type,
   } = state
   if (type === 'stack' && tempIndex < index) {
-    const nextPath = getActiveRoutePath(state, tempIndex + 1)
+    const nextPath = getActiveRoutePathInternal(state, tempIndex + 1)
     return (nextPath != null) ? [routes[tempIndex].name, ...nextPath] : [routes[tempIndex].name]
   } else if (type === 'tab' || type === 'stack') {
-    const nextPath = getActiveRoutePath(routes[index])
+    const nextPath = getActiveRoutePathInternal(routes[index])
     return (nextPath != null) ? [routes[index].name, ...nextPath] : [routes[index].name]
   }
   return undefined
+}
+
+export const getActiveRoutePath = (state: NavigationState): string[] => {
+  const routePath = getActiveRoutePathInternal(state)
+  if (routePath == null) {
+    throw new Error('Missing active route path.')
+  }
+  return routePath
 }
 
 export const calculateIsInitial = (state: NavigationState, currentRoute: Route<string>): boolean => {
