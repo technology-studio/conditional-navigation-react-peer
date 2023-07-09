@@ -29,7 +29,7 @@ const tree: StaticTreeNavigator = {
   id: ROOT_NAVIGATOR_ID,
   depth: 0,
   getParent: () => undefined,
-  screens: [
+  children: [
     {
       routeName: 'SPLASH_SCREEN',
       type: 'SCREEN',
@@ -43,7 +43,7 @@ const tree: StaticTreeNavigator = {
       handlerMap: {},
       depth: 1,
       getParent: () => undefined,
-      screens: [
+      children: [
         {
           routeName: 'EXAMPLE_TAB',
           id: 'EXAMPLE_TAB',
@@ -51,7 +51,7 @@ const tree: StaticTreeNavigator = {
           handlerMap: {},
           depth: 2,
           getParent: () => undefined,
-          screens: [
+          children: [
             {
               routeName: 'SCREEN7',
               type: 'SCREEN',
@@ -81,7 +81,7 @@ const tree: StaticTreeNavigator = {
       handlerMap: {},
       depth: 1,
       getParent: () => undefined,
-      screens: [
+      children: [
         {
           routeName: 'SECOND_EXAMPLE_TAB',
           type: 'SCREEN',
@@ -109,7 +109,7 @@ const tree: StaticTreeNavigator = {
       },
       depth: 1,
       getParent: () => undefined,
-      screens: [
+      children: [
         {
           routeName: 'SCREEN3',
           type: 'SCREEN',
@@ -129,7 +129,7 @@ const tree: StaticTreeNavigator = {
           handlerMap: {},
           depth: 2,
           getParent: () => undefined,
-          screens: [
+          children: [
             {
               routeName: 'SCREEN5',
               type: 'SCREEN',
@@ -270,7 +270,7 @@ const state: NavigationState = {
 const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
   routeName: ROOT_NAVIGATOR_ID,
   id: ROOT_NAVIGATOR_ID,
-  screens: [
+  children: [
     {
       routeName: 'SPLASH_SCREEN',
       type: 'SCREEN' as const,
@@ -280,13 +280,13 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
       id: 'mainScreen',
       type: 'NAVIGATOR' as const,
       handlerMap: {},
-      screens: [
+      children: [
         {
           routeName: 'EXAMPLE_TAB',
           id: 'EXAMPLE_TAB',
           type: 'NAVIGATOR' as const,
           handlerMap: {},
-          screens: [
+          children: [
             {
               routeName: 'SCREEN7',
               type: 'SCREEN' as const,
@@ -308,7 +308,7 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
       id: 'secondTabScreen',
       type: 'NAVIGATOR' as const,
       handlerMap: {},
-      screens: [
+      children: [
         {
           routeName: 'SECOND_EXAMPLE_TAB',
           type: 'SCREEN' as const,
@@ -325,7 +325,7 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
       type: 'NAVIGATOR' as const,
       // handlerMap: {},
       handlerMap: {},
-      screens: [
+      children: [
         {
           routeName: 'SCREEN3',
           type: 'SCREEN' as const,
@@ -339,7 +339,7 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
           id: 'thirdStack',
           type: 'NAVIGATOR' as const,
           handlerMap: {},
-          screens: [
+          children: [
             {
               routeName: 'SCREEN5',
               type: 'SCREEN' as const,
@@ -361,7 +361,7 @@ const staticTree: StaticTreeNavigator = {
   id: ROOT_NAVIGATOR_ID,
   depth: 0,
   getParent: () => undefined,
-  screens: [
+  children: [
     {
       routeName: 'SPLASH_SCREEN',
       type: 'SCREEN' as const,
@@ -375,7 +375,7 @@ const staticTree: StaticTreeNavigator = {
       type: 'NAVIGATOR' as const,
       handlerMap: {},
       getParent: () => undefined,
-      screens: [
+      children: [
         {
           routeName: 'EXAMPLE_TAB',
           id: 'EXAMPLE_TAB',
@@ -383,7 +383,7 @@ const staticTree: StaticTreeNavigator = {
           type: 'NAVIGATOR' as const,
           handlerMap: {},
           getParent: () => undefined,
-          screens: [
+          children: [
             {
               routeName: 'SCREEN5',
               depth: 3,
@@ -413,7 +413,7 @@ const staticTree: StaticTreeNavigator = {
       type: 'NAVIGATOR' as const,
       handlerMap: {},
       getParent: () => undefined,
-      screens: [
+      children: [
         {
           routeName: 'SECOND_EXAMPLE_TAB',
           depth: 2,
@@ -435,7 +435,7 @@ const staticTree: StaticTreeNavigator = {
       type: 'NAVIGATOR' as const,
       handlerMap: {},
       getParent: () => undefined,
-      screens: [
+      children: [
         {
           routeName: 'SCREEN3',
           depth: 2,
@@ -465,12 +465,12 @@ describe('findStaticTreeScreen function', () => {
   })
 
   test('should return the correct navigator if the routeName exists and is not the root', () => {
-    const mainScreenNavigator = tree.screens.find(screen => screen.routeName === 'MAIN_SCREEN')
+    const mainScreenNavigator = tree.children.find(screen => screen.routeName === 'MAIN_SCREEN')
     expect(findStaticTreeScreen(tree, 'MAIN_SCREEN')).toBe(mainScreenNavigator)
   })
 
   test('should return nested navigator when routeName exists in nested navigator', () => {
-    const secondStackNavigator = tree.screens.find(screen => screen.routeName === 'SECOND_STACK')
+    const secondStackNavigator = tree.children.find(screen => screen.routeName === 'SECOND_STACK')
     expect(findStaticTreeScreen(tree, 'SECOND_STACK')).toBe(secondStackNavigator)
   })
 
@@ -483,7 +483,7 @@ describe('findStaticTreeScreen function', () => {
 
 describe('getRouteNameByStateKey function', () => {
   test('should return undefined if the stateKey does not exist', () => {
-    expect(getRouteNameByStateKey(state, 'NonexistentKey')).toBeUndefined()
+    expect(() => getRouteNameByStateKey(state, 'NONEXISTENT_KEY')).toThrow(new Error('Missing route name for state key: NONEXISTENT_KEY'))
   })
 
   test('should return route name if the stateKey does exist', () => {
@@ -501,39 +501,39 @@ describe('getRouteNameByStateKey function', () => {
 
 describe('findStaticNavigatorByStateKey function', () => {
   test('should return undefined if the stateKey does not exist', () => {
-    expect(findStaticNavigatorByStateKey(tree, state, 'NonexistentKey')).toBeUndefined()
+    expect(() => findStaticNavigatorByStateKey(tree, state, 'NONEXISTENT_KEY')).toThrow(new Error('Missing route name for state key: NONEXISTENT_KEY'))
   })
 
   test('should return static navigator if the stateKey does exist', () => {
-    expect(findStaticNavigatorByStateKey(tree, state, 'stack-9x-M96FX1Pv-1-XbVNbeJ')).toBe(tree.screens[3])
+    expect(findStaticNavigatorByStateKey(tree, state, 'stack-9x-M96FX1Pv-1-XbVNbeJ')).toBe(tree.children[3])
   })
 })
 
 describe('calculateStaticTreeDepth function', () => {
   test('should add depth to every screen', () => {
     const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
-    const mainScreen = (rootTree as StaticTreeNavigator).screens[1]
-    const mockedMainScreen = staticTree.screens[1]
+    const mainScreen = (rootTree as StaticTreeNavigator).children[1]
+    const mockedMainScreen = staticTree.children[1]
     expect(mainScreen.depth).toBe(mockedMainScreen.depth)
   })
 
   test('should get parent for screen in root stack navigator', () => {
     const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
-    const screen = (rootTree as StaticTreeNavigator).screens[0]
+    const screen = (rootTree as StaticTreeNavigator).children[0]
     expect(screen.getParent()).toBe(rootTree)
   })
 
   test('should get parent for screen in main tab navigator', () => {
     const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
-    const mainScreen = (rootTree as StaticTreeNavigator).screens[1]
-    const screen = (mainScreen as StaticTreeNavigator).screens[0]
+    const mainScreen = (rootTree as StaticTreeNavigator).children[1]
+    const screen = (mainScreen as StaticTreeNavigator).children[0]
     expect(screen.getParent()).toBe(mainScreen)
   })
 
   test('should get root parent for screen in main tab navigator', () => {
     const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
-    const mainScreen = (rootTree as StaticTreeNavigator).screens[1]
-    const screen = (mainScreen as StaticTreeNavigator).screens[0]
+    const mainScreen = (rootTree as StaticTreeNavigator).children[1]
+    const screen = (mainScreen as StaticTreeNavigator).children[0]
     expect(screen.getParent()?.getParent()).toBe(rootTree)
   })
 })
@@ -563,12 +563,49 @@ describe('transformForNearestExistingNavigator function', () => {
     })
   })
 
-  test('should not change action', () => {
+  test('should not change action when in same navigator', () => {
     const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
     const originalAction = ConditionalActions.navigate({
       routeName: 'SCREEN5',
     })
     const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
     expect(transformedAction).toEqual(originalAction)
+  })
+
+  test('should not change action when type is not navigate', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.goBack()
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual(originalAction)
+  })
+
+  test('should not change action when navigating to same screen', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'SCREEN6',
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual(originalAction)
+  })
+
+  test('should not change already transfromed action', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'EXAMPLE_TAB',
+      params: {
+        screen: 'SCREEN7',
+      },
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    const transformedAction2 = transformForNearestExistingNavigator(transformedAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual(transformedAction2)
+  })
+
+  test('should throw error when screen is not found', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'NON_EXISTING_ROUTE_NAME',
+    })
+    expect(() => transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)).toThrow(new Error('Missing static tree screen for route name: NON_EXISTING_ROUTE_NAME'))
   })
 })
