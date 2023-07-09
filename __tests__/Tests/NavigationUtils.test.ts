@@ -457,7 +457,7 @@ const staticTree: StaticTreeNavigator = {
 
 describe('findStaticTreeScreen function', () => {
   test('should return undefined if the routeName does not exist', () => {
-    expect(findStaticTreeScreen(tree, 'NonexistentRoute')).toBeUndefined()
+    expect(() => findStaticTreeScreen(tree, 'NON_EXISTING_ROUTE_NAME')).toThrow(new Error('Missing static tree screen for route name: NON_EXISTING_ROUTE_NAME'))
   })
 
   test('should return the root navigator if the routeName is root and isRoot is true', () => {
@@ -472,10 +472,6 @@ describe('findStaticTreeScreen function', () => {
   test('should return nested navigator when routeName exists in nested navigator', () => {
     const secondStackNavigator = tree.screens.find(screen => screen.routeName === 'SECOND_STACK')
     expect(findStaticTreeScreen(tree, 'SECOND_STACK')).toBe(secondStackNavigator)
-  })
-
-  test('should return undefined if nonexisting routeName is used', () => {
-    expect(findStaticTreeScreen(tree, 'NONEXISTENT_ROUTE_NAME')).toBeUndefined()
   })
 
   test('should return the StaticScreenTreeNavigatorDeclaration if found in a nested screen', () => {
