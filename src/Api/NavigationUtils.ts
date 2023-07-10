@@ -297,7 +297,7 @@ const arePathsStartingEqually = (leftPath: string[], rightPath: string[]): boole
   return true
 }
 
-const getCommonStaticNavigatorWithPaths = ({
+export const getCommonStaticNavigatorWithPaths = ({
   currentStaticTreeScreen,
   finalStaticTreeScreen,
 }: {
@@ -312,22 +312,26 @@ const getCommonStaticNavigatorWithPaths = ({
   let rightDepth = finalStaticTreeScreen.depth
   let leftParent: StaticTreeNode = currentStaticTreeScreen
   let rightParent: StaticTreeNode = finalStaticTreeScreen
-  const leftPath: string[] = []
-  const rightPath: string[] = []
+  const leftPath: string[] = [leftParent.routeName]
+  const rightPath: string[] = [rightParent.routeName]
   const biggerDepth = Math.max(leftDepth, rightDepth)
-  for (let i = biggerDepth; i > 1; i--) {
+  for (let i = biggerDepth; i > 0; i--) {
     if (leftDepth === i) {
       leftParent = is(leftParent.getParent())
+    }
+    if (rightDepth === i) {
+      rightParent = is(rightParent.getParent())
+    }
+    if (leftParent?.routeName === rightParent?.routeName) {
+      break
+    }
+    if (leftDepth === i) {
       leftPath.unshift(is(leftParent.routeName))
       leftDepth--
     }
     if (rightDepth === i) {
-      rightParent = is(rightParent.getParent())
       rightPath.unshift(rightParent.routeName)
       rightDepth--
-    }
-    if (leftParent?.routeName === rightParent?.routeName) {
-      break
     }
   }
 
@@ -358,6 +362,9 @@ export const transformForNearestExistingNavigator = (
   }
   const currentStaticTreeScreen = findStaticTreeScreen(tree, activeRouteName)
   const finalStaticTreeScreen = findStaticTreeScreen(tree, targetRouteName)
+  if (currentStaticTreeScreen.getParent()?.id === finalStaticTreeScreen.getParent()?.id) {
+    return action
+  }
 
   const {
     commonStaticNavigator,
