@@ -155,7 +155,8 @@ export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) =>
   const currentStaticTreeNavigator = getCurrentStaticTreeNavigator(onActionAttributes)
 
   if (isActionForAnotherNavigator(currentStaticTreeNavigator, action)) {
-    return false
+    navigation.dispatch(action)
+    return true
   }
 
   if (onExplicitNavigatorAction(currentStaticTreeNavigator, onActionAttributes)) {
