@@ -12,6 +12,7 @@ import {
   findStaticNavigatorByStateKey,
   getRouteNameByStateKey,
   transformForNearestExistingNavigator,
+  getCommonStaticNavigatorWithPaths,
 } from '../../src/Api/NavigationUtils'
 import {
   type StaticTreeNavigatorDeclaration,
@@ -38,7 +39,7 @@ const tree: StaticTreeNavigator = {
     },
     {
       routeName: 'MAIN_SCREEN',
-      id: 'mainScreen',
+      id: 'MAIN_SCREEN',
       type: 'NAVIGATOR',
       handlerMap: {},
       depth: 1,
@@ -76,7 +77,7 @@ const tree: StaticTreeNavigator = {
     },
     {
       routeName: 'SECOND_TAB_SCREEN',
-      id: 'secondTabScreen',
+      id: 'SECOND_TAB_SCREEN',
       type: 'NAVIGATOR',
       handlerMap: {},
       depth: 1,
@@ -98,7 +99,7 @@ const tree: StaticTreeNavigator = {
     },
     {
       routeName: 'SECOND_STACK',
-      id: 'secondStack',
+      id: 'SECOND_STACK',
       type: 'NAVIGATOR',
       // handlerMap: {},
       handlerMap: {
@@ -124,7 +125,7 @@ const tree: StaticTreeNavigator = {
         },
         {
           routeName: 'THIRD_STACK',
-          id: 'thirdStack',
+          id: 'THIRD_STACK',
           type: 'NAVIGATOR',
           handlerMap: {},
           depth: 2,
@@ -277,7 +278,7 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
     },
     {
       routeName: 'MAIN_SCREEN',
-      id: 'mainScreen',
+      id: 'MAIN_SCREEN',
       type: 'NAVIGATOR' as const,
       handlerMap: {},
       children: [
@@ -305,7 +306,7 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
     },
     {
       routeName: 'SECOND_TAB_SCREEN',
-      id: 'secondTabScreen',
+      id: 'SECOND_TAB_SCREEN',
       type: 'NAVIGATOR' as const,
       handlerMap: {},
       children: [
@@ -321,7 +322,7 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
     },
     {
       routeName: 'SECOND_STACK',
-      id: 'secondStack',
+      id: 'SECOND_STACK',
       type: 'NAVIGATOR' as const,
       // handlerMap: {},
       handlerMap: {},
@@ -336,7 +337,7 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
         },
         {
           routeName: 'THIRD_STACK',
-          id: 'thirdStack',
+          id: 'THIRD_STACK',
           type: 'NAVIGATOR' as const,
           handlerMap: {},
           children: [
@@ -370,7 +371,7 @@ const staticTree: StaticTreeNavigator = {
     },
     {
       routeName: 'MAIN_SCREEN',
-      id: 'mainScreen',
+      id: 'MAIN_SCREEN',
       depth: 1,
       type: 'NAVIGATOR' as const,
       handlerMap: {},
@@ -408,7 +409,7 @@ const staticTree: StaticTreeNavigator = {
     },
     {
       routeName: 'SECOND_TAB_SCREEN',
-      id: 'secondTabScreen',
+      id: 'SECOND_TAB_SCREEN',
       depth: 1,
       type: 'NAVIGATOR' as const,
       handlerMap: {},
@@ -421,16 +422,26 @@ const staticTree: StaticTreeNavigator = {
           getParent: () => undefined,
         },
         {
+          id: 'SECOND_HAPPY_END_TAB',
           routeName: 'SECOND_HAPPY_END_TAB',
           depth: 2,
-          type: 'SCREEN' as const,
+          type: 'NAVIGATOR' as const,
+          handlerMap: {},
           getParent: () => undefined,
+          children: [
+            {
+              routeName: 'SCREEN8',
+              depth: 3,
+              type: 'SCREEN' as const,
+              getParent: () => undefined,
+            },
+          ],
         },
       ],
     },
     {
       routeName: 'SECOND_STACK',
-      id: 'secondStack',
+      id: 'SECOND_STACK',
       depth: 1,
       type: 'NAVIGATOR' as const,
       handlerMap: {},
@@ -538,7 +549,47 @@ describe('calculateStaticTreeDepth function', () => {
   })
 })
 
+describe('getCommonStaticNavigatorWithPaths function', () => {
+  test('should return root navigator as common navigator', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration) as StaticTreeNavigator
+    const currentStaticTreeScreen = findStaticTreeScreen(rootTree, 'SCREEN6')
+    const finalStaticTreeScreen = findStaticTreeScreen(rootTree, 'SCREEN8')
+    const {
+      commonStaticNavigator,
+      sourcePathFromCommonNavigator,
+      targetPathFromCommonNavigator,
+    } = getCommonStaticNavigatorWithPaths({
+      currentStaticTreeScreen,
+      finalStaticTreeScreen,
+    })
+    expect(commonStaticNavigator.id).toBe(rootTree.id)
+    expect(sourcePathFromCommonNavigator).toEqual(['SECOND_STACK', 'THIRD_STACK', 'SCREEN6'])
+    expect(targetPathFromCommonNavigator).toEqual(['MAIN_SCREEN', 'EXAMPLE_TAB', 'SCREEN8'])
+  })
+})
+
 describe('transformForNearestExistingNavigator function', () => {
+  test('should create action for navigating to neighbouring navigator', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'SCREEN7',
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual({
+      ...ConditionalActions.navigate({
+        routeName: 'MAIN_SCREEN',
+        params: {
+          screen: 'EXAMPLE_TAB',
+          params: {
+            screen: 'SCREEN7',
+          },
+        },
+      }),
+      navigatorId: 'ROOT_NAVIGATOR',
+      isTransformed: true,
+    })
+  })
+
   test('should create action for navigating to neighbouring navigator (with parent navigator in action)', () => {
     const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
     const originalAction = ConditionalActions.navigate({
@@ -558,7 +609,7 @@ describe('transformForNearestExistingNavigator function', () => {
           },
         },
       }),
-      navigatorId: 'secondStack',
+      navigatorId: ROOT_NAVIGATOR_ID,
       isTransformed: true,
     })
   })
