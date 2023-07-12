@@ -3459,6 +3459,11 @@
   resolved "https://registry.yarnpkg.com/@txo/log/-/log-2.0.1.tgz#fd96044751a9930cf5136a7248ad8989efce756c"
   integrity sha512-CC+ZkiTbytuNVqvusQFdp72i1G2MhA5ITohxEMEi0qGLGIzxtYT20vYkoFRC8XPbsZydbu9uVtpH5wA/X/g/eg==
 
+"@txo/types@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@txo/types/-/types-1.3.0.tgz#e6ec2859eb7c478028d70e965b0245d6cf46d5ac"
+  integrity sha512-uqc6pzi9aLwBARjYXtoIqfukq5jWvnLI/ux1qkaKBkjJ/Go7PXrPmcM0uTX4M4L7O7S2g+Xm8EnPpBRFVVd6Zg==
+
 "@types/babel__core@^7.1.14":
   version "7.1.19"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.19.tgz#7b497495b7d1b4812bdb9d02804d0576f43ee460"

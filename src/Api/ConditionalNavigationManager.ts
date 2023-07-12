@@ -29,8 +29,8 @@ export type ResolveCondition<CONDITION extends Condition> = (
   getContext: (() => ResolveConditionContext) | undefined,
 ) => NavigationAction | CommonActions.Action | undefined
 
-class ConditionalNavigationManager<CONDITION extends Condition> {
-  _conditionToResolveCondition: Record<string, ResolveCondition<CONDITION>>
+class ConditionalNavigationManager {
+  _conditionToResolveCondition: Record<string, ResolveCondition<Condition>>
   _logicalClock = 0
 
   constructor () {
@@ -38,7 +38,7 @@ class ConditionalNavigationManager<CONDITION extends Condition> {
   }
 
   resolveConditions (
-    conditionList: CONDITION[],
+    conditionList: Condition[],
     navigationAction: NavigationAction,
     navigationState: NavigationState,
     getContext: (() => ResolveConditionContext) | undefined,
@@ -46,15 +46,13 @@ class ConditionalNavigationManager<CONDITION extends Condition> {
     if (!configManager.config.ignoreConditionalNavigation) {
       log.debug('RESOLVE CONDITIONS', { conditionList, navigationAction })
       for (const condition of conditionList) {
-        const resolveCondition: ResolveCondition<CONDITION> = this._conditionToResolveCondition[condition.key]
+        const resolveCondition: ResolveCondition<Condition> = this._conditionToResolveCondition[condition.key]
         if (resolveCondition != null) {
           const newNavigationAction = resolveCondition(condition, navigationAction, getContext) as NavigationAction | undefined
           if (newNavigationAction != null) {
             log.debug('NEW NAVIGATION ACTION', { preview: condition.key, newNavigationAction, navigationAction })
             return {
               navigationAction: {
-                // NOTE: spread previous navigation action to keep react-navigation specific properties (e.g. source, target)
-                ...navigationAction,
                 payload: undefined,
                 ...newNavigationAction,
               },
@@ -71,8 +69,8 @@ class ConditionalNavigationManager<CONDITION extends Condition> {
     }
   }
 
-  registerResolveCondition (conditionKey: string, resolveCondition: ResolveCondition<CONDITION>): () => void {
-    this._conditionToResolveCondition[conditionKey] = resolveCondition
+  registerResolveCondition<CONDITION extends Condition = Condition>(conditionKey: string, resolveCondition: ResolveCondition<CONDITION>): () => void {
+    this._conditionToResolveCondition[conditionKey] = resolveCondition as ResolveCondition<Condition>
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- TODO: check if this is correct
     return () => { delete this._conditionToResolveCondition[conditionKey] }
   }
@@ -82,9 +80,9 @@ class ConditionalNavigationManager<CONDITION extends Condition> {
   }
 }
 
-export const conditionalNavigationManager = new ConditionalNavigationManager<Condition>()
+export const conditionalNavigationManager = new ConditionalNavigationManager()
 
-export const registerResolveCondition = (
+export const registerResolveCondition = <CONDITION extends Condition = Condition>(
   conditionKey: string,
-  resolveCondition: ResolveCondition<Condition>,
-): () => void => conditionalNavigationManager.registerResolveCondition(conditionKey, resolveCondition)
+  resolveCondition: ResolveCondition<CONDITION>,
+): () => void => conditionalNavigationManager.registerResolveCondition<CONDITION>(conditionKey, resolveCondition)

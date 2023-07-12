@@ -5,12 +5,16 @@
 **/
 
 import type {
-  NavigationAction as RNNavigationAction,
   NavigationState,
   PartialRoute,
   PartialState,
   Route,
 } from '@react-navigation/native'
+import { Log } from '@txo/log'
+import {
+  last,
+} from '@txo/functional'
+import { is } from '@txo/types'
 
 import type {
   Condition,
@@ -20,15 +24,26 @@ import type {
   ResolveConditionContext,
   ResolveConditionsResult,
   WithConditionalNavigationState,
+  StaticTreeNavigator,
+  StaticTreeNodeDeclaration,
+  StaticTreeNode,
+  NavigateNavigationAction,
+  StaticTreeNavigatorDeclaration,
 } from '../Model/Types'
+import { ROOT_NAVIGATOR_ID } from '../Model'
 
 import { conditionalNavigationManager } from './ConditionalNavigationManager'
 
+const log = new Log('txo.conditional-navigation-react.Api.NavigationUtils')
+
 export const getActiveLeafRoute = (state: NavigationState): WithConditionalNavigationState<Route<string>> => {
   const { routes, index } = state
-  const currentRoute = routes[index] as NavigationState | Route<string>
+  const currentRoute = routes[index] as NavigationState | WithConditionalNavigationState<Route<string>>
   if ('routes' in currentRoute) {
     return getActiveLeafRoute(currentRoute)
+  }
+  if ('state' in currentRoute) {
+    return getActiveLeafRoute(currentRoute.state as NavigationState)
   }
   return currentRoute
 }
@@ -41,7 +56,7 @@ export const getExistingRouteByRouteName = (state: NavigationState | PartialStat
     return undefined
   }
   const { routes, index } = state
-  const currentRoute = typeof index === 'number' ? routes[index] as NavigationState | Route<string> : undefined
+  const currentRoute = typeof index === 'number' ? routes[index] as NavigationState | WithConditionalNavigationState<Route<string>> : undefined
   if (currentRoute == null) {
     return undefined
   }
@@ -70,32 +85,44 @@ export const getNestedRoutePath = (params: Params | undefined): string[] | undef
   return [screen]
 }
 
-export const getRoutePathFromAction = (action: RNNavigationAction): string[] | undefined => {
+export const getRoutePathFromNavigateAction = (action: NavigateNavigationAction): string[] => {
   const { payload } = action
-  if (payload == null) {
-    return undefined
-  }
   const { params, name } = payload as { params?: Params, name: string }
   const routePath = getNestedRoutePath(params)
   return (routePath != null) ? [name, ...routePath] : [name]
 }
 
-export const getActiveRoutePath = (
+const getActiveRoutePathInternal = (
   state: NavigationState | Route<string> | undefined,
   tempIndex = 0,
 ): string[] | undefined => {
+  if (state != null && 'state' in state && state.state != null) {
+    return getActiveRoutePathInternal(state.state as NavigationState, tempIndex)
+  }
   if ((state == null) || !('type' in state)) {
     return undefined
   }
-  const { routes, index, type } = state
+  const {
+    routes,
+    index,
+    type,
+  } = state
   if (type === 'stack' && tempIndex < index) {
-    const nextPath = getActiveRoutePath(state, tempIndex + 1)
+    const nextPath = getActiveRoutePathInternal(state, tempIndex + 1)
     return (nextPath != null) ? [routes[tempIndex].name, ...nextPath] : [routes[tempIndex].name]
   } else if (type === 'tab' || type === 'stack') {
-    const nextPath = getActiveRoutePath(routes[index])
+    const nextPath = getActiveRoutePathInternal(routes[index])
     return (nextPath != null) ? [routes[index].name, ...nextPath] : [routes[index].name]
   }
   return undefined
+}
+
+export const getActiveRoutePath = (state: NavigationState): string[] => {
+  const routePath = getActiveRoutePathInternal(state)
+  if (routePath == null) {
+    throw new Error('Missing active route path.')
+  }
+  return routePath
 }
 
 export const calculateIsInitial = (state: NavigationState, currentRoute: Route<string>): boolean => {
@@ -136,7 +163,10 @@ export const onResolveConditionsResultAction = (
   restArgs: unknown[],
 ): boolean => {
   const activeLeafRoute = getActiveLeafRoute(state)
-  activeLeafRoute.conditionalNavigation = resolveConditionsResult.conditionalNavigationState
+  if (activeLeafRoute.params == null) {
+    activeLeafRoute.params = {}
+  }
+  activeLeafRoute.params._conditionalNavigationState = resolveConditionsResult.conditionalNavigationState
   return onAction(resolveConditionsResult.navigationAction, ...restArgs)
 }
 
@@ -150,9 +180,240 @@ export const getResolveConditionsResult = (
   if (state != null) {
     for (const routeName of routePath) {
       const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
+      log.debug(`RESOLVE CONDITIONS: ${routeName}`, { screenConditions, action, state, routePath })
       if ((screenConditions != null) && screenConditions.length > 0) {
         return conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)
       }
     }
+  }
+}
+
+export const findStaticTreeScreen = (
+  tree: StaticTreeNavigator,
+  routeName: string,
+  isRoot = true,
+): StaticTreeNode => {
+  if (tree.routeName === routeName) {
+    return tree
+  }
+  let foundScreen
+  if ('children' in tree) {
+    for (const screen of tree.children) {
+      if (screen.routeName === routeName) {
+        foundScreen = screen
+        break
+      } else if ('children' in screen) {
+        foundScreen = findStaticTreeScreen(screen, routeName, false)
+        if (foundScreen != null) {
+          break
+        }
+      }
+    }
+  }
+  if (isRoot && foundScreen == null) {
+    throw new Error(`Missing static tree screen for route name: ${routeName}`)
+  }
+  return foundScreen as StaticTreeNode
+}
+
+const getRouteNameByStateKeyInternal = (
+  state: NavigationState,
+  stateKey: string,
+  isRoot = true,
+): string | undefined => {
+  if (isRoot && state.key === stateKey) {
+    return ROOT_NAVIGATOR_ID
+  }
+  const { routes } = state
+  for (const route of routes) {
+    if (route.state?.key === stateKey) {
+      return route.name
+    }
+    if (route.state?.routes != null) {
+      const routeName = getRouteNameByStateKeyInternal(route.state as NavigationState, stateKey, false)
+      if (routeName != null) {
+        return routeName
+      }
+    }
+  }
+}
+
+export const getRouteNameByStateKey = (
+  rootState: NavigationState,
+  stateKey: string,
+): string => {
+  const routeName = getRouteNameByStateKeyInternal(rootState, stateKey)
+  if (routeName == null) {
+    throw new Error(`Missing route name for state key: ${stateKey}`)
+  }
+  return routeName
+}
+
+export const findStaticNavigatorByStateKey = (
+  tree: StaticTreeNavigator,
+  state: NavigationState,
+  stateKey: string,
+): StaticTreeNavigator => {
+  const routeName = getRouteNameByStateKey(state, stateKey)
+  return findStaticTreeScreen(tree, routeName) as StaticTreeNavigator
+}
+
+const createParams = (path: string[]): Params | undefined => {
+  if (path.length === 0) {
+    return undefined
+  }
+  const [routeName, ...restPath] = path
+  if (restPath.length === 0) {
+    return {
+      screen: routeName,
+    }
+  }
+  return {
+    screen: routeName,
+    params: createParams(restPath),
+  }
+}
+
+const createNavigateActionForPath = (path: string[], originalAction: NavigateNavigationAction): NavigateNavigationAction => {
+  const pathFromAction = getRoutePathFromNavigateAction(originalAction)
+  const [routeName, ...restPath] = path
+  const nextPath = Array.from(new Set([...restPath, ...pathFromAction]))
+  const nextParams = createParams(nextPath)
+  return {
+    type: 'NAVIGATE',
+    payload: nextParams != null
+      ? { name: routeName, params: nextParams }
+      : { name: routeName },
+  }
+}
+
+const arePathsStartingEqually = (leftPath: string[], rightPath: string[]): boolean => {
+  const shorter = leftPath.length < rightPath.length ? leftPath : rightPath
+  for (let i = 0; i < shorter.length; i++) {
+    if (leftPath[i] !== rightPath[i]) {
+      return false
+    }
+  }
+  return true
+}
+
+export const getCommonStaticNavigatorWithPaths = ({
+  currentStaticTreeScreen,
+  finalStaticTreeScreen,
+}: {
+  currentStaticTreeScreen: StaticTreeNode,
+  finalStaticTreeScreen: StaticTreeNode,
+}): {
+  commonStaticNavigator: StaticTreeNavigator,
+  targetPathFromCommonNavigator: string[],
+  sourcePathFromCommonNavigator: string[],
+} => {
+  let leftDepth = currentStaticTreeScreen.depth
+  let rightDepth = finalStaticTreeScreen.depth
+  let leftParent: StaticTreeNode = currentStaticTreeScreen
+  let rightParent: StaticTreeNode = finalStaticTreeScreen
+  const leftPath: string[] = [leftParent.routeName]
+  const rightPath: string[] = [rightParent.routeName]
+  const biggerDepth = Math.max(leftDepth, rightDepth)
+  for (let i = biggerDepth; i > 0; i--) {
+    if (leftDepth === i) {
+      leftParent = is(leftParent.getParent())
+    }
+    if (rightDepth === i) {
+      rightParent = is(rightParent.getParent())
+    }
+    if (leftParent?.routeName === rightParent?.routeName) {
+      break
+    }
+    if (leftDepth === i) {
+      leftPath.unshift(is(leftParent.routeName))
+      leftDepth--
+    }
+    if (rightDepth === i) {
+      rightPath.unshift(rightParent.routeName)
+      rightDepth--
+    }
+  }
+
+  return {
+    commonStaticNavigator: leftParent as StaticTreeNavigator,
+    targetPathFromCommonNavigator: rightPath,
+    sourcePathFromCommonNavigator: leftPath,
+  }
+}
+
+export const transformForNearestExistingNavigator = (
+  action: NavigationAction,
+  getRootState: () => NavigationState,
+  tree: StaticTreeNavigator,
+): NavigationAction => {
+  if (action.isTransformed ?? false) {
+    return action
+  } else if (action.type !== 'NAVIGATE') {
+    return action
+  }
+
+  const navigationState = getRootState()
+  const activeRouteName = getActiveLeafRoute(navigationState).name
+  const targetRouteName = last(getRoutePathFromNavigateAction(action))
+
+  if (activeRouteName === targetRouteName) {
+    return action
+  }
+  const currentStaticTreeScreen = findStaticTreeScreen(tree, activeRouteName)
+  const finalStaticTreeScreen = findStaticTreeScreen(tree, targetRouteName)
+  if (currentStaticTreeScreen.getParent()?.id === finalStaticTreeScreen.getParent()?.id) {
+    return action
+  }
+
+  const {
+    commonStaticNavigator,
+    sourcePathFromCommonNavigator,
+    targetPathFromCommonNavigator,
+  } = getCommonStaticNavigatorWithPaths({
+    currentStaticTreeScreen,
+    finalStaticTreeScreen,
+  })
+
+  if (arePathsStartingEqually(sourcePathFromCommonNavigator, targetPathFromCommonNavigator)) {
+    return action
+  }
+
+  const nextAction = createNavigateActionForPath(targetPathFromCommonNavigator, action)
+
+  log.debug('TRANSFORMED ACTION', {
+    originalAction: action,
+    nextAction,
+  })
+
+  return {
+    ...nextAction,
+    navigatorId: commonStaticNavigator.id,
+    isTransformed: true,
+  }
+}
+
+const isStaticTreeNavigator = (node: StaticTreeNodeDeclaration): node is StaticTreeNavigatorDeclaration => (
+  'children' in node
+)
+
+export const calculateStaticTreeDepth = (tree: StaticTreeNodeDeclaration, parent?: StaticTreeNavigator, depth = 0): StaticTreeNode => {
+  if (isStaticTreeNavigator(tree)) {
+    const { children, ...rest } = tree
+    const nextTree: StaticTreeNavigator = {
+      ...rest,
+      children: [],
+      getParent: () => parent,
+      depth,
+    }
+    nextTree.children = children.map((screen) => (
+      calculateStaticTreeDepth(screen, nextTree, depth + 1)
+    ))
+    return nextTree
+  }
+  return {
+    ...tree,
+    getParent: () => parent,
+    depth,
   }
 }

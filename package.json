@@ -39,7 +39,8 @@
   "dependencies": {
     "@txo/config-manager": "^3.1.0",
     "@txo/functional": "^4.6.0",
-    "@txo/log": "^2.0.1"
+    "@txo/log": "^2.0.1",
+    "@txo/types": "^1.3.0"
   },
   "peerDependencies": {
     "@react-navigation/devtools": "^6.0.19",
