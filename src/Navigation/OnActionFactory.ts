@@ -97,12 +97,17 @@ const onExplicitNavigatorAction = (
   return false
 }
 
-const isActionForAnotherNavigator = (
+const onActionForAnotherNavigator = (
   currentStaticTreeNavigator: StaticTreeNavigator,
   action: NavigationAction,
-): boolean => (
-  isNotEmptyString(action.navigatorId) && currentStaticTreeNavigator.id !== action.navigatorId
-)
+  navigation: OnActionAttributes<NavigationAction>['navigation'],
+): boolean => {
+  const isActionForAnotherNavigator = isNotEmptyString(action.navigatorId) && currentStaticTreeNavigator.id !== action.navigatorId
+  if (isActionForAnotherNavigator) {
+    navigation.dispatch(action)
+  }
+  return isActionForAnotherNavigator
+}
 
 export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>): boolean => {
   const {
@@ -154,8 +159,7 @@ export const onActionFactory = (originalOnAction: OnAction<NavigationAction>) =>
 
   const currentStaticTreeNavigator = getCurrentStaticTreeNavigator(onActionAttributes)
 
-  if (isActionForAnotherNavigator(currentStaticTreeNavigator, action)) {
-    navigation.dispatch(action)
+  if (onActionForAnotherNavigator(currentStaticTreeNavigator, action, navigation)) {
     return true
   }
 
