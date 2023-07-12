@@ -1,3 +1,14 @@
+## [7.0.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.2.0...v7.0.0) (2023-07-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Mandatory static tree to have the ability automatically generate action navigation paths.
+
+### Features
+
+* introduce custom navigator actions ([#148](https://github.com/technology-studio/conditional-navigation-react-peer/issues/148)) ([cdc0768](https://github.com/technology-studio/conditional-navigation-react-peer/commit/cdc07689d9ca2591b04e032c29caad53cf748e5a))
+
 ## [6.2.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.1.1...v6.2.0) (2023-06-29)
 
 
