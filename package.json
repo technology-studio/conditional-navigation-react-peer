@@ -85,7 +85,7 @@
     "npm-check-updates": "^16.10.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-native": "0.72.2",
+    "react-native": "0.72.3",
     "redux-saga": "^1.2.3",
     "rimraf": "^5.0.1",
     "semantic-release": "^21.0.7",
