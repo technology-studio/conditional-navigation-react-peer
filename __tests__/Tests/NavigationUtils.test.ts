@@ -590,6 +590,33 @@ describe('transformForNearestExistingNavigator function', () => {
     })
   })
 
+  test('should create action with params for navigating to neighbouring navigator', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'SCREEN7',
+      params: {
+        testParam: 1,
+      },
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual({
+      ...ConditionalActions.navigate({
+        routeName: 'MAIN_SCREEN',
+        params: {
+          screen: 'EXAMPLE_TAB',
+          params: {
+            screen: 'SCREEN7',
+            params: {
+              testParam: 1,
+            },
+          },
+        },
+      }),
+      navigatorId: 'ROOT_NAVIGATOR',
+      isTransformed: true,
+    })
+  })
+
   test('should create action for navigating to neighbouring navigator (with parent navigator in action)', () => {
     const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
     const originalAction = ConditionalActions.navigate({
