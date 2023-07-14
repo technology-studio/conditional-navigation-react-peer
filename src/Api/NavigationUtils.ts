@@ -258,7 +258,7 @@ export const findStaticNavigatorByStateKey = (
   return findStaticTreeScreen(tree, routeName) as StaticTreeNavigator
 }
 
-const createParams = (path: string[]): Params | undefined => {
+const createParams = (path: string[], originalParams: Record<string, unknown> | undefined): Params | undefined => {
   if (path.length === 0) {
     return undefined
   }
@@ -266,11 +266,12 @@ const createParams = (path: string[]): Params | undefined => {
   if (restPath.length === 0) {
     return {
       screen: routeName,
+      ...((originalParams != null) ? { params: originalParams } : {}),
     }
   }
   return {
     screen: routeName,
-    params: createParams(restPath),
+    params: createParams(restPath, originalParams),
   }
 }
 
@@ -278,7 +279,7 @@ const createNavigateActionForPath = (path: string[], originalAction: NavigateNav
   const pathFromAction = getRoutePathFromNavigateAction(originalAction)
   const [routeName, ...restPath] = path
   const nextPath = Array.from(new Set([...restPath, ...pathFromAction]))
-  const nextParams = createParams(nextPath)
+  const nextParams = createParams(nextPath, originalAction.payload?.params)
   return {
     type: 'NAVIGATE',
     payload: nextParams != null
