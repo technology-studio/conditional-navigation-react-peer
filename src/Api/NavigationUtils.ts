@@ -285,7 +285,7 @@ const createNavigateActionForPath = (path: string[], originalAction: NavigateNav
     type: 'NAVIGATE',
     payload: (nextParams != null && !(pathFromAction.length === 1 && pathFromAction[0] === routeName))
       ? { name: routeName, params: nextParams }
-      : { name: routeName },
+      : { name: routeName, params: originalAction.payload?.params },
   }
 }
 
