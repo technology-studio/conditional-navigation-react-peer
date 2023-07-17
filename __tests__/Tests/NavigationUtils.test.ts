@@ -353,6 +353,10 @@ const staticTreeDeclaration: StaticTreeNavigatorDeclaration = {
         },
       ],
     },
+    {
+      routeName: 'ERROR_DETAIL_SCREEN',
+      type: 'SCREEN' as const,
+    },
   ],
   type: 'NAVIGATOR' as const,
   handlerMap: {},
@@ -365,6 +369,12 @@ const staticTree: StaticTreeNavigator = {
   children: [
     {
       routeName: 'SPLASH_SCREEN',
+      type: 'SCREEN' as const,
+      getParent: () => undefined,
+      depth: 1,
+    },
+    {
+      routeName: 'ERROR_DETAIL_SCREEN',
       type: 'SCREEN' as const,
       getParent: () => undefined,
       depth: 1,
@@ -566,6 +576,23 @@ describe('getCommonStaticNavigatorWithPaths function', () => {
     expect(sourcePathFromCommonNavigator).toEqual(['SECOND_STACK', 'THIRD_STACK', 'SCREEN6'])
     expect(targetPathFromCommonNavigator).toEqual(['MAIN_SCREEN', 'EXAMPLE_TAB', 'SCREEN8'])
   })
+
+  test('should return path with no duplicates when navigating to screen on root navigator', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration) as StaticTreeNavigator
+    const currentStaticTreeScreen = findStaticTreeScreen(rootTree, 'MAIN_SCREEN')
+    const finalStaticTreeScreen = findStaticTreeScreen(rootTree, 'SECOND_TAB_SCREEN')
+    const {
+      commonStaticNavigator,
+      sourcePathFromCommonNavigator,
+      targetPathFromCommonNavigator,
+    } = getCommonStaticNavigatorWithPaths({
+      currentStaticTreeScreen,
+      finalStaticTreeScreen,
+    })
+    expect(commonStaticNavigator.id).toBe(rootTree.id)
+    expect(sourcePathFromCommonNavigator).toEqual(['MAIN_SCREEN'])
+    expect(targetPathFromCommonNavigator).toEqual(['SECOND_TAB_SCREEN'])
+  })
 })
 
 describe('transformForNearestExistingNavigator function', () => {
@@ -682,5 +709,20 @@ describe('transformForNearestExistingNavigator function', () => {
       routeName: 'NON_EXISTING_ROUTE_NAME',
     })
     expect(() => transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)).toThrow(new Error('Missing static tree screen for route name: NON_EXISTING_ROUTE_NAME'))
+  })
+
+  test('should navigate to the screen without duplicating the path', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'ERROR_DETAIL_SCREEN',
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual({
+      ...ConditionalActions.navigate({
+        routeName: 'ERROR_DETAIL_SCREEN',
+      }),
+      navigatorId: 'ROOT_NAVIGATOR',
+      isTransformed: true,
+    })
   })
 })
