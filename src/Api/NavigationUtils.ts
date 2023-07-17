@@ -12,6 +12,7 @@ import type {
 } from '@react-navigation/native'
 import { Log } from '@txo/log'
 import {
+  clearUndefinedAttributes,
   last,
 } from '@txo/functional'
 import { is } from '@txo/types'
@@ -392,9 +393,11 @@ export const transformForNearestExistingNavigator = (
     ...nextAction,
     navigatorId: commonStaticNavigator.id,
     isTransformed: true,
-    skipConditionalNavigation: action.skipConditionalNavigation,
-    flow: action.flow,
-    reset: action.reset,
+    ...(clearUndefinedAttributes({
+      skipConditionalNavigation: action.skipConditionalNavigation,
+      flow: action.flow,
+      reset: action.reset,
+    })),
   }
 }
 
