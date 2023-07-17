@@ -348,9 +348,10 @@ export const transformForNearestExistingNavigator = (
   getRootState: () => NavigationState,
   tree: StaticTreeNavigator,
 ): NavigationAction => {
-  if (action.isTransformed ?? false) {
-    return action
-  } else if (action.type !== 'NAVIGATE') {
+  if (
+    (action.isTransformed ?? false) ||
+    (action.type !== 'NAVIGATE')
+  ) {
     return action
   }
 
@@ -391,6 +392,9 @@ export const transformForNearestExistingNavigator = (
     ...nextAction,
     navigatorId: commonStaticNavigator.id,
     isTransformed: true,
+    skipConditionalNavigation: action.skipConditionalNavigation,
+    flow: action.flow,
+    reset: action.reset,
   }
 }
 
