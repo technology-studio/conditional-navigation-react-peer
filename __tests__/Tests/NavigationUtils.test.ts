@@ -725,4 +725,25 @@ describe('transformForNearestExistingNavigator function', () => {
       isTransformed: true,
     })
   })
+
+  test('should navigate to the screen with nested params', () => {
+    const rootTree = calculateStaticTreeDepth(staticTreeDeclaration)
+    const originalAction = ConditionalActions.navigate({
+      routeName: 'SECOND_TAB_SCREEN',
+      params: {
+        screen: 'SECOND_HAPPY_END_TAB',
+      },
+    })
+    const transformedAction = transformForNearestExistingNavigator(originalAction, () => state, rootTree as StaticTreeNavigator)
+    expect(transformedAction).toEqual({
+      ...ConditionalActions.navigate({
+        routeName: 'SECOND_TAB_SCREEN',
+        params: {
+          screen: 'SECOND_HAPPY_END_TAB',
+        },
+      }),
+      navigatorId: 'ROOT_NAVIGATOR',
+      isTransformed: true,
+    })
+  })
 })
