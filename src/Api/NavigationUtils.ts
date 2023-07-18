@@ -13,7 +13,7 @@ import type {
 import { Log } from '@txo/log'
 import {
   clearUndefinedAttributes,
-  last,
+  first,
 } from '@txo/functional'
 import { is } from '@txo/types'
 
@@ -259,18 +259,9 @@ export const findStaticNavigatorByStateKey = (
   return findStaticTreeScreen(tree, routeName) as StaticTreeNavigator
 }
 
-const areLeafParams = (params: Record<string, unknown> | undefined): boolean => (
-  params != null
-    ? 'screen' in params || 'params' in params
-    : true
-)
-
 const createParams = (path: string[], originalParams: Record<string, unknown> | undefined): Params | undefined => {
-  if (areLeafParams(originalParams)) {
-    throw new Error('Original params are not leaf params.')
-  }
   if (path.length === 0) {
-    return undefined
+    return originalParams
   }
   const [routeName, ...restPath] = path
   if (restPath.length === 0) {
@@ -286,17 +277,13 @@ const createParams = (path: string[], originalParams: Record<string, unknown> | 
 }
 
 const createNavigateActionForPath = (path: string[], originalAction: NavigateNavigationAction): NavigateNavigationAction => {
-  const pathFromAction = getRoutePathFromNavigateAction(originalAction)
   const [routeName, ...restPath] = path
-  const nextPath = Array.from(new Set([...restPath, ...pathFromAction]))
-  const nextParams = (pathFromAction.length === 1 && pathFromAction[0] === routeName)
-    ? null
-    : createParams(nextPath, originalAction.payload?.params)
+  const nextParams = createParams(restPath, originalAction.payload?.params)
   return {
     type: 'NAVIGATE',
     payload: nextParams != null
       ? { name: routeName, params: nextParams }
-      : { name: routeName, params: originalAction.payload?.params },
+      : { name: routeName },
   }
 }
 
@@ -369,7 +356,7 @@ export const transformForNearestExistingNavigator = (
 
   const navigationState = getRootState()
   const activeRouteName = getActiveLeafRoute(navigationState).name
-  const targetRouteName = last(getRoutePathFromNavigateAction(action))
+  const targetRouteName = first(getRoutePathFromNavigateAction(action))
 
   if (activeRouteName === targetRouteName) {
     return action
