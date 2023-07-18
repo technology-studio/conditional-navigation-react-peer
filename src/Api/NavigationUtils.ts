@@ -259,7 +259,16 @@ export const findStaticNavigatorByStateKey = (
   return findStaticTreeScreen(tree, routeName) as StaticTreeNavigator
 }
 
+const areLeafParams = (params: Record<string, unknown> | undefined): boolean => (
+  params != null
+    ? 'screen' in params || 'params' in params
+    : true
+)
+
 const createParams = (path: string[], originalParams: Record<string, unknown> | undefined): Params | undefined => {
+  if (areLeafParams(originalParams)) {
+    throw new Error('Original params are not leaf params.')
+  }
   if (path.length === 0) {
     return undefined
   }
