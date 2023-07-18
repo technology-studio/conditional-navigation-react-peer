@@ -280,10 +280,12 @@ const createNavigateActionForPath = (path: string[], originalAction: NavigateNav
   const pathFromAction = getRoutePathFromNavigateAction(originalAction)
   const [routeName, ...restPath] = path
   const nextPath = Array.from(new Set([...restPath, ...pathFromAction]))
-  const nextParams = createParams(nextPath, originalAction.payload?.params)
+  const nextParams = (pathFromAction.length === 1 && pathFromAction[0] === routeName)
+    ? null
+    : createParams(nextPath, originalAction.payload?.params)
   return {
     type: 'NAVIGATE',
-    payload: (nextParams != null && !(pathFromAction.length === 1 && pathFromAction[0] === routeName))
+    payload: nextParams != null
       ? { name: routeName, params: nextParams }
       : { name: routeName, params: originalAction.payload?.params },
   }
