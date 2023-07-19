@@ -1,3 +1,10 @@
+## [7.0.1](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.0...v7.0.1) (2023-07-19)
+
+
+### Bug fixes
+
+* spread original params in the payload for last screen ([#221](https://github.com/technology-studio/conditional-navigation-react-peer/issues/221)) ([34f9b51](https://github.com/technology-studio/conditional-navigation-react-peer/commit/34f9b51f7bac0b4f8307b26c3ef0c28a4c2b8d60))
+
 ## [7.0.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v6.2.0...v7.0.0) (2023-07-12)
 
 
