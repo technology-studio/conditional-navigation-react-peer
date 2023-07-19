@@ -12,7 +12,8 @@ import type {
 } from '@react-navigation/native'
 import { Log } from '@txo/log'
 import {
-  last,
+  clearUndefinedAttributes,
+  first,
 } from '@txo/functional'
 import { is } from '@txo/types'
 
@@ -258,27 +259,26 @@ export const findStaticNavigatorByStateKey = (
   return findStaticTreeScreen(tree, routeName) as StaticTreeNavigator
 }
 
-const createParams = (path: string[]): Params | undefined => {
+const createParams = (path: string[], originalParams: Record<string, unknown> | undefined): Params | undefined => {
   if (path.length === 0) {
-    return undefined
+    return originalParams
   }
   const [routeName, ...restPath] = path
   if (restPath.length === 0) {
     return {
       screen: routeName,
+      ...((originalParams != null) ? { params: originalParams } : {}),
     }
   }
   return {
     screen: routeName,
-    params: createParams(restPath),
+    params: createParams(restPath, originalParams),
   }
 }
 
 const createNavigateActionForPath = (path: string[], originalAction: NavigateNavigationAction): NavigateNavigationAction => {
-  const pathFromAction = getRoutePathFromNavigateAction(originalAction)
   const [routeName, ...restPath] = path
-  const nextPath = Array.from(new Set([...restPath, ...pathFromAction]))
-  const nextParams = createParams(nextPath)
+  const nextParams = createParams(restPath, originalAction.payload?.params)
   return {
     type: 'NAVIGATE',
     payload: nextParams != null
@@ -347,15 +347,16 @@ export const transformForNearestExistingNavigator = (
   getRootState: () => NavigationState,
   tree: StaticTreeNavigator,
 ): NavigationAction => {
-  if (action.isTransformed ?? false) {
-    return action
-  } else if (action.type !== 'NAVIGATE') {
+  if (
+    (action.isTransformed ?? false) ||
+    (action.type !== 'NAVIGATE')
+  ) {
     return action
   }
 
   const navigationState = getRootState()
   const activeRouteName = getActiveLeafRoute(navigationState).name
-  const targetRouteName = last(getRoutePathFromNavigateAction(action))
+  const targetRouteName = first(getRoutePathFromNavigateAction(action))
 
   if (activeRouteName === targetRouteName) {
     return action
@@ -390,6 +391,11 @@ export const transformForNearestExistingNavigator = (
     ...nextAction,
     navigatorId: commonStaticNavigator.id,
     isTransformed: true,
+    ...(clearUndefinedAttributes({
+      skipConditionalNavigation: action.skipConditionalNavigation,
+      flow: action.flow,
+      reset: action.reset,
+    })),
   }
 }
 
