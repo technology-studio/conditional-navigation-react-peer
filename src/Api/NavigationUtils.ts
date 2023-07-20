@@ -189,32 +189,40 @@ export const getResolveConditionsResult = (
   }
 }
 
-export const findStaticTreeScreen = (
+const findStaticTreeScreenInternal = (
   tree: StaticTreeNavigator,
   routeName: string,
   isRoot = true,
-): StaticTreeNode => {
+): StaticTreeNode | undefined => {
   if (tree.routeName === routeName) {
     return tree
   }
-  let foundScreen
+  let foundScreen: StaticTreeNode | undefined
   if ('children' in tree) {
     for (const screen of tree.children) {
       if (screen.routeName === routeName) {
         foundScreen = screen
         break
       } else if ('children' in screen) {
-        foundScreen = findStaticTreeScreen(screen, routeName, false)
+        foundScreen = findStaticTreeScreenInternal(screen, routeName, false)
         if (foundScreen != null) {
           break
         }
       }
     }
   }
-  if (isRoot && foundScreen == null) {
+  return foundScreen
+}
+
+export const findStaticTreeScreen = (
+  tree: StaticTreeNavigator,
+  routeName: string,
+): StaticTreeNode => {
+  const foundScreen = findStaticTreeScreenInternal(tree, routeName)
+  if (foundScreen == null) {
     throw new Error(`Missing static tree screen for route name: ${routeName}`)
   }
-  return foundScreen as StaticTreeNode
+  return foundScreen
 }
 
 const getRouteNameByStateKeyInternal = (

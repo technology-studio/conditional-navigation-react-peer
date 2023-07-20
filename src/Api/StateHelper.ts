@@ -6,4 +6,4 @@
 
 import type { NavigationState } from '@react-navigation/native'
 
-export const cloneState = (navigationState: NavigationState): NavigationState => JSON.parse(JSON.stringify(navigationState))
+export const cloneState = (navigationState: NavigationState): NavigationState => JSON.parse(JSON.stringify(navigationState)) as NavigationState
