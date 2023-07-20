@@ -211,9 +211,6 @@ const findStaticTreeScreenInternal = (
       }
     }
   }
-  if (isRoot && foundScreen == null) {
-    throw new Error(`Missing static tree screen for route name: ${routeName}`)
-  }
   return foundScreen
 }
 
