@@ -8,7 +8,6 @@ import {
   useCallback,
   useContext,
 } from 'react'
-import type UseOnActionType from '@react-navigation/core/lib/typescript/src/useOnAction'
 import type NavigationContainerRefContextType from '@react-navigation/core/lib/typescript/src/NavigationContainerRefContext'
 import {
   NavigationContext,
@@ -24,11 +23,15 @@ import type {
 import { screenConditionConfigMap } from '../Api/ConditionManager'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const useOnActionObject = require('@react-navigation/core/src/useOnAction')
-const originalUseOnAction = useOnActionObject.default as typeof UseOnActionType
+const useOnActionObject = require('@react-navigation/core/src/useOnAction') as {
+  default: (options: UseOnActionOptions) => OnAction<NavigationAction>,
+}
+const originalUseOnAction = useOnActionObject.default
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const NavigationContainerRefContextObject = require('@react-navigation/core/src/NavigationContainerRefContext')
-const NavigationContainerRefContext = NavigationContainerRefContextObject.default as typeof NavigationContainerRefContextType
+const NavigationContainerRefContextObject = require('@react-navigation/core/src/NavigationContainerRefContext') as {
+  default: typeof NavigationContainerRefContextType,
+}
+const NavigationContainerRefContext = NavigationContainerRefContextObject.default
 
 let onActionFactory: ((onAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>) => boolean) | null = null
 let getContext: (() => ResolveConditionContext) | undefined
@@ -39,7 +42,7 @@ export const registerOnActionFactory = (_onActionFactory: typeof onActionFactory
 }
 
 useOnActionObject.default = function useOnAction (options: UseOnActionOptions): OnAction<NavigationAction> {
-  const onAction = originalUseOnAction(options) as OnAction<NavigationAction>
+  const onAction = originalUseOnAction(options)
   const { getState, setState, router, routerConfigOptions } = options ?? {}
   const navigationContainerRefContext = useContext(NavigationContainerRefContext)
   const navigation = useContext(NavigationContext)
@@ -50,7 +53,7 @@ useOnActionObject.default = function useOnAction (options: UseOnActionOptions): 
         getContext,
         getState,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        getRootState: navigationContainerRefContext!.getRootState,
+        getRootState: () => navigationContainerRefContext!.getRootState(),
         nextOnAction,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         navigation: navigation!,

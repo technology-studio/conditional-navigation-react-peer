@@ -197,7 +197,7 @@ export const findStaticTreeScreen = (
   if (tree.routeName === routeName) {
     return tree
   }
-  let foundScreen
+  let foundScreen: StaticTreeNode | undefined
   if ('children' in tree) {
     for (const screen of tree.children) {
       if (screen.routeName === routeName) {
@@ -214,7 +214,8 @@ export const findStaticTreeScreen = (
   if (isRoot && foundScreen == null) {
     throw new Error(`Missing static tree screen for route name: ${routeName}`)
   }
-  return foundScreen as StaticTreeNode
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return foundScreen!
 }
 
 const getRouteNameByStateKeyInternal = (
