@@ -189,11 +189,11 @@ export const getResolveConditionsResult = (
   }
 }
 
-export const findStaticTreeScreen = (
+const findStaticTreeScreenInternal = (
   tree: StaticTreeNavigator,
   routeName: string,
   isRoot = true,
-): StaticTreeNode => {
+): StaticTreeNode | undefined => {
   if (tree.routeName === routeName) {
     return tree
   }
@@ -204,7 +204,7 @@ export const findStaticTreeScreen = (
         foundScreen = screen
         break
       } else if ('children' in screen) {
-        foundScreen = findStaticTreeScreen(screen, routeName, false)
+        foundScreen = findStaticTreeScreenInternal(screen, routeName, false)
         if (foundScreen != null) {
           break
         }
@@ -214,8 +214,18 @@ export const findStaticTreeScreen = (
   if (isRoot && foundScreen == null) {
     throw new Error(`Missing static tree screen for route name: ${routeName}`)
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return foundScreen!
+  return foundScreen
+}
+
+export const findStaticTreeScreen = (
+  tree: StaticTreeNavigator,
+  routeName: string,
+): StaticTreeNode => {
+  const foundScreen = findStaticTreeScreenInternal(tree, routeName)
+  if (foundScreen == null) {
+    throw new Error(`Missing static tree screen for route name: ${routeName}`)
+  }
+  return foundScreen
 }
 
 const getRouteNameByStateKeyInternal = (
