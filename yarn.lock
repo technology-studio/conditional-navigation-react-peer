@@ -3511,6 +3511,13 @@
   dependencies:
     "@txo/functional" "^4.6.2"
 
+"@txo/log@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@txo/log/-/log-2.0.4.tgz#6a4268d8964840ffebfa1479d059037c3e267360"
+  integrity sha512-IDXO3Vfsu/YHZQyYqr4CEYqt87y8KLB/3W9/Ra9NlOr9OG+OVJ8ZE9wXWWli9YAh1iCuGTM32/zNGndobbP9dA==
+  dependencies:
+    "@txo/functional" "^4.6.3"
+
 "@txo/types@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@txo/types/-/types-1.3.0.tgz#e6ec2859eb7c478028d70e965b0245d6cf46d5ac"
