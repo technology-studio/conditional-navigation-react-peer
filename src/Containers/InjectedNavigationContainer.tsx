@@ -26,7 +26,7 @@ import { registerOnActionFactory } from './ReactNavigationInjection'
 type Props = {
   children: React.ReactNode,
   isDarkThemeEnabled: boolean,
-  getContext?: () => ResolveConditionContext,
+  getContext: () => ResolveConditionContext,
 }
 
 export const navigationRef = createNavigationContainerRef()

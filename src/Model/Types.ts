@@ -104,7 +104,7 @@ export type OnAction<ACTION extends NavigationAction> = (action: ACTION, ...rest
 
 export type OnActionAttributes<ACTION extends NavigationAction> = {
   action: ACTION,
-  getContext: (() => ResolveConditionContext) | undefined,
+  getContext: () => ResolveConditionContext,
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,
@@ -118,7 +118,7 @@ export type OnActionAttributes<ACTION extends NavigationAction> = {
 }
 
 export type OnActionFactoryAttributes = {
-  getContext: (() => ResolveConditionContext) | undefined,
+  getContext: () => ResolveConditionContext,
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,

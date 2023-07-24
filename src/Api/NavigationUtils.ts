@@ -176,7 +176,7 @@ export const getResolveConditionsResult = (
   state: NavigationState,
   routePath: string[],
   screenConditionConfigMap: Record<string, ConditionConfig>,
-  getContext: (() => ResolveConditionContext) | undefined,
+  getContext: () => ResolveConditionContext,
 ): ResolveConditionsResult | undefined => {
   if (state != null) {
     for (const routeName of routePath) {
