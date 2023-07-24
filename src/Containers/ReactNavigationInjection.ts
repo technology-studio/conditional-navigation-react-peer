@@ -34,9 +34,9 @@ const NavigationContainerRefContextObject = require('@react-navigation/core/src/
 const NavigationContainerRefContext = NavigationContainerRefContextObject.default
 
 let onActionFactory: ((onAction: OnAction<NavigationAction>) => (attributes: OnActionFactoryAttributes, ...args: Parameters<OnAction<NavigationAction>>) => boolean) | null = null
-let getContext: (() => ResolveConditionContext) | undefined
+let getContext: () => ResolveConditionContext
 
-export const registerOnActionFactory = (_onActionFactory: typeof onActionFactory, _getContext: (() => ResolveConditionContext) | undefined): void => {
+export const registerOnActionFactory = (_onActionFactory: typeof onActionFactory, _getContext: () => ResolveConditionContext): void => {
   onActionFactory = _onActionFactory
   getContext = _getContext
 }

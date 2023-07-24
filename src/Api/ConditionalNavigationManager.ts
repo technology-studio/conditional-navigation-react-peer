@@ -26,7 +26,7 @@ const log = new Log('txo.conditional-navigation-react.Api.ConditionalNavigationM
 export type ResolveCondition<CONDITION extends Condition> = (
   condition: CONDITION,
   navigationAction: NavigationAction,
-  getContext: (() => ResolveConditionContext) | undefined,
+  getContext: () => ResolveConditionContext,
 ) => NavigationAction | CommonActions.Action | undefined
 
 class ConditionalNavigationManager {
@@ -41,7 +41,7 @@ class ConditionalNavigationManager {
     conditionList: Condition[],
     navigationAction: NavigationAction,
     navigationState: NavigationState,
-    getContext: (() => ResolveConditionContext) | undefined,
+    getContext: () => ResolveConditionContext,
   ): ResolveConditionsResult | undefined {
     if (!configManager.config.ignoreConditionalNavigation) {
       log.debug('RESOLVE CONDITIONS', { conditionList, navigationAction })
