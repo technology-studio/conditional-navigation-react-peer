@@ -1,3 +1,10 @@
+## [7.0.22](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.21...v7.0.22) (2023-07-24)
+
+
+### Bug fixes
+
+* make `getContext` mandatory ([#246](https://github.com/technology-studio/conditional-navigation-react-peer/issues/246)) ([e6ebb8f](https://github.com/technology-studio/conditional-navigation-react-peer/commit/e6ebb8fcd3ad07f04c719adff354cc943baadaea))
+
 ## [7.0.21](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.20...v7.0.21) (2023-07-24)
 
 
