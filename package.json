@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@txo/config-manager": "^3.1.0",
-    "@txo/functional": "^4.6.12",
+    "@txo/functional": "^4.6.15",
     "@txo/log": "^2.0.13",
     "@txo/types": "^1.7.0"
   },
