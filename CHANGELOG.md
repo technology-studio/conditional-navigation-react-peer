@@ -1,3 +1,10 @@
+## [7.0.30](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.29...v7.0.30) (2023-09-20)
+
+
+### Bug fixes
+
+* recreate yarn.lock ([#347](https://github.com/technology-studio/conditional-navigation-react-peer/issues/347)) ([e415d01](https://github.com/technology-studio/conditional-navigation-react-peer/commit/e415d01a2aa5dab7bf56920923e84854fd3346c0))
+
 ## [7.0.29](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.28...v7.0.29) (2023-08-30)
 
 
