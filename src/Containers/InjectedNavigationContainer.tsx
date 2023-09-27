@@ -25,13 +25,21 @@ import { registerOnActionFactory } from './ReactNavigationInjection'
 
 type Props = {
   children: React.ReactNode,
-  isDarkThemeEnabled: boolean,
   getContext: () => ResolveConditionContext,
+  isDarkThemeEnabled: boolean,
+  onReady?: () => void,
+  onStateChange?: () => void,
 }
 
 export const navigationRef = createNavigationContainerRef()
 
-export const InjectedNavigationContainer = ({ children, isDarkThemeEnabled, getContext }: Props): JSX.Element => {
+export const InjectedNavigationContainer = ({
+  children,
+  getContext,
+  isDarkThemeEnabled,
+  onReady,
+  onStateChange,
+}: Props): JSX.Element => {
   useFlipper(navigationRef)
   useAndroidBackNavigation(navigationRef)
 
@@ -43,6 +51,8 @@ export const InjectedNavigationContainer = ({ children, isDarkThemeEnabled, getC
     <NavigationContainer
       ref={navigationRef}
       theme={isDarkThemeEnabled ? DarkTheme : DefaultTheme}
+      onReady={onReady}
+      onStateChange={onStateChange}
     >
       {children}
     </NavigationContainer>
