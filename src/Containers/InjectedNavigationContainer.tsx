@@ -12,6 +12,7 @@ import {
   createNavigationContainerRef,
   DefaultTheme,
   DarkTheme,
+  type NavigationState,
 } from '@react-navigation/native'
 import { useFlipper } from '@react-navigation/devtools'
 
@@ -28,7 +29,7 @@ type Props = {
   getContext: () => ResolveConditionContext,
   isDarkThemeEnabled: boolean,
   onReady?: () => void,
-  onStateChange?: () => void,
+  onStateChange?: (state: NavigationState | undefined) => void,
 }
 
 export const navigationRef = createNavigationContainerRef()
