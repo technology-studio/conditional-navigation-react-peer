@@ -1,3 +1,10 @@
+## [7.0.35](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.34...v7.0.35) (2023-10-19)
+
+
+### Bug fixes
+
+* **deps:** update react-navigation monorepo ([d53e385](https://github.com/technology-studio/conditional-navigation-react-peer/commit/d53e3854f1ecad48200fdfede2c072b83c78a311))
+
 ## [7.0.34](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.33...v7.0.34) (2023-09-25)
 
 
