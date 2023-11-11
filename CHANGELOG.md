@@ -1,3 +1,10 @@
+## [7.0.36](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.35...v7.0.36) (2023-11-11)
+
+
+### Bug fixes
+
+* **deps:** update dependency @txo/config-manager to ^3.2.0 ([6770cce](https://github.com/technology-studio/conditional-navigation-react-peer/commit/6770cceb0c09ca957b65a9ab4b270ced078c1679))
+
 ## [7.0.35](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.34...v7.0.35) (2023-10-19)
 
 
