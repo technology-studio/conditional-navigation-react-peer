@@ -39,7 +39,7 @@
   "dependencies": {
     "@txo/config-manager": "^3.2.0",
     "@txo/functional": "^4.6.16",
-    "@txo/log": "^2.0.13",
+    "@txo/log": "^2.0.14",
     "@txo/types": "^1.7.0"
   },
   "peerDependencies": {
