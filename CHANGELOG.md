@@ -1,3 +1,38 @@
+## [7.0.40](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.39...v7.0.40) (2023-11-11)
+
+
+### Bug fixes
+
+* **deps:** update dependency @txo/functional to ^4.6.17 ([1c0cddb](https://github.com/technology-studio/conditional-navigation-react-peer/commit/1c0cddb75f42087e9de7f062ac55e226001c03c6))
+
+## [7.0.39](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.38...v7.0.39) (2023-11-11)
+
+
+### Bug fixes
+
+* **deps:** update dependency @txo/log to ^2.0.14 ([6fba9b3](https://github.com/technology-studio/conditional-navigation-react-peer/commit/6fba9b35fb2de4c7843dc681069cadbca6c94143))
+
+## [7.0.38](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.37...v7.0.38) (2023-11-11)
+
+
+### Bug fixes
+
+* **deps:** update dependency @txo/functional to ^4.6.16 ([6927d6c](https://github.com/technology-studio/conditional-navigation-react-peer/commit/6927d6cffc8b6f9ee57873279bd7eb005cc039de))
+
+## [7.0.37](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.36...v7.0.37) (2023-11-11)
+
+
+### Bug fixes
+
+* **deps:** update dependency @txo-peer-dep/log to ^4.0.3 ([984bd0c](https://github.com/technology-studio/conditional-navigation-react-peer/commit/984bd0ca39ddd9238dfbfafe9f91f97cee8adec7))
+
+## [7.0.36](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.35...v7.0.36) (2023-11-11)
+
+
+### Bug fixes
+
+* **deps:** update dependency @txo/config-manager to ^3.2.0 ([6770cce](https://github.com/technology-studio/conditional-navigation-react-peer/commit/6770cceb0c09ca957b65a9ab4b270ced078c1679))
+
 ## [7.0.35](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.34...v7.0.35) (2023-10-19)
 
 
