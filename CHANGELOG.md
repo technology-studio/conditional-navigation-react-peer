@@ -1,3 +1,10 @@
+## [7.0.41](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.40...v7.0.41) (2024-02-08)
+
+
+### Bug fixes
+
+* **deps:** update dependency @react-navigation/native to ^6.1.10 ([c447c75](https://github.com/technology-studio/conditional-navigation-react-peer/commit/c447c75bf2ce2919cb0873f1530be1efa3e0d987))
+
 ## [7.0.40](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.39...v7.0.40) (2023-11-11)
 
 
