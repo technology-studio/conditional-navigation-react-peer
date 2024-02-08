@@ -44,7 +44,7 @@
   },
   "peerDependencies": {
     "@react-navigation/devtools": "^6.0.20",
-    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/native": "^6.1.10",
     "@txo-peer-dep/log": "^4.0.3",
     "react-native": "*"
   },
@@ -52,7 +52,7 @@
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@react-navigation/devtools": "^6.0.20",
-    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/native": "^6.1.10",
     "@txo-peer-dep/log": "^4.0.3",
     "@txo/commitlint": "^1.0.12",
     "@txo/log-console": "^3.0.0",
