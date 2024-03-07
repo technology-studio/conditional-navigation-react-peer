@@ -263,7 +263,13 @@ export const findStaticNavigatorByStateKey = (
   state: NavigationState,
   stateKey: string,
 ): StaticTreeNavigator => {
-  const routeName = getRouteNameByStateKey(state, stateKey)
+  let routeName: string
+  try {
+    routeName = getRouteNameByStateKey(state, stateKey)
+  } catch (e) {
+    log.error('Missing route name for state key, using root navigator', { stateKey, state })
+    routeName = ROOT_NAVIGATOR_ID
+  }
   return findStaticTreeScreen(tree, routeName) as StaticTreeNavigator
 }
 
