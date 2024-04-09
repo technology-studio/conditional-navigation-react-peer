@@ -1,3 +1,10 @@
+## [7.0.44](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.43...v7.0.44) (2024-04-09)
+
+
+### Bug fixes
+
+* **deps:** update dependency @txo/log to ^2.0.16 ([50aa3c4](https://github.com/technology-studio/conditional-navigation-react-peer/commit/50aa3c49b105f001cc18cd9c94cab74636c5a488))
+
 ## [7.0.43](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.42...v7.0.43) (2024-04-09)
 
 
