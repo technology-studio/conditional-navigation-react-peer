@@ -9,6 +9,9 @@ export {
   registerScreenConditions,
   screenConditionConfigMap,
 } from './Api/ConditionManager'
+export {
+  getActiveLeafRoute,
+} from './Api/NavigationUtils'
 export { configManager } from './Config'
 export { registerOnActionFactory } from './Containers/ReactNavigationInjection'
 export {
