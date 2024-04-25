@@ -17,7 +17,10 @@ export const useIsInitial = (): boolean => {
   const navigation = useNavigation()
   const isInitial = useMemo(() => {
     const state = navigation.getState()
-    return state != null ? calculateIsInitial(state, route) : false
+    if (state == null) {
+      throw new Error('Navigation state is missing. Did you run `useIsInitial` outside of the navigator?')
+    }
+    return calculateIsInitial(state, route)
   }, [navigation, route])
   return isInitial
 }
