@@ -1,3 +1,16 @@
+## [7.0.47](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.46...v7.0.47) (2024-04-30)
+
+
+### Bug fixes
+
+* **deps:** update react-navigation monorepo ([c67200e](https://github.com/technology-studio/conditional-navigation-react-peer/commit/c67200e953ab595f77d9128585d578054d3d0c9a))
+* **deps:** update react-navigation monorepo ([#541](https://github.com/technology-studio/conditional-navigation-react-peer/issues/541)) ([140d523](https://github.com/technology-studio/conditional-navigation-react-peer/commit/140d52374c2cf1c405692204b0b2bebf005e049f))
+
+
+### Testing
+
+* update test name ([#470](https://github.com/technology-studio/conditional-navigation-react-peer/issues/470)) ([7ad1ec2](https://github.com/technology-studio/conditional-navigation-react-peer/commit/7ad1ec29787ee211e392747149d10ab5b0772d73))
+
 ## [7.0.46](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.45...v7.0.46) (2024-04-16)
 
 
