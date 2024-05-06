@@ -9,9 +9,6 @@ export {
   registerScreenConditions,
   screenConditionConfigMap,
 } from './Api/ConditionManager'
-export {
-  getActiveLeafRoute,
-} from './Api/NavigationUtils'
 export { configManager } from './Config'
 export { registerOnActionFactory } from './Containers/ReactNavigationInjection'
 export {
@@ -62,7 +59,10 @@ export {
   conditionalNavigationManager,
   registerResolveCondition,
 } from './Api/ConditionalNavigationManager'
-export { calculateStaticTreeDepth } from './Api/NavigationUtils'
+export {
+  calculateStaticTreeDepth,
+  getActiveLeafRoute,
+} from './Api/NavigationUtils'
 export { useIsInitial } from './Hooks/UseIsInitial'
 export {
   type Navigation,
