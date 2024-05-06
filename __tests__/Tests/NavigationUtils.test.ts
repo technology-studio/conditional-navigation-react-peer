@@ -521,7 +521,7 @@ describe('getRouteNameByStateKey function', () => {
 })
 
 describe('findStaticNavigatorByStateKey function', () => {
-  test('should return undefined if the stateKey does not exist', () => {
+  test('should crash if the stateKey does not exist', () => {
     expect(() => findStaticNavigatorByStateKey(tree, state, 'NONEXISTENT_KEY')).toThrow(new Error('Missing route name for state key: NONEXISTENT_KEY'))
   })
 
