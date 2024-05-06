@@ -1,3 +1,10 @@
+## [7.1.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.47...v7.1.0) (2024-05-06)
+
+
+### Features
+
+* add `onReady` and `onStateChange` callbacks ([#608](https://github.com/technology-studio/conditional-navigation-react-peer/issues/608)) ([1bf2afb](https://github.com/technology-studio/conditional-navigation-react-peer/commit/1bf2afb47e740424fb098dac43f1041f5518767a))
+
 ## [7.0.47](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.46...v7.0.47) (2024-04-30)
 
 
