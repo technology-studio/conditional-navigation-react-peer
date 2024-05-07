@@ -180,6 +180,19 @@ export type ConditionConfig = {
   statusConditions?: (() => Condition[]) | Condition[],
 }
 
+export type Navigation<
+NAVIGATION_PROP extends DefaultNavigationProp,
+PARAMS_MAP extends DefaultParamsMap,
+> = Omit<NAVIGATION_PROP, 'navigate'> & {
+  cancelFlow: () => void,
+  finishFlowAndContinue: () => void,
+  navigate: <ROUTE_NAME extends keyof PARAMS_MAP>(payload: NavigatePayload<PARAMS_MAP, ROUTE_NAME>) => void,
+  requireConditions: (conditionList: Condition[]) => void,
+  validateConditions: () => void,
+  goBack: (payload?: BackPayload) => void,
+  getRoot: () => Navigation<NAVIGATION_PROP, PARAMS_MAP>,
+}
+
 export type NavigationProps<PARAMS extends Record<string, unknown>> = {
   route?: Route<string, PARAMS>,
 }

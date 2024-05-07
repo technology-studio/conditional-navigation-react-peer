@@ -63,9 +63,9 @@ export {
   calculateStaticTreeDepth,
   getActiveLeafRoute,
 } from './Api/NavigationUtils'
+export { useAndroidBackNavigation } from './Hooks/UseAndroidBackNavigation'
 export { useIsInitial } from './Hooks/UseIsInitial'
 export {
-  type Navigation,
   useNavigation,
 } from './Hooks/UseNavigation'
 export { navigationParams } from './Screens'
