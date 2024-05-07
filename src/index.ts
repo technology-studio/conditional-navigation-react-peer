@@ -64,6 +64,7 @@ export {
   getActiveLeafRoute,
 } from './Api/NavigationUtils'
 export { useAndroidBackNavigation } from './Hooks/UseAndroidBackNavigation'
+export { useAndroidBackForCustomOnBack } from './Hooks/UseAndroidBackForCustomOnBack'
 export { useIsInitial } from './Hooks/UseIsInitial'
 export {
   useNavigation,
