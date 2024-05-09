@@ -20,6 +20,7 @@ import {
   onActionFactory,
 } from '../Navigation/OnActionFactory'
 import type { ResolveConditionContext } from '../Model/Types'
+import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 
 import { registerOnActionFactory } from './ReactNavigationInjection'
 
@@ -41,6 +42,7 @@ export const InjectedNavigationContainer = ({
   onStateChange,
 }: Props): JSX.Element => {
   useFlipper(navigationRef)
+  useAndroidBackNavigation(navigationRef)
 
   useEffect(() => {
     registerOnActionFactory(onActionFactory, getContext)

@@ -7,24 +7,23 @@
 import {
   useEffect,
 } from 'react'
+import type {
+  NavigationContainerRefWithCurrent,
+} from '@react-navigation/native'
 import {
   BackHandler,
   Platform,
 } from 'react-native'
+import { is } from '@txo/types'
 
 import { backHandlerManager } from '../Api/BackHandlerManager'
-import {
-  type DefaultNavigationProp,
-  type DefaultParamsMap,
-  type Navigation,
-} from '../Model/Types'
+import { calculateIsInitial } from '../Api/NavigationUtils'
 
-export const useAndroidBackNavigation = <NAVIGATION extends Navigation<DefaultNavigationProp, DefaultParamsMap>>(
-  isInitial: boolean,
-  navigation: NAVIGATION,
-): void => {
+export const useAndroidBackNavigation = (navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>): void => {
   useEffect(() => {
     const onBackPressHandler = (): boolean => {
+      const currentRoute = is(navigationRef.getCurrentRoute())
+      const isInitial = calculateIsInitial(navigationRef.getRootState(), currentRoute)
       if (backHandlerManager.handlerList.length > 0) {
         return backHandlerManager.handlerList.some(handler => handler())
       }
@@ -34,12 +33,12 @@ export const useAndroidBackNavigation = <NAVIGATION extends Navigation<DefaultNa
         }
         return true
       }
-      navigation.goBack()
+      navigationRef.goBack()
       return true
     }
     BackHandler.addEventListener('hardwareBackPress', onBackPressHandler)
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', onBackPressHandler)
     }
-  }, [isInitial, navigation])
+  }, [navigationRef])
 }
