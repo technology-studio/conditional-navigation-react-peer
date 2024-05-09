@@ -16,8 +16,8 @@ import {
   type Navigation,
 } from '../Model/Types'
 
-export const useAndroidBackForCustomOnBack = <NAVIGATION extends Navigation<DefaultNavigationProp, DefaultParamsMap>>(onBack: (() => boolean) | null, navigation: NAVIGATION): void => {
-  const backRequestRegistrationRef = useRef<(() => void) | null>(null)
+export const useAndroidBackForCustomOnBack = <NAVIGATION extends Navigation<DefaultNavigationProp, DefaultParamsMap>>(onBack: (() => boolean) | null | undefined, navigation: NAVIGATION): void => {
+  const backRequestRegistrationRef = useRef<(() => void) | null | undefined>(null)
   useEffect(() => {
     if (onBack != null) {
       backRequestRegistrationRef.current = backHandlerManager.register(onBack)
