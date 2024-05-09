@@ -16,11 +16,11 @@ import {
 } from '@react-navigation/native'
 import { useFlipper } from '@react-navigation/devtools'
 
+import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 import {
   onActionFactory,
 } from '../Navigation/OnActionFactory'
 import type { ResolveConditionContext } from '../Model/Types'
-import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 
 import { registerOnActionFactory } from './ReactNavigationInjection'
 
