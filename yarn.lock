@@ -2915,10 +2915,10 @@
   dependencies:
     react-native "*"
 
-"@types/react@*", "@types/react@^18.3.1":
-  version "18.3.1"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.1.tgz#fed43985caa834a2084d002e4771e15dfcbdbe8e"
-  integrity sha512-V0kuGBX3+prX+DQ/7r2qsv1NsdfnCLnTgnRJ1pYnxykBhGMz+qj+box5lq7XsO5mtZsBqpjwwTu/7wszPfMBcw==
+"@types/react@*", "@types/react@^18.3.2":
+  version "18.3.2"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.2.tgz#462ae4904973bc212fa910424d901e3d137dbfcd"
+  integrity sha512-Btgg89dAnqD4vV7R3hlwOxgqobUQKgx3MmrQRi0yYbs/P0ym8XozIAlkqVilPqHQwXs4e9Tf63rrCgl58BcO4w==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -4998,20 +4998,20 @@ eslint-config-standard@17.1.0:
   resolved "https://registry.yarnpkg.com/eslint-config-standard/-/eslint-config-standard-17.1.0.tgz#40ffb8595d47a6b242e07cbfd49dc211ed128975"
   integrity sha512-IwHwmaBNtDK4zDHQukFDW5u/aTb8+meQWZvNFWkiGmbWjD6bqyuSSBxxXKkCftCUzc1zwCH2m/baCNDLGmuO5Q==
 
-eslint-config-txo-typescript-react@^2.0.54:
-  version "2.0.54"
-  resolved "https://registry.yarnpkg.com/eslint-config-txo-typescript-react/-/eslint-config-txo-typescript-react-2.0.54.tgz#be2abd2ccf717c197e75aac3f4576f4e2f8bb836"
-  integrity sha512-mZj877mxVwbRtixP7SKww0G5ECa+zla8q3f6Eu1pQB/6RHLMU1VxlUQxNdx2F/W2svSSHwls2csESytMViyLvA==
+eslint-config-txo-typescript-react@^2.0.55:
+  version "2.0.55"
+  resolved "https://registry.yarnpkg.com/eslint-config-txo-typescript-react/-/eslint-config-txo-typescript-react-2.0.55.tgz#68e2fff59430b9bc174eacce3238b16324f77870"
+  integrity sha512-typP6ev4gaCWGaP9MquGwP+I9k5jVHmsi7kh+wnZTQ1zJqfHh3YcqS/E3j/Dmi6Z7b3rJXpPbOOMw6KkxunO3Q==
   dependencies:
-    eslint-config-txo-typescript "^4.0.57"
+    eslint-config-txo-typescript "^4.0.58"
     eslint-plugin-jsx-a11y "^6.8.0"
     eslint-plugin-react "^7.34.1"
     eslint-plugin-react-hooks "^4.6.2"
 
-eslint-config-txo-typescript@^4.0.57:
-  version "4.0.57"
-  resolved "https://registry.yarnpkg.com/eslint-config-txo-typescript/-/eslint-config-txo-typescript-4.0.57.tgz#37f05923bfa20443da03cbd20cb132ed595cb2c4"
-  integrity sha512-4T7aIa5G/RYrpmfYOgzdc89BlYfeihjI9OSK10Og7UcOpU2F+A98PeKijgAGmpa3Z0kJ9ci404KCLu8KNIiQZw==
+eslint-config-txo-typescript@^4.0.58:
+  version "4.0.58"
+  resolved "https://registry.yarnpkg.com/eslint-config-txo-typescript/-/eslint-config-txo-typescript-4.0.58.tgz#51886e8eefc377990127a56b20bd320498daec10"
+  integrity sha512-Gs4T+i+134DK/OQiUGB4gt/7TMEPM7MCvaznPBlONs1Ml4b+T68JI1YD4pu3B6NrGfjPe27npjk74KYvBmcyBA==
   dependencies:
     "@eslint-community/eslint-plugin-eslint-comments" "^4.3.0"
     "@typescript-eslint/eslint-plugin" "^7.5.0"
@@ -5023,7 +5023,7 @@ eslint-config-txo-typescript@^4.0.57:
     eslint-plugin-jest "^27.9.0"
     eslint-plugin-n "^16.6.2"
     eslint-plugin-promise "^6.1.1"
-    globals "^15.1.0"
+    globals "^15.2.0"
 
 eslint-import-resolver-node@^0.3.9:
   version "0.3.9"
@@ -5898,10 +5898,10 @@ globals@^13.19.0, globals@^13.24.0:
   dependencies:
     type-fest "^0.20.2"
 
-globals@^15.1.0:
-  version "15.1.0"
-  resolved "https://registry.yarnpkg.com/globals/-/globals-15.1.0.tgz#4e03d200c8362201636b8cdfaa316d6cef67ff1e"
-  integrity sha512-926gJqg+4mkxwYKiFvoomM4J0kWESfk3qfTvRL2/oc/tK/eTDBbrfcKnSa2KtfdxB5onoL7D3A3qIHQFpd4+UA==
+globals@^15.2.0:
+  version "15.2.0"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-15.2.0.tgz#fbcea7f8964a71d8c6e6867ddadb9788ae1083d8"
+  integrity sha512-FQ5YwCHZM3nCmtb5FzEWwdUc9K5d3V/w9mzcz8iGD1gC/aOTHc6PouYu0kkKipNJqHAT7m51sqzQjEjIP+cK0A==
 
 globalthis@^1.0.3:
   version "1.0.3"
@@ -10140,10 +10140,10 @@ rimraf@^3.0.2:
   dependencies:
     glob "^7.1.3"
 
-rimraf@^5.0.5:
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-5.0.5.tgz#9be65d2d6e683447d2e9013da2bf451139a61ccf"
-  integrity sha512-CqDakW+hMe/Bz202FPEymy68P+G50RfMQK+Qo5YUqc9SPipvbGjCGKd0RSKEelbsfQuw3g5NZDSrlZZAJurH1A==
+rimraf@^5.0.5, rimraf@^5.0.7:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-5.0.7.tgz#27bddf202e7d89cb2e0381656380d1734a854a74"
+  integrity sha512-nV6YcJo5wbLW77m+8KjH8aB/7/rxQy9SZ0HY5shnwULfS+9nmTtVXAJET5NdZmCzA4fPI/Hm1wo/Po/4mopOdg==
   dependencies:
     glob "^10.3.7"
 
