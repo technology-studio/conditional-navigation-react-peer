@@ -1,3 +1,10 @@
+## [7.2.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.1.0...v7.2.0) (2024-05-16)
+
+
+### Features
+
+* use `isInitial` for calculating android back action ([#609](https://github.com/technology-studio/conditional-navigation-react-peer/issues/609)) ([7f57036](https://github.com/technology-studio/conditional-navigation-react-peer/commit/7f570367890f5630e7a6d9152574293729730fad))
+
 ## [7.1.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.0.47...v7.1.0) (2024-05-06)
 
 
