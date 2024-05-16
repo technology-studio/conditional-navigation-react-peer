@@ -5,36 +5,40 @@
 **/
 
 import {
-  useCallback,
   useEffect,
 } from 'react'
 import type {
   NavigationContainerRefWithCurrent,
 } from '@react-navigation/native'
-import { BackHandler } from 'react-native'
+import {
+  BackHandler,
+  Platform,
+} from 'react-native'
+import { is } from '@txo/types'
 
 import { backHandlerManager } from '../Api/BackHandlerManager'
+import { calculateIsInitial } from '../Api/NavigationUtils'
 
 export const useAndroidBackNavigation = (navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>): void => {
-  const onBackPressHandler = useCallback((): boolean => {
-    const navigationState = navigationRef.getRootState()
-    if (navigationState == null || navigationState.index === 0) {
-      return false
-    }
-    if (backHandlerManager.handlerList.length > 0) {
-      const isHandled = backHandlerManager.handlerList.some(handler => handler())
-      if (isHandled) {
-        return isHandled
-      }
-    }
-    navigationRef.goBack()
-    return true
-  }, [navigationRef])
-
   useEffect(() => {
+    const onBackPressHandler = (): boolean => {
+      const currentRoute = is(navigationRef.getCurrentRoute())
+      const isInitial = calculateIsInitial(navigationRef.getRootState(), currentRoute)
+      if (backHandlerManager.handlerList.length > 0) {
+        return backHandlerManager.handlerList.some(handler => handler())
+      }
+      if (isInitial) {
+        if (Platform.OS === 'android') {
+          BackHandler.exitApp()
+        }
+        return true
+      }
+      navigationRef.goBack()
+      return true
+    }
     BackHandler.addEventListener('hardwareBackPress', onBackPressHandler)
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', onBackPressHandler)
     }
-  }, [navigationRef, onBackPressHandler])
+  }, [navigationRef])
 }
