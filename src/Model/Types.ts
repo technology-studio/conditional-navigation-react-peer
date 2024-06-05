@@ -104,7 +104,7 @@ export type OnAction<ACTION extends NavigationAction> = (action: ACTION, ...rest
 
 export type OnActionAttributes<ACTION extends NavigationAction> = {
   action: ACTION,
-  getContext: () => ResolveConditionContext,
+  getContext: () => ConditionContext,
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,
@@ -118,7 +118,7 @@ export type OnActionAttributes<ACTION extends NavigationAction> = {
 }
 
 export type OnActionFactoryAttributes = {
-  getContext: () => ResolveConditionContext,
+  getContext: () => ConditionContext,
   getState: UseOnActionOptions['getState'],
   getRootState: () => NavigationState,
   nextOnAction: OnAction<NavigationAction>,
@@ -176,7 +176,7 @@ export type BackPayload = {
 }
 
 export type ConditionConfig = {
-  conditions?: (() => Condition[]) | Condition[],
+  conditions?: ((getContext: () => ConditionContext) => Condition[]) | Condition[],
   statusConditions?: (() => Condition[]) | Condition[],
 }
 
@@ -207,7 +207,7 @@ export type WithConditionalNavigationState<
 )
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ResolveConditionContext {}
+export interface ConditionContext {}
 
 export type CustomActionHandler = () => (NavigationAction & { navigatorId: string }) | undefined | null
 

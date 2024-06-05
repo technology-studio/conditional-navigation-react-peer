@@ -22,7 +22,7 @@ import type {
   ConditionConfig,
   NavigationAction,
   OnAction,
-  ResolveConditionContext,
+  ConditionContext,
   ResolveConditionsResult,
   WithConditionalNavigationState,
   StaticTreeNavigator,
@@ -149,10 +149,11 @@ export const calculateIsInitial = (state: NavigationState, currentRoute: Route<s
 
 export const getScreenNavigationConditions = (
   conditionConfig: ConditionConfig | undefined,
+  getContext: () => ConditionContext,
 ): Condition[] | undefined => {
   const { conditions } = conditionConfig ?? {}
   if (typeof conditions === 'function') {
-    return conditions()
+    return conditions(getContext)
   }
   return conditions
 }
@@ -176,11 +177,11 @@ export const getResolveConditionsResult = (
   state: NavigationState,
   routePath: string[],
   screenConditionConfigMap: Record<string, ConditionConfig>,
-  getContext: () => ResolveConditionContext,
+  getContext: () => ConditionContext,
 ): ResolveConditionsResult | undefined => {
   if (state != null) {
     for (const routeName of routePath) {
-      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName])
+      const screenConditions = getScreenNavigationConditions(screenConditionConfigMap[routeName], getContext)
       log.debug(`RESOLVE CONDITIONS: ${routeName}`, { screenConditions, action, state, routePath })
       if ((screenConditions != null) && screenConditions.length > 0) {
         return conditionalNavigationManager.resolveConditions(screenConditions, action, state, getContext)

@@ -20,13 +20,13 @@ import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 import {
   onActionFactory,
 } from '../Navigation/OnActionFactory'
-import type { ResolveConditionContext } from '../Model/Types'
+import type { ConditionContext } from '../Model/Types'
 
 import { registerOnActionFactory } from './ReactNavigationInjection'
 
 type Props = {
   children: React.ReactNode,
-  getContext: () => ResolveConditionContext,
+  getContext: () => ConditionContext,
   isDarkThemeEnabled: boolean,
   onReady?: () => void,
   onStateChange?: (state: NavigationState | undefined) => void,
