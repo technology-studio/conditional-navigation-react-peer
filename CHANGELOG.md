@@ -1,3 +1,16 @@
+## [8.0.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.2.0...v8.0.0) (2024-06-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename ResolveConditionContext interface to ConditionContext
+
+Co-authored-by: Rostislav Simonik <rostislav.simonik@technologystudio.sk>
+
+### Features
+
+* add `getContext` to conditions and rename `ConditionContext` ([#624](https://github.com/technology-studio/conditional-navigation-react-peer/issues/624)) ([02a78af](https://github.com/technology-studio/conditional-navigation-react-peer/commit/02a78afef1512858edcf22ee318a3611ec870cf9))
+
 ## [7.2.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.1.0...v7.2.0) (2024-05-16)
 
 
