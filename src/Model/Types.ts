@@ -175,9 +175,11 @@ export type BackPayload = {
   count: number,
 }
 
+export type ConditionsOrGetConditions = ((getContext: () => ConditionContext) => Condition[]) | Condition[]
+
 export type ConditionConfig = {
-  conditions?: ((getContext: () => ConditionContext) => Condition[]) | Condition[],
-  statusConditions?: (() => Condition[]) | Condition[],
+  conditions?: ConditionsOrGetConditions,
+  statusConditions?: ConditionsOrGetConditions,
 }
 
 export type Navigation<
