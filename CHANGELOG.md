@@ -1,3 +1,10 @@
+## [8.0.1](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v8.0.0...v8.0.1) (2024-06-07)
+
+
+### Bug fixes
+
+* add `ConditionsOrGetConditions` type and update `ConditionConfig` ([#627](https://github.com/technology-studio/conditional-navigation-react-peer/issues/627)) ([fde8494](https://github.com/technology-studio/conditional-navigation-react-peer/commit/fde84949ec090699d51fe919ce392d3f67928899))
+
 ## [8.0.0](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v7.2.0...v8.0.0) (2024-06-05)
 
 
