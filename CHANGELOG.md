@@ -1,3 +1,10 @@
+## [8.0.2](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v8.0.1...v8.0.2) (2024-07-16)
+
+
+### Bug fixes
+
+* **deps:** update react-navigation monorepo ([1d2dbbf](https://github.com/technology-studio/conditional-navigation-react-peer/commit/1d2dbbfdea6f9d6bba0af44d135d724ca3eb40ef))
+
 ## [8.0.1](https://github.com/technology-studio/conditional-navigation-react-peer/compare/v8.0.0...v8.0.1) (2024-06-07)
 
 
