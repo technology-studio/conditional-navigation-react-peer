@@ -43,16 +43,16 @@
     "@txo/types": "^1.7.0"
   },
   "peerDependencies": {
-    "@react-navigation/devtools": "^6.0.26",
-    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/devtools": "^6.0.27",
+    "@react-navigation/native": "^6.1.18",
     "@txo-peer-dep/log": "^4.0.4",
     "react-native": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",
     "@babel/preset-env": "^7.24.8",
-    "@react-navigation/devtools": "^6.0.26",
-    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/devtools": "^6.0.27",
+    "@react-navigation/native": "^6.1.18",
     "@txo-peer-dep/log": "^4.0.4",
     "@txo/commitlint": "^1.0.15",
     "@txo/log-console": "^3.0.0",
