@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
     "@react-navigation/devtools": "^6.0.27",
     "@react-navigation/native": "^6.1.18",
     "@txo-peer-dep/log": "^4.0.4",
