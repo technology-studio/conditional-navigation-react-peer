@@ -14,7 +14,6 @@ import {
   DarkTheme,
   type NavigationState,
 } from '@react-navigation/native'
-import { useFlipper } from '@react-navigation/devtools'
 
 import { useAndroidBackNavigation } from '../Hooks/UseAndroidBackNavigation'
 import {
@@ -41,7 +40,6 @@ export const InjectedNavigationContainer = ({
   onReady,
   onStateChange,
 }: Props): JSX.Element => {
-  useFlipper(navigationRef)
   useAndroidBackNavigation(navigationRef)
 
   useEffect(() => {
