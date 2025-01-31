@@ -89,13 +89,14 @@ declare module '@react-navigation/routers' {
 }
 
 export type NavigationAction = | RequireConditionsNavigationAction
-| NavigateNavigationAction
-| BackNavigationAction
-| FinishFlowAndContinueNavigationAction
-| CancelFlowNavigationAction
-| ValidateConditionsNavigationAction
-| CloseNavigationAction
+  | NavigateNavigationAction
+  | BackNavigationAction
+  | FinishFlowAndContinueNavigationAction
+  | CancelFlowNavigationAction
+  | ValidateConditionsNavigationAction
+  | CloseNavigationAction
 
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- get first parameter - options
 export type UseOnActionOptions = Parameters<typeof UseOnActionType>[0] & {
   router: Router<NavigationState, AbstractNavigationAction>,
 }
@@ -137,7 +138,7 @@ type NavigatePayloadOptions = {
 
 export type NavigatePayload<PARAMS_MAP, ROUTE_NAME extends keyof PARAMS_MAP = keyof PARAMS_MAP> = ROUTE_NAME extends keyof PARAMS_MAP
   ? RequiredKeys<PARAMS_MAP[ROUTE_NAME]> extends never
-    ? {
+  ? {
         routeName: ROUTE_NAME,
         params?: PARAMS_MAP[ROUTE_NAME],
         options?: NavigatePayloadOptions,
@@ -153,7 +154,7 @@ export type NavigatePayload<PARAMS_MAP, ROUTE_NAME extends keyof PARAMS_MAP = ke
         },
         options?: NavigatePayloadOptions,
       }
-    : {
+      : {
         routeName: ROUTE_NAME,
         params: PARAMS_MAP[ROUTE_NAME],
         options?: NavigatePayloadOptions,
@@ -208,7 +209,7 @@ export type WithConditionalNavigationState<
     : { params: PARAMS & { _conditionalNavigationState?: ConditionalNavigationState } }
 )
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- this is extended in the dependants
 export interface ConditionContext {}
 
 export type CustomActionHandler = () => (NavigationAction & { navigatorId: string }) | undefined | null
