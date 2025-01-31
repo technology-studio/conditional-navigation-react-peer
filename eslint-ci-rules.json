@@ -1,0 +1,21 @@
+[
+  "@typescript-eslint/no-magic-numbers",
+  "@typescript-eslint/no-import-type-side-effects",
+  "max-lines",
+  "@typescript-eslint/no-unnecessary-condition",
+  "@typescript-eslint/prefer-destructuring",
+  "@typescript-eslint/no-unsafe-type-assertion",
+  "max-nested-callbacks",
+  "@stylistic/space-before-function-paren",
+  "@stylistic/max-statements-per-line",
+  "@stylistic/indent-binary-ops",
+  "complexity",
+  "logical-assignment-operators",
+  "@typescript-eslint/max-params",
+  "@typescript-eslint/init-declarations",
+  "@stylistic/operator-linebreak",
+  "@stylistic/arrow-parens",
+  "@typescript-eslint/no-unnecessary-type-parameters",
+  "@typescript-eslint/no-misused-spread",
+  "@typescript-eslint/switch-exhaustiveness-check"
+]
