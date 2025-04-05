@@ -40,7 +40,9 @@ export const InjectedNavigationContainer = ({
   isDarkThemeEnabled,
   onReady,
   onStateChange,
-}: Props): JSX.Element => {
+}: Props): React.JSX.Element => {
+  // @ts-expect-error -- Type 'NavigationContainerRef<RootParamList> | null' is not assignable to type 'NavigationContainerRef<any>'.
+  // Types in the @react-navigation/devtools package are not correct, `null` is handled in the useFlipper hook.
   useFlipper(navigationRef)
   useAndroidBackNavigation(navigationRef)
 
